@@ -1,55 +1,38 @@
 
 
 
+--ms sql 연습문제
+
+go
+
+-- 1. Practice > SQL > Alternative Queries > Print Prime Numbers
+-- https://www.hackerrank.com/challenges/print-prime-numbers/problem
+
+declare @num int, @index int, @answer varchar(1500)
+declare @table table (primenum int)
+set @num = 2
+set @answer = ''
+while @num <= 1000
+begin
+	if not exists (select primenum from @table where @num % primenum = 0)
+	begin
+		insert into @table values (@num)
+		set @answer = @answer + cast(@num as varchar(20)) + '&'
+	end
+	set @num = @num + 1
+end
+
+print substring(@answer,0,len(@answer))
 
 
+go
 
-create table tblSubject(
-	
-	gd_seq int primary key,
-	gd_name nvarchar(20) not null,
-	gd_price int not null
-
-)
-
-create sequence seqSubject
-
-drop sequence seqSubject
-
-
-CREATE SEQUENCE [dbo].[SEQ]
-AS [int]     --int 정수형
-START WITH 0 -- 시작 값 0부터
-INCREMENT BY 1       -- 증가 값 +1
-MINVALUE -2147483648 --최소값 int 크기
-MAXVALUE 2147483647  --최대값
-CACHE
-GO
-
-
-CREATE SEQUENCE [dbo].[shseq]
-AS [int]     --int 정수형
-START WITH 0 -- 시작 값 0부터
-INCREMENT BY 1       -- 증가 값 +1
-MINVALUE -2147483648 --최소값 int 크기
-MAXVALUE 2147483647  --최대값
-CACHE
-GO
+--2. Practice > SQL > Aggregation > The Blunder
+-- https://www.hackerrank.com/challenges/the-blunder/problem?h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen&h_r=next-challenge&h_v=zen
 
 
 
 
 
-insert into tblSubject values (next value for shseq, '맨투맨', 120000)
-
-insert into tblSubject values (next value for shseq, '맨투맨2', 150000)
-
-
-
-select * from tblSubject
-
-
-select count(*) as "asd" from tblSubject where gd_price > 120000
-
-
+go
 
