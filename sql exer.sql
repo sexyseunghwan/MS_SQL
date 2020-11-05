@@ -124,9 +124,32 @@ insert into tbltriangle values (20,22,50)
 
 select * from tbltriangle
 
+go
 
 
+declare @num int
+set @num = (select top 1 a1 from tbltriangle)
+print @num
+
+go
+
+--declare @num1 int, @num2 int, @num3 int
+--set @num1 = (select top 1 a1 from tbltriangle order by a1)
+ 
+
+select * from tbltriangle
+
+--when 과 case 문을 사용해서 써봐라
+--아 when 절을 사용하면 되는거구나?!....
 
 
+select * from tbltriangle
 
+select
+	case when a1 = a2 and a2 = a3 then 'equal'
+		 when a1 + a2 < a3 or a2+ a3 < a1 or a1 + a3 < a2 then 'not tri'
+		 when a1 = a2 or a2 = a3 or a1 = a3 then 'just one'
+		 else 'basic tri'
+	end
+from tbltriangle
 
