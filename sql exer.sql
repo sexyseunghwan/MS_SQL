@@ -93,7 +93,40 @@ commit tran
 
 go
 
-SELECT * FROM TBLTEST1
+ SELECT * FROM TBLTEST1
+
+
 
 
 delete TBLTEST1
+
+
+create table tbltriangle (
+	seq int identity(1,1) primary key,
+	a1 int not null,
+	a2 int not null,
+	a3 int not null
+)
+
+
+insert into tbltriangle values (10,10,10)
+
+
+
+insert into tbltriangle values (11,11,11)
+insert into tbltriangle values (30,32,30)
+insert into tbltriangle values (40,40,40)
+insert into tbltriangle values (20,20,21)
+insert into tbltriangle values (21,21,21)
+insert into tbltriangle values (20,22,50)
+
+
+
+select * from tbltriangle
+
+
+
+
+
+
+
