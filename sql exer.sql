@@ -153,3 +153,95 @@ select
 	end
 from tbltriangle
 
+
+
+go
+
+
+select * from INFORMATION_SCHEMA.TABLES
+ 
+
+select * from TBLTEST1
+
+
+go
+
+
+
+create procedure dbo.testproc
+(
+	@p_name varchar(20)
+)
+as
+begin
+set nocount on
+
+select * from TBLTEST1 where name = @p_name
+
+end
+
+
+go
+
+ --sp_helptext testproc
+
+ select * from TBLTEST1
+
+
+ exec dbo.testproc 'bak'
+ 
+
+
+ create table dbo.tbluser
+ (
+	seq int identity(1,1) primary key,
+	name varchar(10) not null,
+	address varchar(30) not null
+ )
+
+
+ create table dbo.tbladdress
+ (
+	seq int identity(1,1) primary key,
+	userseq int not null,
+	dtaddress varchar(30) not null
+	--userseq int foreign key references tbluser(seq),
+ )
+
+
+ insert into tbluser values ('harry','songpa')
+ insert into tbluser values ('karry','gangnam')
+ insert into tbluser values ('jenny','seocho')
+
+
+ insert into tbladdress values (1,'잠실동 트리지움')
+ insert into tbladdress values (2,'도곡동 타워팰리스')
+ insert into tbladdress values (3,'반포동 리체')
+
+
+ select * from tbladdress
+
+ select * from tbluser
+
+
+ go
+
+
+ create procedure dbo.whatproc
+ (
+	@name varchar(10),
+	@address varchar(30)
+ )
+ as
+ begin
+ set nocount on
+
+ select * from tbluser ts inner join tbladdress ta on ts.seq = ta.userseq
+ where name = @name and dtaddress = @address
+
+ end
+
+
+ go
+
+ exec whatproc 'harry', '잠실동 트리지움'
