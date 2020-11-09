@@ -153,7 +153,7 @@ select sum(population) from city where district = 'California'
 
 
 
---16 . 
+--16 . Practice > SQL > Advanced Select > Type of Triangle
 -- https://www.hackerrank.com/challenges/what-type-of-triangle/problem
 
 
@@ -164,3 +164,127 @@ select
          else 'Scalene'
     end
 from triangles
+
+
+
+17.  Practice > SQL > Advanced Select > The PADS
+-- https://www.hackerrank.com/challenges/the-pads/problem?h_r=next-challenge&h_v=zen
+
+select name + '(' + substring(occupation,1,1) + ')' from occupations order by name
+
+select 'There are a total of ' + cast(count(*) as varchar(20)) + ' ' + lower(occupation) + 's.' from occupations group by occupation order by count(*)
+
+
+18 . Practice > SQL > Advanced Join > Symmetric Pairs
+
+-- 첫번째 풀이(해당방식으로 풀면... 오류가능성이 존재한다...)
+declare @index int,@count int, @max int, @x1 int, @y1 int, @x2 int, @y2 int
+declare @table table (newx int, newy int)
+set @max = (select count(*) from functions)
+set @count = 0
+set @index = 1
+while @count < @max
+begin
+    set @index = 1
+    set @x1 = (select x from functions order by x offset @count rows fetch next 1 rows only)
+    set @y1 = (select y from functions order by x offset @count rows fetch next 1 rows only)
+    
+    while @index < @max
+    begin
+        set @x2 = (select x from functions order by x offset (@count + @index) rows fetch next 1 rows only)
+        set @y2 = (select y from functions order by x offset (@count + @index) rows fetch next 1 rows only)
+        
+        if (@x1 = @y2 and @x2 = @y1)
+        begin
+            insert into @table values (@x1, @y1) 
+        end
+        
+        set @index = @index + 1  
+    end
+    set @count = @count + 1 
+end
+
+select * from @table
+
+
+--두번째 풀이(정석적인 풀이)
+-- 근데 좀 와닿지가 않음 -> 많은 연습이 필요하다
+
+select f1.x, f1.y from functions as f1 
+where f1.x = f1.y and (select count(*) from functions where x = f1.x and y = f1.y) > 1
+union
+select f1.x,f1.y from functions as f1, functions as f2
+where f1.x <> f1.y and f1.x = f2.y and f1.y = f2.x and f1.x < f2.x
+order by x
+
+19.  Practice > SQL > Advanced Select > Occupations
+https://www.hackerrank.com/challenges/contest-leaderboard/problem
+
+====================임시저장============================
+-- select a.hacker_id from
+-- (select ss.hacker_id,ss.challenge_id,max(ss.score) from submissions ss group by ss.hacker_id,ss.challenge_id,ss.score) as a
+
+
+select m.* from
+(select hacker_id,challenge_id,max(score) as  score from submissions group by hacker_id, challenge_id) as m
+
+--alias 달고 안달고의 차이가 왜 나는거지?
+
+
+-- SELECT m.hacker_id FROM
+-- (SELECT hacker_id, challenge_id, MAX(score) AS score FROM Submissions GROUP BY hacker_id, challenge_id) AS m
+
+
+--select * from submissions
+
+--select ss.submission_id from submissions ss group by ss.submission_id
+
+
+--select name,count(*) from hackers group by name
+
+
+--select * from submissions
+--select * from hackers
+
+--select hk.hacker_id,hk.name,ss.challenge_id,ss.score from hackers hk inner join
+-- select hk.hacker_id, hk.name, ss.challenge_id from hackers hk inner join
+--       submissions ss on hk.hacker_id = ss.hacker_id
+        --group by hk.hacker_id
+        --group by hk.hacker_id
+        --where hk.hacker_id = 69832
+            --group by ss.challenge_id
+
+--
+-- select ss.challenge_id,hk.name,max(ss.score) from hackers hk inner join
+--       submissions ss on hk.hacker_id = ss.hacker_id
+--         group by hk.hacker_id, ss.challenge_id, hk.name
+--             order by hk.hacker_id 
+ 
+-- declare @asd varchar(30)
+-- set @asd = '---------------'
+-- print @asd
+
+-- select hk.hacker_id, hk.name, ss.challenge_id from hackers hk inner join
+--       submissions ss on hk.hacker_id = ss.hacker_id
+
+-- select b.* from
+-- (select score from submissions) as b 
+
+
+-- 1. 점수에 따라 차등
+-- select a.* from
+-- (select ss.challenge_id,hk.name,max(ss.score) from hackers hk inner join
+--       submissions ss on hk.hacker_id = ss.hacker_id
+--         group by hk.hacker_id, ss.challenge_id, hk.name) as a
+
+
+--select * from submissions group by score
+-- select * from submissions as ss group by ss.hacker_id, ss.challenge_id
+
+
+====================임시저장============================
+
+
+
+
+
