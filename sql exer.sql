@@ -245,3 +245,54 @@ go
  go
 
  exec whatproc 'harry', '잠실동 트리지움'
+
+
+
+ create table dbo.tblfruit (
+	seq int identity(1,1) primary key,
+	name nvarchar(20) not null,
+	type int not null
+ )
+ 
+ insert into tblfruit values ('딸기',1);
+ insert into tblfruit values ('망고',2);
+ insert into tblfruit values ('파인애플',2);
+ insert into tblfruit values ('키위',3);
+ insert into tblfruit values ('한라봉',3);
+ insert into tblfruit values ('망고스틴',2);
+ insert into tblfruit values ('포도',1);
+
+ select * from tblfruit
+
+ 
+ go
+
+ create procedure dbo.proctest(
+	@name nvarchar(20)
+ )
+ as
+ begin
+ set nocount on
+	
+	select * from tblfruit where name = @name
+
+ end
+
+
+ go
+
+ sp_helptext proctest
+
+ go
+
+ proctest
+
+ go
+
+
+
+
+
+
+
+
