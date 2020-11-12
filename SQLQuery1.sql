@@ -246,6 +246,18 @@ from students as s
     inner join grades as g on s.marks between g.min_mark and g.max_mark
 order by g.grade desc, s.name, s.marks
 
+--세번째 방법
+select 
+    case when gs.grade < 8 then NULL
+        else st.name
+    end,
+    gs.grade,
+    st.marks 
+from students st 
+    inner join grades gs on st.marks between gs.min_mark and gs.max_mark
+    order by gs.grade desc, st.name
+
+
 
 --여기는 아직 해결 못한 문제 
 ====================임시저장============================
@@ -311,8 +323,6 @@ select m.* from
 
 
 ====================임시저장============================
-
-
 
 
 
