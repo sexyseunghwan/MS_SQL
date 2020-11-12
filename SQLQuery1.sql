@@ -217,9 +217,37 @@ select f1.x,f1.y from functions as f1, functions as f2
 where f1.x <> f1.y and f1.x = f2.y and f1.y = f2.x and f1.x < f2.x
 order by x
 
-19.  Practice > SQL > Advanced Select > Occupations
-https://www.hackerrank.com/challenges/contest-leaderboard/problem
+19.  Practice > SQL > Basic Join > The Report
+-- https://www.hackerrank.com/challenges/the-report/problem
 
+--첫번째 방법
+select 
+    case when a.grade >= 8 then a.name
+        else NULL
+    end,
+    a.grade,
+    a.marks  
+    from (select sts.name, 
+                 sts.marks, 
+                 (case when sts.marks >= gr.min_mark and sts.marks <= gr.max_mark then gr.grade
+                        else 0
+                  end) as grade 
+            from students sts,grades gr) as a 
+    where a.grade <> 0 order by a.grade desc, a.name
+
+
+
+-- 두번째 방법
+-- join 을 응용하는 방법
+select case when g.grade < 8 then NULL else s.name end as name,
+    g.grade,
+    s.marks
+from students as s
+    inner join grades as g on s.marks between g.min_mark and g.max_mark
+order by g.grade desc, s.name, s.marks
+
+
+--여기는 아직 해결 못한 문제 
 ====================임시저장============================
 -- select a.hacker_id from
 -- (select ss.hacker_id,ss.challenge_id,max(ss.score) from submissions ss group by ss.hacker_id,ss.challenge_id,ss.score) as a
