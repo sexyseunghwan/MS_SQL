@@ -322,7 +322,7 @@ select m.* from
 -- select * from submissions as ss group by ss.hacker_id, ss.challenge_id
 
 
-====================임시저장============================
+--====================임시저장============================
 
 
 
