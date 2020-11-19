@@ -156,7 +156,7 @@ select * from dbo.TBLINSA with(nolock)
 
 
 
--- 3. SPARSE
+/***3. SPARSE***/
 -- 스파스 열에 대해서 알아보자
 -- 스파스열이란 : null 값에 최적화 되어있는 저장소가 있는 일반 열로 정의할수 있다!
 go
@@ -208,7 +208,7 @@ create table dbo.tblsparse
 
 
 
---4. 테이블 삭제 및 수정
+/***4. 테이블 삭제 및 수정***/
 
 create table dbo.TBLINSA (
 	insa_no int IDENTITY(1,1),
@@ -270,12 +270,8 @@ alter table dbo.TBLINSA
 
 
 
-==================================================================================
 
-
-
---인덱스에 대해 알아보자
-
+/** 5. 인덱스**/
 
 /*
 
@@ -293,7 +289,6 @@ alter table dbo.TBLINSA
 - 클러스터형 인덱스는 범위로 검색 시에 아주 우수한 성능을 보인다.
 
 
-
 2. 비클러스터형 인덱스
 - 책 뒤에 있는 찾아보기라고 생각하면 된다.
 - 비 클러스터형 인덱스는 테이블안에 여러개가 생성이 가능하다.
@@ -304,7 +299,7 @@ alter table dbo.TBLINSA
 */
 
 
-
+-- 5.1 primary key
 create table dbo.testpknonunique
 (
 	a int primary key,
@@ -312,15 +307,14 @@ create table dbo.testpknonunique
 	c int
 )
 
-drop table dbo.testpknonunique
 -- 위와 같이 테이블을 생성하고, 열에 pk를 추가하게 되면 
 -- a열은 clustered, unique, primary key located on DATA_FG 이런형식의 성질을 가지게 된다.
+-- ***즉 기본적으로  pk 를 설정하게 되면 클러스터형 인덱스 처리가 된다.***
 
---drop table dbo.testpk
 
-
+--5.2 UNIQUE
 -- unique 속성
--- unique는 비 클러스터형 인덱스라고 생각하면 된다.
+-- unique는 기본적으로 설정을 하게되면 비클러스터형 인덱스처리가 된다.
 
 create table dbo.testpkunique
 (
@@ -329,11 +323,20 @@ create table dbo.testpkunique
 	c int unique 
 )
 
-drop table dbo.testpkunique
 
--- 테이블에서는 오직 하나의 컬럼만이 클러스터형 인덱스가 될수 있다.
--- 클러스터 인덱스는 같은 값이 들어오면 안되는 성질이 있나 없나?
--- pk 는 무조건 클러스터형 인덱스가 아니다.
+--5.3 CLUSTER 설정하기
+
+create table dbo.TBLTESTCL1
+(
+	tcl_no1 int primary key nonclustered,
+	tcl_no2 int unique clustered,
+	tcl_no3 int unique
+)
+-- 이런식으로 pk unique 옆에 clustered 제약을 걸어주게 되면 직접 지정을 해줄 수 있다.
+
+
+-- &&&테이블에서는 오직 하나의 컬럼만이 클러스터형 인덱스가 될수 있다.&&& => 가장 중요한 개념이므로 머리속에 적립해두는것이 좋다.
+-- pk 는 무조건 클러스터형 인덱스가 아니다. ** 따로 비클러스터 인덱스로 설정이 가능함.
 
       
 create table dbo.TESTCLU 
@@ -344,9 +347,9 @@ create table dbo.TESTCLU
 )
 
 
-
+--5.4 클러스터형 인덱스와 비클러스터형 인덱스의 다른 정렬처리
 --클러스터형 인덱스와 비클러스터형 인덱스의 정렬처리가 다른것을 보자
--- 
+
 create table dbo.TBLTESTCLUSTERED (
 	clus_user_id varchar(20) not null,
 	clus_user_name varchar(20) not null
@@ -363,11 +366,20 @@ insert into dbo.TBLTESTCLUSTERED values ('m','mango');
 
 select * from dbo.TBLTESTCLUSTERED with(nolock) 
 
+-- 만약 기본적으로 클러스터 처리를하게 해주는 pk 를 제약조건으로 걸었다면 사용자가 입력한대로 들어가지 않고 클러스터 정렬을 하게된다.
+
+
 create table dbo.TBLTESTNOTCLUSTERED (
 	nonclus_user_id varchar(20) not null,
 	nonclus_user_name varchar(20) not null
 )
 
+go
+
+select * from dbo.TBLTESTNOTCLUSTERED with(nolock)
+
+
+go
 
 insert into dbo.TBLTESTNOTCLUSTERED values ('a','apple');
 insert into dbo.TBLTESTNOTCLUSTERED values ('c','crayne');
@@ -379,6 +391,27 @@ alter table dbo.TBLTESTNOTCLUSTERED
 	add constraint UN__TBLTESTNONCLUSTERED__NONCLUS__USER__ID UNIQUE (nonclus_user_id)
    
 select * from dbo.TBLTESTNOTCLUSTERED with(nolock)
+
+-- 제약조건으로 unique 를 적어준다면 비클러스터형 인덱스가 되므로 비클러스터형 정렬은 insert 해준대로 데이터가 들어가게 된다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
