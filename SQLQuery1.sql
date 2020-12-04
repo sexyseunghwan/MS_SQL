@@ -322,4 +322,36 @@ select m.* from
 -- select * from submissions as ss group by ss.hacker_id, ss.challenge_id
 
 
+20. Practice > SQLBasic > Join > African Cities
+-- https://www.hackerrank.com/challenges/african-cities/problem
+
+select ct.name from city ct
+    inner join country ctr on ct.countrycode = ctr.code
+    where ctr.continent = 'Africa'
+
+
+
+21. Practice >SQLBasic > Join > Average Population of Each Continent
+-- https://www.hackerrank.com/challenges/average-population-of-each-continent/problem?h_r=next-challenge&h_v=zen
+
+select ctr.continent,avg(ct.population) from city ct
+    inner join country ctr on ct.countrycode = ctr.code
+group by ctr.continent
+
+
+22. Practice > SQL > Advanced Select > Occupations
+-- https://www.hackerrank.com/challenges/occupations/problem
+
+
+select  case when occupation = 'Doctor' then 'd'
+            when occupation = 'Professor' then 'p'
+            when occupation = 'Singer' then 's'
+            when occupation = 'Actor' then 'A' end,
+        case when occupation = 'Doctor' then name end as Doctor,
+        case when occupation = 'Professor' then name end as Professor,
+        case when occupation = 'Singer' then name end as Singer,
+        case when occupation = 'Actor' then name end as Actor
+    from occupations
+    order by name
+
 
