@@ -146,10 +146,12 @@ insert into dbo.TBLSONG values ('기대',9978,'KKH')
 -- 이렇게만 봐도 정말 어려운건데
 -- 정말 어렵구나 어려워 
 
-select mt.userID from dbo.MIXEDTBL mt with(force seek) inner join
-	dbo.TBLSONG ts with(FORCESEEK) on mt.userID = ts.song_singer 
+select mt.userID from dbo.MIXEDTBL mt with(nolock) inner merge join
+	dbo.TBLSONG ts with(nolock) on mt.userID = ts.song_singer 
 
 
-select mt.userID from dbo.MIXEDTBL mt option()
+
+
+
 
 
