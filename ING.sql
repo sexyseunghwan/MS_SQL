@@ -29,6 +29,64 @@ end
 
 
 
+-- [Doctor],[Professor],[Singer],[Actor]
+
+select [Doctor],[Professor],[Singer],[Actor] from 
+(select ROW_NUMBER() over (partition by occupation order by name) as rn,name,occupation from occupations) as rownum
+pivot (min(name) for occupation in ([Doctor],[Professor],[Singer],[Actor])) as pvt
+
+
+
+-- 8 점 미만의 성적을 받은 학생들은 이름을 null로 사용한다.
+-- 보고서는 등급별 내림차순
+-- 같은 그랭이드일 경우에는 이름으로 오름차순
+-- 1~ 7 사이에는 점수를 오름차순으로 정렬한다.
+
+
+/*
+Ketty 는 Eve 에게 Name , Grade 및 Mark의 세 열이 포함 된 보고서를 생성하는 작업을 제공합니다 . 
+Ketty 는 8 점 미만의 성적을받은 학생들의 이름을 원하지 않습니다 . 보고서는 등급별 내림차순이어야합니다. 
+즉, 높은 등급이 먼저 입력됩니다. 같은 학년 (8-10)이 배정 된 학생이 한 명 이상있는 경우 해당 학생의 이름을 알파벳순으로 정렬합니다. 
+마지막으로, 등급이 8 미만이면 이름으로 "NULL"을 사용하고 등급별로 내림차순으로 나열합니다.
+같은 학년 (1-7)이 배정 된 학생이 한 명 이상인 경우 해당 학생의 점수를 오름차순으로 정렬합니다.
+*/
+
+
+create table TBLORDERBYTEST
+(
+	name varchar(30),
+	grade int,
+	marks int
+)
+
+insert into TBLORDERBYTEST values ('APPLE',4,95)
+insert into TBLORDERBYTEST values ('PANASONIC',3,71)
+insert into TBLORDERBYTEST values ('SAMSUNG',32,92)
+insert into TBLORDERBYTEST values ('LG',6,85)
+insert into TBLORDERBYTEST values ('FACEBOOK',23,94)
+insert into TBLORDERBYTEST values ('AMAZON',43,99)
+insert into TBLORDERBYTEST values ('HWAWEI',77,81)
+insert into TBLORDERBYTEST values ('XIAOMI',2,79)
+insert into TBLORDERBYTEST values ('SONY',4,728)
+insert into TBLORDERBYTEST values ('BAMBI',231,666)
+insert into TBLORDERBYTEST values ('KIRINA',54,574)
+
+select * from TBLORDERBYTEST
+order by grade
+
+select * from TBLORDERBYTEST
+order by grade, marks 
+
+
+
+
+
+
+
+
+
+
+
 create table dbo.OCCUPATIONS
 (
 	name varchar(30),
@@ -62,6 +120,73 @@ insert into dbo.OCCUPATIONS values ('Eve' ,'Actor')
 insert into dbo.OCCUPATIONS values ('Aamina' ,'Doctor')
 
 
+
+
+
+
+select * from 
+(select * from OCCUPATIONS) as temptable
+
+
+
+select ROW_NUMBER() over (partition by occupation order by name),name,occupation from OCCUPATIONS
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+go
+
+
+
+select rownum, [Doctor],[Professor],[Singer],[Actor] from
+(
+
+	select ROW_NUMBER() over (partition by occupation order by name) as rownum,name,occupation from occupations
+
+) as temptable
+pivot (max(name) for occupation in ([Doctor],[Professor],[Singer],[Actor])) as pvt
+
+
+select rownum, [Doctor],[Professor],[Singer],[Actor] from
+(
+
+	select ROW_NUMBER() over (partition by occupation order by name) as rownum,name,occupation from occupations
+
+) as temptable
+pivot (min(name) for occupation in ([Doctor],[Professor],[Singer],[Actor])) as pvt
+
+
+--그룹화 시켜주기 위해 생긴 애들 같거든?
+
+
+go
+
+select * from tblscore
+
+
+
+select class,[1학년],[2학년],[3학년] from tblscore
+pivot(max(score) for grade in ([1학년],[2학년],[3학년])) as pvt
+
+
+
+select grade,[1반],[2반],[3반],[4반],[5반] from tblscore
+pivot (max(score) for class in ([1반],[2반],[3반],[4반],[5반])) as pvt
+
+
+go
 
 select * from dbo.occupations order by name
 
@@ -152,8 +277,11 @@ select ROW_NUMBER() over (partition by occupation order by name)
 select ROW_NUMBER() over (PARTITION BY occupation order by name) ronumber, * from occupations
 
 
-
+select * from(
 select * from occupations
+)
+
+
 PIVOT
 (
     MAX(NAME) FOR OCCUPATION IN ([name], [occupation])
@@ -189,9 +317,13 @@ insert into dbo.TBLSCORE values ('3학년','2반',89)
 insert into dbo.TBLSCORE values ('3학년','3반',97)
 insert into dbo.TBLSCORE values ('3학년','4반',100)
 insert into dbo.TBLSCORE values ('3학년','5반',94)
+insert into dbo.TBLSCORE values ('3학년','5반',194)
+
 
 
 select * from dbo.TBLSCORE
+
+
 
 
 select 
@@ -230,3 +362,10 @@ PIVOT
 (
     max(name) FOR OCCUPATION IN ([Doctor], [Professor], [Singer], [Actor])
 ) AS pivotTable
+
+
+
+select * from
+(
+ SELECT ROW_NUMBER() OVER (PARTITION BY OCCUPATION ORDER BY NAME) [RowNumber], * FROM OCCUPATIONS
+) AS tempTable
