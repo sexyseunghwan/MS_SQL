@@ -354,4 +354,13 @@ select  case when occupation = 'Doctor' then 'd'
     from occupations
     order by name
 
-
+23 . Practice > SQL > Basic Join > Contest Leaderboard
+-- https://www.hackerrank.com/challenges/contest-leaderboard/problem
+SELECT sub.hid, h.name, SUM(ms) FROM 
+(
+SELECT hacker_id AS hid, challenge_id AS cid,MAX(score) AS ms FROM SUBMISSIONS
+GROUP BY hacker_id,challenge_id
+) AS sub INNER JOIN HACKERS h ON h.hacker_id = sub.hid
+GROUP BY sub.hid, h.name
+HAVING SUM(ms) <> 0
+ORDER BY SUM(ms) DESC, sub.hid
