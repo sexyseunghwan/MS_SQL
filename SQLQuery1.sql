@@ -356,6 +356,8 @@ select  case when occupation = 'Doctor' then 'd'
 
 23 . Practice > SQL > Basic Join > Contest Leaderboard
 -- https://www.hackerrank.com/challenges/contest-leaderboard/problem
+
+--첫번쨰 방법
 SELECT sub.hid, h.name, SUM(ms) FROM 
 (
 SELECT hacker_id AS hid, challenge_id AS cid,MAX(score) AS ms FROM SUBMISSIONS
@@ -364,3 +366,15 @@ GROUP BY hacker_id,challenge_id
 GROUP BY sub.hid, h.name
 HAVING SUM(ms) <> 0
 ORDER BY SUM(ms) DESC, sub.hid
+
+--두번째 방법
+SELECT TBLANSWER.hid,TBLANSWER.name,SUM(TBLANSWER.mxs) FROM
+(
+SELECT h.hacker_id AS hid, s.challenge_id AS cid, h.name AS name, MAX(s.score) AS mxs
+FROM SUBMISSIONS s INNER JOIN HACKERS h ON s.hacker_id = h.hacker_id 
+GROUP BY h.hacker_id,s.challenge_id,h.name
+) AS TBLANSWER
+GROUP BY TBLANSWER.hid,TBLANSWER.name
+HAVING SUM(TBLANSWER.mxs) <> 0
+ORDER BY SUM(TBLANSWER.mxs) DESC, TBLANSWER.hid
+
