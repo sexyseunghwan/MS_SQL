@@ -37,18 +37,18 @@ pivot (min(name) for occupation in ([Doctor],[Professor],[Singer],[Actor])) as p
 
 
 
--- 8 Á¡ ¹Ì¸¸ÀÇ ¼ºÀûÀ» ¹ŞÀº ÇĞ»ıµéÀº ÀÌ¸§À» null·Î »ç¿ëÇÑ´Ù.
--- º¸°í¼­´Â µî±Şº° ³»¸²Â÷¼ø
--- °°Àº ±×·©ÀÌµåÀÏ °æ¿ì¿¡´Â ÀÌ¸§À¸·Î ¿À¸§Â÷¼ø
--- 1~ 7 »çÀÌ¿¡´Â Á¡¼ö¸¦ ¿À¸§Â÷¼øÀ¸·Î Á¤·ÄÇÑ´Ù.
+-- 8 ì  ë¯¸ë§Œì˜ ì„±ì ì„ ë°›ì€ í•™ìƒë“¤ì€ ì´ë¦„ì„ nullë¡œ ì‚¬ìš©í•œë‹¤.
+-- ë³´ê³ ì„œëŠ” ë“±ê¸‰ë³„ ë‚´ë¦¼ì°¨ìˆœ
+-- ê°™ì€ ê·¸ë­ì´ë“œì¼ ê²½ìš°ì—ëŠ” ì´ë¦„ìœ¼ë¡œ ì˜¤ë¦„ì°¨ìˆœ
+-- 1~ 7 ì‚¬ì´ì—ëŠ” ì ìˆ˜ë¥¼ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬í•œë‹¤.
 
 
 /*
-Ketty ´Â Eve ¿¡°Ô Name , Grade ¹× MarkÀÇ ¼¼ ¿­ÀÌ Æ÷ÇÔ µÈ º¸°í¼­¸¦ »ı¼ºÇÏ´Â ÀÛ¾÷À» Á¦°øÇÕ´Ï´Ù . 
-Ketty ´Â 8 Á¡ ¹Ì¸¸ÀÇ ¼ºÀûÀ»¹ŞÀº ÇĞ»ıµéÀÇ ÀÌ¸§À» ¿øÇÏÁö ¾Ê½À´Ï´Ù . º¸°í¼­´Â µî±Şº° ³»¸²Â÷¼øÀÌ¾î¾ßÇÕ´Ï´Ù. 
-Áï, ³ôÀº µî±ŞÀÌ ¸ÕÀú ÀÔ·ÂµË´Ï´Ù. °°Àº ÇĞ³â (8-10)ÀÌ ¹èÁ¤ µÈ ÇĞ»ıÀÌ ÇÑ ¸í ÀÌ»óÀÖ´Â °æ¿ì ÇØ´ç ÇĞ»ıÀÇ ÀÌ¸§À» ¾ËÆÄºª¼øÀ¸·Î Á¤·ÄÇÕ´Ï´Ù. 
-¸¶Áö¸·À¸·Î, µî±ŞÀÌ 8 ¹Ì¸¸ÀÌ¸é ÀÌ¸§À¸·Î "NULL"À» »ç¿ëÇÏ°í µî±Şº°·Î ³»¸²Â÷¼øÀ¸·Î ³ª¿­ÇÕ´Ï´Ù.
-°°Àº ÇĞ³â (1-7)ÀÌ ¹èÁ¤ µÈ ÇĞ»ıÀÌ ÇÑ ¸í ÀÌ»óÀÎ °æ¿ì ÇØ´ç ÇĞ»ıÀÇ Á¡¼ö¸¦ ¿À¸§Â÷¼øÀ¸·Î Á¤·ÄÇÕ´Ï´Ù.
+Ketty ëŠ” Eve ì—ê²Œ Name , Grade ë° Markì˜ ì„¸ ì—´ì´ í¬í•¨ ëœ ë³´ê³ ì„œë¥¼ ìƒì„±í•˜ëŠ” ì‘ì—…ì„ ì œê³µí•©ë‹ˆë‹¤ . 
+Ketty ëŠ” 8 ì  ë¯¸ë§Œì˜ ì„±ì ì„ë°›ì€ í•™ìƒë“¤ì˜ ì´ë¦„ì„ ì›í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤ . ë³´ê³ ì„œëŠ” ë“±ê¸‰ë³„ ë‚´ë¦¼ì°¨ìˆœì´ì–´ì•¼í•©ë‹ˆë‹¤. 
+ì¦‰, ë†’ì€ ë“±ê¸‰ì´ ë¨¼ì € ì…ë ¥ë©ë‹ˆë‹¤. ê°™ì€ í•™ë…„ (8-10)ì´ ë°°ì • ëœ í•™ìƒì´ í•œ ëª… ì´ìƒìˆëŠ” ê²½ìš° í•´ë‹¹ í•™ìƒì˜ ì´ë¦„ì„ ì•ŒíŒŒë²³ìˆœìœ¼ë¡œ ì •ë ¬í•©ë‹ˆë‹¤. 
+ë§ˆì§€ë§‰ìœ¼ë¡œ, ë“±ê¸‰ì´ 8 ë¯¸ë§Œì´ë©´ ì´ë¦„ìœ¼ë¡œ "NULL"ì„ ì‚¬ìš©í•˜ê³  ë“±ê¸‰ë³„ë¡œ ë‚´ë¦¼ì°¨ìˆœìœ¼ë¡œ ë‚˜ì—´í•©ë‹ˆë‹¤.
+ê°™ì€ í•™ë…„ (1-7)ì´ ë°°ì • ëœ í•™ìƒì´ í•œ ëª… ì´ìƒì¸ ê²½ìš° í•´ë‹¹ í•™ìƒì˜ ì ìˆ˜ë¥¼ ì˜¤ë¦„ì°¨ìˆœìœ¼ë¡œ ì •ë ¬í•©ë‹ˆë‹¤.
 */
 
 
@@ -168,7 +168,7 @@ select rownum, [Doctor],[Professor],[Singer],[Actor] from
 pivot (min(name) for occupation in ([Doctor],[Professor],[Singer],[Actor])) as pvt
 
 
---±×·ìÈ­ ½ÃÄÑÁÖ±â À§ÇØ »ı±ä ¾Öµé °°°Åµç?
+--ê·¸ë£¹í™” ì‹œì¼œì£¼ê¸° ìœ„í•´ ìƒê¸´ ì• ë“¤ ê°™ê±°ë“ ?
 
 
 go
@@ -177,13 +177,13 @@ select * from tblscore
 
 
 
-select class,[1ÇĞ³â],[2ÇĞ³â],[3ÇĞ³â] from tblscore
-pivot(max(score) for grade in ([1ÇĞ³â],[2ÇĞ³â],[3ÇĞ³â])) as pvt
+select class,[1í•™ë…„],[2í•™ë…„],[3í•™ë…„] from tblscore
+pivot(max(score) for grade in ([1í•™ë…„],[2í•™ë…„],[3í•™ë…„])) as pvt
 
 
 
-select grade,[1¹İ],[2¹İ],[3¹İ],[4¹İ],[5¹İ] from tblscore
-pivot (max(score) for class in ([1¹İ],[2¹İ],[3¹İ],[4¹İ],[5¹İ])) as pvt
+select grade,[1ë°˜],[2ë°˜],[3ë°˜],[4ë°˜],[5ë°˜] from tblscore
+pivot (max(score) for class in ([1ë°˜],[2ë°˜],[3ë°˜],[4ë°˜],[5ë°˜])) as pvt
 
 
 go
@@ -217,8 +217,8 @@ from dbo.OCCUPATIONS
 /*
 
 SELECT *
-  FROM ( ÇÇ¹şÇÒ Äõ¸®¹® ) AS result
- PIVOT ( ±×·ìÇÕ¼ö(Áı°èÄÃ·³) FOR ÇÇ¹ş´ë»óÄÃ·³ IN ([ÇÇ¹şÄÃ·³°ª] ... ) AS pivot_result
+  FROM ( í”¼ë²—í•  ì¿¼ë¦¬ë¬¸ ) AS result
+ PIVOT ( ê·¸ë£¹í•©ìˆ˜(ì§‘ê³„ì»¬ëŸ¼) FOR í”¼ë²—ëŒ€ìƒì»¬ëŸ¼ IN ([í”¼ë²—ì»¬ëŸ¼ê°’] ... ) AS pivot_result
  
  */
 
@@ -301,23 +301,23 @@ go
 
 
 
---1,2,3,4,5¹İ»ÓÀÓ
-insert into dbo.TBLSCORE values ('1ÇĞ³â','1¹İ',100)
-insert into dbo.TBLSCORE values ('1ÇĞ³â','2¹İ',50)
-insert into dbo.TBLSCORE values ('1ÇĞ³â','3¹İ',78)
-insert into dbo.TBLSCORE values ('1ÇĞ³â','4¹İ',77)
-insert into dbo.TBLSCORE values ('1ÇĞ³â','5¹İ',94)
-insert into dbo.TBLSCORE values ('2ÇĞ³â','1¹İ',12)
-insert into dbo.TBLSCORE values ('2ÇĞ³â','2¹İ',46)
-insert into dbo.TBLSCORE values ('2ÇĞ³â','3¹İ',78)
-insert into dbo.TBLSCORE values ('2ÇĞ³â','4¹İ',47)
-insert into dbo.TBLSCORE values ('2ÇĞ³â','5¹İ',12)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','1¹İ',31)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','2¹İ',89)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','3¹İ',97)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','4¹İ',100)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','5¹İ',94)
-insert into dbo.TBLSCORE values ('3ÇĞ³â','5¹İ',194)
+--1,2,3,4,5ë°˜ë¿ì„
+insert into dbo.TBLSCORE values ('1í•™ë…„','1ë°˜',100)
+insert into dbo.TBLSCORE values ('1í•™ë…„','2ë°˜',50)
+insert into dbo.TBLSCORE values ('1í•™ë…„','3ë°˜',78)
+insert into dbo.TBLSCORE values ('1í•™ë…„','4ë°˜',77)
+insert into dbo.TBLSCORE values ('1í•™ë…„','5ë°˜',94)
+insert into dbo.TBLSCORE values ('2í•™ë…„','1ë°˜',12)
+insert into dbo.TBLSCORE values ('2í•™ë…„','2ë°˜',46)
+insert into dbo.TBLSCORE values ('2í•™ë…„','3ë°˜',78)
+insert into dbo.TBLSCORE values ('2í•™ë…„','4ë°˜',47)
+insert into dbo.TBLSCORE values ('2í•™ë…„','5ë°˜',12)
+insert into dbo.TBLSCORE values ('3í•™ë…„','1ë°˜',31)
+insert into dbo.TBLSCORE values ('3í•™ë…„','2ë°˜',89)
+insert into dbo.TBLSCORE values ('3í•™ë…„','3ë°˜',97)
+insert into dbo.TBLSCORE values ('3í•™ë…„','4ë°˜',100)
+insert into dbo.TBLSCORE values ('3í•™ë…„','5ë°˜',94)
+insert into dbo.TBLSCORE values ('3í•™ë…„','5ë°˜',194)
 
 
 
@@ -337,15 +337,15 @@ select grade,sum(score) from dbo.TBLSCORE group by grade
 
 select * from dbo.TBLSCORE
 
-select grade,[1¹İ],[2¹İ],[3¹İ],[4¹İ],[5¹İ] from dbo.TBLSCORE
-pivot (max(score) for class in ([1¹İ],[2¹İ],[3¹İ],[4¹İ],[5¹İ])) as pvt
+select grade,[1ë°˜],[2ë°˜],[3ë°˜],[4ë°˜],[5ë°˜] from dbo.TBLSCORE
+pivot (max(score) for class in ([1ë°˜],[2ë°˜],[3ë°˜],[4ë°˜],[5ë°˜])) as pvt
 
 
 
 go
 
 select * from dbo.TBLSCORE
-pivot (max(score) for grade in ([1ÇĞ³â],[2ÇĞ³â],[3ÇĞ³â])) as pvt
+pivot (max(score) for grade in ([1í•™ë…„],[2í•™ë…„],[3í•™ë…„])) as pvt
 
 
 
@@ -369,3 +369,69 @@ select * from
 (
  SELECT ROW_NUMBER() OVER (PARTITION BY OCCUPATION ORDER BY NAME) [RowNumber], * FROM OCCUPATIONS
 ) AS tempTable
+
+
+
+============================================================
+
+
+-- hacker_id, name
+--SELECT * FROM HACKERS
+
+-- challenge_id, hacker_id
+--SELECT * FROM CHALLENGES
+
+DECLARE @topint int
+--DECLARE @ANSWERTABLE TABLE (hacker_id INT, name VARCHAR,count INT)
+
+SET @topint = (SELECT TOP(1) chall.cci FROM
+(
+SELECT hacker_id AS hi,count(challenge_id) AS cci FROM CHALLENGES cg
+GROUP BY hacker_id
+) AS chall INNER JOIN HACKERS h ON h.hacker_id = chall.hi
+ORDER BY chall.cci DESC)
+
+
+
+SELECT chall2.hhid,chall2.hn,chall2.ccci FROM
+(
+SELECT h.hacker_id AS hhid, h.name AS hn, chall.cci AS ccci FROM
+(
+SELECT hacker_id AS hi,count(challenge_id) AS cci FROM CHALLENGES cg
+GROUP BY hacker_id
+) AS chall INNER JOIN HACKERS h ON h.hacker_id = chall.hi
+) AS chall2
+WHERE chall2.ccci <= @topint 
+AND (SELECT COUNT(*) FROM chall2 GROUP BY chall2.ccci) = 1
+
+
+
+
+--AND (SELECT COUNT(*) FROM chall2 WHERE )--
+--WHERE (SELECT COUNT(*) FROM CHALLENGES WHERE)
+
+
+-- SELECT chall.hi AS chi, h.name AS hn, chall.cci AS ccci FROM
+-- (
+-- SELECT hacker_id AS hi,count(challenge_id) AS cci FROM CHALLENGES cg
+-- GROUP BY hacker_id
+-- ) AS chall INNER JOIN HACKERS h ON h.hacker_id = chall.hi
+-- WHERE ccci < @topint AND (SELECT COUNT(*) FROM chall WHERE chall.cci = )
+
+-- SELECT 
+-- (SELECT h.hacker_id AS hhid, h.name AS hhname, chall.cci as ccci FROM
+-- (
+-- SELECT hacker_id AS hi, COUNT(challenge_id) AS cci FROM CHALLENGES cg
+-- GROUP BY hacker_id --hacker_id ë¡œ ê·¸ë£¹í™” ë˜ì–´ì„œ ê° í•´ì»¤ë“¤ì˜ challenge_id ì˜ ê°œìˆ˜ë¥¼ ì•Œë ¤ì¤€ë‹¤.
+-- ) AS chall INNER JOIN HACKERS h ON h.hacker_id = chall.hi) AS TBLANSWER
+-- INNER JOIN CHALLENGES cg1 ON TBLANSWER.hhid = cg1.hacker_id
+-- WHERE TBLANSWER.ccci <= @topint AND SELECT COUNT(*) FROM 
+--INNER JOIN chall ON chall.
+--WHERE chall.cci <= @topint AND (SELECT COUNT(*) FROM chall WHERE chall.cci = ccci) = 1
+
+
+
+
+
+
+
