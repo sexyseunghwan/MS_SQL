@@ -681,6 +681,8 @@ PRINT N'취득등급 ' + @CREDIT
 
 SELECT * FROM dbo.USERTBL
 
+SELECT * FROM dbo.BUYTBL
+
 SELECT SUM(price*amount) FROM dbo.BUYTBL WHERE userid  = 'BBK'
 
 SELECT * FROM dbo.BUYTBL WHERE userid  = 'LSG'
@@ -705,3 +707,28 @@ SELECT	u.userid,
 	
 
 
+DECLARE @cycle INT = 1
+
+WHILE @cycle < 20
+BEGIN
+	PRINT REPLICATE('* ',@cycle)
+	SET @cycle = @cycle + 1
+END
+
+
+DECLARE @sum INT = 0,@num INT = 1
+WHILE (@num <= 100)
+BEGIN
+	IF (@num % 7 = 0)
+	BEGIN
+		PRINT CAST(@num AS NCHAR(3)) + N'은 7의 배수'
+		SET @num = @num + 1
+		CONTINUE
+	END
+
+	SET @sum += @num
+	
+	IF (@sum > 1000) BREAK
+	SET @num += 1
+END
+PRINT N'총합은 ' + CAST(@sum AS NCHAR(4)) 
