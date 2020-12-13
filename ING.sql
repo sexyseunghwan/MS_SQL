@@ -432,6 +432,276 @@ AND (SELECT COUNT(*) FROM chall2 GROUP BY chall2.ccci) = 1
 
 
 
+SELECT * FROM USERTBL
 
+SELECT userid FROM USERTBL GROUP BY userid
+
+SELECT userid FROM BUYTBL GROUP BY userid
+
+SELECT * FROM USERTBL
+
+SELECT userid,prodname,groupname,price,amount FROM BUYTBL
+
+
+SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
+	LEFT OUTER JOIN BUYTBL b ON u.userid = b.userid
+
+SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
+	RIGHT OUTER JOIN BUYTBL b ON u.userid = b.userid
+
+SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
+	INNER JOIN BUYTBL b ON u.userid = b.userid
+
+
+
+SELECT u.userid,b.prodname  FROM USERTBL u
+	INNER JOIN BUYTBL b ON u.userid = b.userid
+
+SELECT u.userid,b.prodname  FROM USERTBL u
+	LEFT OUTER JOIN BUYTBL b ON u.userid = b.userid
+	
+SELECT u.userid,b.prodname  FROM USERTBL u
+	LEFT OUTER JOIN BUYTBL b ON u.userid = b.userid
+
+
+SELECT * FROM USERTBL u 
+	LEFT OUTER JOIN BUYTBL b ON u.userid = b.userid
+
+SELECT * FROM USERTBL u 
+	INNER JOIN BUYTBL b ON u.userid = b.userid
+
+SELECT * FROM USERTBL u 
+	RIGHT OUTER JOIN BUYTBL b ON u.userid = b.userid
+
+
+SELECT * FROM STDTBL
+
+
+CREATE TABLE dbo.STDTBL
+(
+	name nvarchar(5),
+	addr nvarchar(10)
+)
+
+INSERT INTO dbo.STDTBL VALUES ('김범수','경남')
+INSERT INTO dbo.STDTBL VALUES ('성시경','서울')
+INSERT INTO dbo.STDTBL VALUES ('조용필','경기')
+INSERT INTO dbo.STDTBL VALUES ('은지원','경북')
+INSERT INTO dbo.STDTBL VALUES ('바비킴','서울')
+
+
+CREATE TABLE dbo.STDCLUBTBL
+(
+	seq int IDENTITY(1,1),
+	name nvarchar(5),
+	dongari nvarchar(10)
+)
+
+
+INSERT INTO dbo.STDCLUBTBL VALUES ('김범수','바둑')
+INSERT INTO dbo.STDCLUBTBL VALUES ('김범수','축구')
+INSERT INTO dbo.STDCLUBTBL VALUES ('조용필','축구')
+INSERT INTO dbo.STDCLUBTBL VALUES ('은지원','축구')
+INSERT INTO dbo.STDCLUBTBL VALUES ('은지원','봉사')
+INSERT INTO dbo.STDCLUBTBL VALUES ('바비킴','봉사')
+
+
+DROP TABLE dbo.CLUBTBL
+
+CREATE TABLE dbo.CLUBTBL
+(
+	dongari nvarchar(10),
+	room int
+)
+
+INSERT INTO dbo.CLUBTBL VALUES ('수영',101)
+INSERT INTO dbo.CLUBTBL VALUES ('바둑',102)
+INSERT INTO dbo.CLUBTBL VALUES ('축구',103)
+INSERT INTO dbo.CLUBTBL VALUES ('봉사',104)
+
+
+CREATE TABLE dbo.STDTBL
+CREATE TABLE dbo.STDCLUBTBL
+CREATE TABLE dbo.CLUBTBL
+
+
+SELECT * FROM dbo.STDTBL
+SELECT * FROM dbo.STDCLUBTBL
+SELECT * FROM dbo.CLUBTBL
+
+
+
+SELECT * FROM dbo.STDTBL s
+	FULL OUTER JOIN dbo.STDCLUBTBL sc ON s.name = sc.name
+	FULL OUTER JOIN dbo.CLUBTBL c ON sc.dongari = c.dongari
+
+
+SELECT * FROM USERTBL
+	CROSS JOIN BUYTBL
+
+SELECT * FROM dbo.USERTBL
+SELECT * FROM dbo.BUYTBL
+
+
+SELECT * FROM EMPTBL
+
+SELECT * FROM dbo.EMPTBL e1
+	INNER JOIN dbo.EMPTBL e2 ON e1.manager = e2.emp
+	WHERE e1.emp = '지사원'
+
+
+
+
+CREATE TABLE dbo.TBLFRUIT1
+(
+	name NVARCHAR(10),
+	cost INT,
+	nation NVARCHAR(10)
+)
+
+CREATE TABLE dbo.TBLFRUIT2
+(
+	name NVARCHAR(10),
+	cost INT,
+	nation NVARCHAR(10)
+)
+
+
+SELECT * FROM dbo.TBLFRUIT
+
+SELECT * FROM TBLFRUIT1
+SELECT * FROM TBLFRUIT2
+
+INSERT INTO dbo.TBLFRUIT1 VALUES ('banana',3000,'usa')
+INSERT INTO dbo.TBLFRUIT1 VALUES ('mango',2800,'tai')
+INSERT INTO dbo.TBLFRUIT1 VALUES ('pineapple',5000,'tai')
+INSERT INTO dbo.TBLFRUIT1 VALUES ('strawberry',12000,'kor')
+
+
+INSERT INTO dbo.TBLFRUIT2 VALUES ('strawberry',12000,'kor')
+INSERT INTO dbo.TBLFRUIT2 VALUES ('pineapple',5000,'usa')
+INSERT INTO dbo.TBLFRUIT2 VALUES ('orange',8000,'usa')
+INSERT INTO dbo.TBLFRUIT2 VALUES ('starfruit',2000,'tai')
+
+
+SELECT name,cost,nation FROM dbo.TBLFRUIT1
+UNION ALL
+SELECT name,cost,nation FROM dbo.TBLFRUIT2
+
+SELECT name,cost,nation FROM dbo.TBLFRUIT1
+UNION
+SELECT name,cost,nation FROM dbo.TBLFRUIT2
+
+
+SELECT * FROM dbo.TBLINSA
+EXCEPT
+SELECT * FROM dbo.TBLINSA WHERE buseo IN ('영업부','총무부','개발부')
+
+SELECT * FROM dbo.TBLINSA WHERE buseo NOT IN ('영업부','총무부','개발부')
+
+
+SELECT * FROM dbo.TBLINSA
+INTERSECT
+SELECT * FROM dbo.TBLINSA WHERE buseo = '개발부' and jikwi = '대리'
+
+
+
+SELECT name,cost,nation FROM dbo.TBLFRUIT
+UNION
+SELECT name,cost,nation FROM dbo.TBLFRUIT
+
+
+
+
+
+SELECT * FROM TBLSONG
+
+
+SELECT * FROM TBLSCORE
+
+
+
+SELECT * FROM TBLINSA
+
+
+DECLARE @hiredate DATETIME -- 입사일
+DECLARE @curdate DATETIME --오늘날짜
+DECLARE @years INT--근속년수
+DECLARE @days INT -- 군무란 일 수
+
+SELECT @hiredate = ibsadate FROM dbo.TBLINSA
+	WHERE name = '지수환'
+
+SET @curdate = GETDATE()
+SET @years = DATEDIFF(year,@hiredate,@curdate)--날짜의 차이 (년 단위)
+SET @days = DATEDIFF(day,@hiredate,@curdate)--날짜의 차이(일단위)
+
+IF (@years > 10) 
+BEGIN
+	PRINT N'입사한지 ' + CAST(@days AS NCHAR(5)) + N'일 이나 지났네요'
+END
+ELSE 
+BEGIN
+	PRINT N'입사한지 ' + CAST(@days AS NCHAR(5)) + N'일 밖에 안지났군요'
+END
+
+
+SELECT * FROM dbo.TBLINSA WHERE name = '지수환'
+
+
+
+DECLARE @score INT = 77, @credit NCHAR(1)
+
+IF @score >= 90
+	SET @credit = 'A'
+ELSE IF @score >= 80
+		SET @credit = 'B'
+	ELSE IF @score >= 70
+			SET @credit = 'C'
+		ELSE IF @score >= 60
+			SET @credit = 'D'
+			ELSE
+				SET @credit = 'F'
+PRINT N'취득점수 ' + CAST(@score AS NCHAR(2))
+PRINT N'취득등급 ' + @CREDIT
+
+
+
+DECLARE @score INT = 77, @credit NCHAR(1)
+
+SET @credit =  CASE WHEN (@score >= 90) THEN 'A'
+					WHEN (@score >= 80) THEN 'B'
+					WHEN (@score >= 70) THEN 'C'
+					WHEN (@score >= 60) THEN 'D'
+					ELSE 'F'
+				END
+PRINT N'취득점수 ' + CAST(@score AS NCHAR(2))
+PRINT N'취득등급 ' + @CREDIT
+
+
+SELECT * FROM dbo.USERTBL
+
+SELECT SUM(price*amount) FROM dbo.BUYTBL WHERE userid  = 'BBK'
+
+SELECT * FROM dbo.BUYTBL WHERE userid  = 'LSG'
+
+
+
+SELECT userid,sum(price*amount) FROM dbo.BUYTBL GROUP BY userid
+
+
+SELECT	u.userid,
+		u.name,
+		SUM(price*amount) AS [총계], 
+		CASE WHEN SUM(price*amount) >= 1500 THEN N'최우수 고객'
+			 WHEN SUM(price*amount) >= 1000 THEN N'우수 고객'
+			 WHEN SUM(price*amount) >= 1 THEN N'일반고객'
+			 ELSE N'유령 고객'
+		END AS [고객등급]
+		FROM dbo.BUYTBL b
+	RIGHT JOIN dbo.USERTBL u ON u.userid = b.userid
+	GROUP BY u.userid,u.name
+	ORDER BY SUM(price*amount) DESC
+	
 
 

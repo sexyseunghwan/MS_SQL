@@ -378,3 +378,23 @@ GROUP BY TBLANSWER.hid,TBLANSWER.name
 HAVING SUM(TBLANSWER.mxs) <> 0
 ORDER BY SUM(TBLANSWER.mxs) DESC, TBLANSWER.hid
 
+
+24. Practice > SQL > Basic Join > Challenges
+-- https://www.hackerrank.com/challenges/challenges/problem
+WITH CTE_TBL(hacker_id,countci)
+AS
+(
+SELECT hacker_id,COUNT(challenge_id) FROM CHALLENGES
+GROUP BY hacker_id 
+)
+
+SELECT h.hacker_id,h.name,ct.countci FROM HACKERS h
+    INNER JOIN CTE_TBL ct ON h.hacker_id = ct.hacker_id
+    WHERE 
+        ct.countci = (SELECT MAX(countci) FROM CTE_TBL)
+    OR
+        ct.countci IN (SELECT countci FROM CTE_TBL
+                        GROUP BY countci
+                        HAVING COUNT(countci) = 1 )
+    ORDER BY ct.countci DESC
+
