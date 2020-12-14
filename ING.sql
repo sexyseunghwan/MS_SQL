@@ -347,8 +347,17 @@ go
 select * from dbo.TBLSCORE
 pivot (max(score) for grade in ([1학년],[2학년],[3학년])) as pvt
 
+go
 
 
+
+SELECT * FROM dbo.TBLSCORE
+pivot (MAX(score) FOR grade IN ([1학년],[2학년],[3학년])) AS pvt
+
+
+
+SELECT * FROM dbo.TBLSCORE
+PIVOT (MAX(score) FOR class IN ([1반],[2반],[3반],[4반],[5반])) AS pvt
 
 
 
@@ -757,5 +766,10 @@ BEGIN
 	WAITFOR DELAY '00:00:05';
 	PRINT N'5초간 멈춘 후 진행되었음'
 END
+
+
+SELECT * FROM TBLSONG
+
+
 
 
