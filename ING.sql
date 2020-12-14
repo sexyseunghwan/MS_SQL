@@ -731,4 +731,31 @@ BEGIN
 	IF (@sum > 1000) BREAK
 	SET @num += 1
 END
-PRINT N'총합은 ' + CAST(@sum AS NCHAR(4)) 
+PRINT N'총합은 ' + CAST(@sum AS NCHAR(4))
+
+
+DECLARE @sum INT = 0,@num INT = 1 
+WHILE (@num <= 100) 
+BEGIN 
+	IF (@num % 7 = 0) 
+	BEGIN 
+		PRINT CAST(@num AS NCHAR(3)) + N'은 7의 배수' 
+		SET @num = @num + 1 
+		CONTINUE 
+	END 
+	SET @sum += @num 
+	IF (@sum > 1000) GOTO endprint 
+	SET @num += 1 
+END
+
+endprint: 
+PRINT N'총합은 ' + CAST(@sum AS NCHAR(4))
+
+
+
+BEGIN
+	WAITFOR DELAY '00:00:05';
+	PRINT N'5초간 멈춘 후 진행되었음'
+END
+
+
