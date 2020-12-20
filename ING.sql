@@ -1,6 +1,70 @@
 
 
+SELECT TOP 10 * FROM Person.Contact
 
+
+SELECT top 10 name,ssn FROM dbo.TBLINSA
+
+
+drop procedure dbo.proctestsh
+
+create procedure dbo.proctestsh
+(
+	@name int
+)
+as
+WITH CTE_FIRST (rm,name,occupation)
+AS
+(
+	SELECT ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rm,name,occupation FROM dbo.OCCUPATIONS
+)
+SELECT [Doctor],[Professor],[Singer],[Actor] FROM CTE_FIRST
+PIVOT (MAX(name) FOR occupation IN ([Doctor],[Professor],[Singer],[Actor])) AS pvt
+
+
+exec dbo.proctestsh 1
+
+
+
+SELECT * FROM dbo.TBLSCORE
+
+SELECT * FROM dbo.TBLSCORE
+PIVOT (MAX(score) FOR class IN ([1반],[2반],[3반],[4반],[5반])) AS pvt
+
+
+--학년별로 자동으로 정렬이 된거 같은데?!
+
+
+
+SELECT * FROM TBLINSA
+
+
+WITH CTE(rm,name,buseo)
+AS
+(
+	SELECT ROW_NUMBER() OVER (PARTITION BY buseo ORDER BY name),name,buseo FROM dbo.TBLINSA
+)
+SELECT [개발부],[기획부],[영업부],[인사부],[자재부],[총무부],[홍보부] FROM CTE
+PIVOT (MAX(name) FOR buseo IN ([개발부],[기획부],[영업부],[인사부],[자재부],[총무부],[홍보부])) AS pvt
+
+
+WITH CTE_FIRST (rm,name,occupation)
+AS
+(
+	SELECT ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rm,name,occupation FROM dbo.OCCUPATIONS
+)
+SELECT [Doctor],[Professor],[Singer],[Actor] FROM CTE_FIRST
+PIVOT (MAX(name) FOR occupation IN ([Doctor],[Professor],[Singer],[Actor])) AS pvt
+
+
+
+
+
+SELECT buseo FROM dbo.TBLINSA
+GROUP BY buseo 
+
+
+SELECT * FROM dbo.BUYTBL
 
 create table dbo.tbltest
 (
@@ -344,22 +408,73 @@ pivot (max(score) for class in ([1반],[2반],[3반],[4반],[5반])) as pvt
 
 go
 
+
+
+SELECT * FROM dbo.TBLSCORE
+
+SELECT * FROM dbo.TBLSCORE
+PIVOT (max(score) FOR grade IN ([1학년],[2학년],[3학년])) as pvt
+
+
 select * from dbo.TBLSCORE
 pivot (max(score) for grade in ([1학년],[2학년],[3학년])) as pvt
 
 go
 
 
+SELECT * FROM dbo.TBLSCORE
+PIVOT (MAX(score) FOR class IN ([1반],[2반],[3반],[4반],[5반])) AS pvt
+
+
+
+SELECT * FROM dbo.TBLSCORE
+
+SELECT * FROM dbo.TBLSCORE
+PIVOT (MAX(score) FOR grade IN ([1학년],[2학년],[3학년])) AS pvt
+
+SELECT ROW_NUMBER() OVER (PARTITION BY buseo ORDER BY basicpay) AS sl, * FROM dbo.TBLINSA
+
 
 SELECT * FROM dbo.TBLSCORE
 pivot (MAX(score) FOR grade IN ([1학년],[2학년],[3학년])) AS pvt
 
 
-
+SELECT * FROM dbo.TBLSCORE
 SELECT * FROM dbo.TBLSCORE
 PIVOT (MAX(score) FOR class IN ([1반],[2반],[3반],[4반],[5반])) AS pvt
 
 
+SELECT ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name DESC) [rm], * FROM OCCUPATIONS
+
+
+
+SELECT * FROM dbo.OCCUPATIONS
+PIVOT(MAX(name) FOR occupation IN ([Doctor],[Professor],[Actor],[Singer])) AS pvt
+
+
+SELECT ROW_NUMBER() OVER (PARTITION BY OCCUPATION ORDER BY NAME) [RowNumber], * FROM OCCUPATIONS
+
+GO
+
+WITH cte(rownumber,name,occupation)
+AS
+(
+	SELECT ROW_NUMBER() OVER (PARTITION BY OCCUPATION ORDER BY name) [rownumber],* FROM OCCUPATIONS
+)
+SELECT * FROM cte
+--PIVOT (MAX(name) FOR occupation IN ([Doctor],[Professor],[Actor],[Singer])) as pvt
+
+GO
+
+WITH cte(rownumber,name,occupation)
+AS
+(
+	SELECT ROW_NUMBER() OVER (PARTITION BY OCCUPATION ORDER BY name) [rownumber],* FROM OCCUPATIONS
+)
+SELECT * FROM cte
+PIVOT (MAX(name) FOR occupation IN ([Doctor],[Professor],[Actor],[Singer])) as pvt
+
+go
 
 SELECT
     *--[Doctor], [Professor], [Singer], [Actor]
@@ -491,6 +606,8 @@ CREATE TABLE dbo.STDTBL
 	name nvarchar(5),
 	addr nvarchar(10)
 )
+
+SELECT * FROM STDTBL
 
 INSERT INTO dbo.STDTBL VALUES ('김범수','경남')
 INSERT INTO dbo.STDTBL VALUES ('성시경','서울')
@@ -772,4 +889,77 @@ SELECT * FROM TBLSONG
 
 
 
+SELECT * FROM dbo.USERTBL
 
+
+BEGIN TRY
+		INSERT INTO dbo.USERTBL VALUES ('LSG','이상구',1988,'서울',NULL,NULL,170,GETDATE())
+		PRINT N'정상적으로 입력되었습니다.'
+END TRY
+
+BEGIN CATCH
+	PRINT N'***오류가 발생했습니다.***'
+	PRINT N'오류번호 : '
+	PRINT ERROR_NUMBER()
+	PRINT N'오류 메시지 : '
+	PRINT ERROR_MESSAGE()
+	PRINT N'오류 상태 코드 : '
+	PRINT ERROR_STATE()
+	PRINT N'오류 심각도'
+	PRINT ERROR_SEVERITY()
+	PRINT N'오류 발생 행번호 : '
+	PRINT ERROR_LINE()
+	PRINT N'오류 발생 프로시저/트리거'
+	PRINT ERROR_PROCEDURE()
+END CATCH
+
+
+THROW 55555, N'이건 THROW 오류 발생',1
+
+
+
+SELECT * FROM dbo.OCCUPATIONS
+
+
+
+select  case when occupation = 'Doctor' then 'd'
+            when occupation = 'Professor' then 'p'
+            when occupation = 'Singer' then 's'
+            when occupation = 'Actor' then 'A' end AS np,
+        case when occupation = 'Doctor' then name end as Doctor,
+        case when occupation = 'Professor' then name end as Professor,
+        case when occupation = 'Singer' then name end as Singer,
+        case when occupation = 'Actor' then name end as Actor
+    from occupations
+	order by name
+
+
+ROW_NUM
+
+
+GO
+
+SELECT * FROM dbo.OCCUPATIONS
+
+
+
+SELECT
+	u.userID,
+	u.name,
+	SUM(b.price * b.amount) as [총계],
+	CASE WHEN SUM(b.price * b.amount) >= 1500 THEN '최우수 고객'
+		 WHEN SUM(b.price * b.amount) >= 1000 THEN '우수고객'
+		 WHEN SUM(b.price * b.amount) >= 1 THEN '우수고객'
+		 ELSE '유령고객' END AS [고객분류]
+	FROM dbo.USERTBL u
+	LEFT OUTER JOIN dbo.BUYTBL b ON u.userid = b.userid
+	GROUP BY u.userID,u.name 
+	ORDER BY [총계] DESC
+
+
+
+	
+	
+SELECT * FROM dbo.USERTBL
+
+SELECT * FROM dbo.BUYTBL
