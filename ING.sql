@@ -1,9 +1,50 @@
 
 
-SELECT TOP 10 * FROM Person.Contact
+create procedure testproc1
+(
+	@buseo varchar(15),
+	@jikwi varchar(15)
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	select num,name,buseo,jikwi from dbo.tblinsa where buseo = @buseo and jikwi = @jikwi
+return
+end
+
+go
+
+
+select num,name,buseo,jikwi from dbo.tblinsa WITH(NOLOCK,FORCESEEK)
+where buseo = '개발부' and jikwi = '사원'
+
+--프로시저 호출을 잘 잡아야제 인간다
+
+
+select name,buseo,jikwi from dbo.tblinsa where buseo = '개발부' AND jikwi = '사원'
+
+
+
+
+
+create index [IDX__TBLINSA__BUSEO__JIKWI] ON dbo.TBLINSA (buseo,jikwi)
+
+CREATE INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA (buseo)
+
+DROP INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA
+
+
+go
+
+select * from dbo.tblinsa
+
 
 
 SELECT top 10 name,ssn FROM dbo.TBLINSA
+
+
+select * from dbo.TBLINSA
 
 
 drop procedure dbo.proctestsh
@@ -573,8 +614,16 @@ SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
 SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
 	RIGHT OUTER JOIN BUYTBL b ON u.userid = b.userid
 
+
+SELECT * FROM dbo.USERTBL
+
+SELECT * FROM dbo.BUYTBL
+
 SELECT u.userid,b.prodname,b.price,b.amount FROM USERTBL u
-	INNER JOIN BUYTBL b ON u.userid = b.userid
+	INNER HASH JOIN BUYTBL b ON u.userid = b.userid
+	WHERE u.userid = 'BBK' AND b.num = 10
+
+
 
 
 
