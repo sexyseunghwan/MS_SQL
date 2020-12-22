@@ -1012,3 +1012,79 @@ SELECT
 SELECT * FROM dbo.USERTBL
 
 SELECT * FROM dbo.BUYTBL
+
+
+create procedure testproc1
+(
+	@buseo varchar(15),
+	@jikwi varchar(15)
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+	select num,name,buseo,jikwi from dbo.tblinsa where buseo = @buseo and jikwi = @jikwi
+return
+end
+
+select * from dbo.CLUBTBL
+
+
+DROP PROCEDURE testprocsh2
+
+create procedure testprocsh2
+(
+	@num int
+)
+as
+begin
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+begin try
+if (@num = 1)
+begin
+	--insert into dbo.CLUBTBL VALUES ('갓수',105)
+	update dbo.CLUBTBL set dongari = '테스트', room = 'asd'
+end
+
+else
+begin
+	--insert into dbo.CLUBTBL VALUES ('갓수','ㅁㄴㅇ')
+	update dbo.CLUBTBL set dongari = '테스트', room = 900
+end
+end try
+begin catch
+	print ERROR_MESSAGE()
+end catch
+end
+
+--아 뭐지 진짜 이거 어케 쓰는거지
+EXEC testprocsh2 1
+
+
+drop procedure usp_return
+
+create procedure usp_return
+(
+	@username nvarchar(10)
+	@output output
+)
+as
+	declare @userid char(8)
+	select @userid = userid from USERTBL where name = @username;
+
+	if (@userid<>'') return 0;
+	else return -1;
+
+select * from USERTBL
+
+
+
+
+exec usp_return 'sd'
+
+
+declare @num int
+set @num = 
+print @num
