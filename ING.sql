@@ -1,5 +1,170 @@
 
 
+
+declare @day varchar(8)
+set @day = '20201223'
+print @day
+
+
+declare @num varchar(14)
+set @num = '930823-1058818'
+
+print @num
+-- 010-5139-3792
+
+
+select * from dbo.TBLINSA with(nolock)
+
+
+select * from dbo.TBLINSA with(nolock) where city = N'서울'
+
+alter table dbo.TBLINSA add constraint PK__TBLINSA__NUM primary key (num)
+
+alter table dbo.TBLINSA drop tblInsa_pk
+
+
+drop index tblInsa_pk on dbo.TBLINSA
+
+DROP TABLE dbo.TBLBUSEO
+
+CREATE TABLE dbo.TBLBUSEO
+(
+	buseo varchar(15),
+	room int not null
+
+)
+
+ALTER TABLE dbo.TBLBUSEO ALTER COLUMN room varchar(15) NOT NULL
+
+ALTER TABLE dbo.TBLBUSEO ADD CONSTRAINT PK__TBLBUSEO__ROOM PRIMARY KEY (room)
+
+
+insert into dbo.TBLBUSEO values ('개발부',101)
+insert into dbo.TBLBUSEO values ('개발부',102)
+insert into dbo.TBLBUSEO values ('개발부',103)
+insert into dbo.TBLBUSEO values ('개발부',104)
+
+insert into dbo.TBLBUSEO values ('기획부',105)
+insert into dbo.TBLBUSEO values ('기획부',106)
+insert into dbo.TBLBUSEO values ('기획부',107)
+
+insert into dbo.TBLBUSEO values ('영업부',108)
+insert into dbo.TBLBUSEO values ('영업부',109)
+insert into dbo.TBLBUSEO values ('영업부',110)
+insert into dbo.TBLBUSEO values ('영업부',111)
+insert into dbo.TBLBUSEO values ('영업부',112)
+
+insert into dbo.TBLBUSEO values ('인사부',113)
+insert into dbo.TBLBUSEO values ('인사부',114)
+insert into dbo.TBLBUSEO values ('인사부',115)
+insert into dbo.TBLBUSEO values ('인사부',116)
+
+insert into dbo.TBLBUSEO values ('자재부',117)
+insert into dbo.TBLBUSEO values ('자재부',118)
+
+insert into dbo.TBLBUSEO values ('총무부',119)
+
+insert into dbo.TBLBUSEO values ('홍보부',120)
+insert into dbo.TBLBUSEO values ('홍보부',121)
+insert into dbo.TBLBUSEO values ('홍보부',122)
+insert into dbo.TBLBUSEO values ('홍보부',123)
+
+
+select * from dbo.TBLBUSEO WITH(NOLOCK)
+
+select ti.name,tb.buseo from dbo.TBLINSA ti with(nolock)
+	inner join dbo.TBLBUSEO tb with(nolock) on ti.buseo = tb.buseo
+
+
+select ti.name,tb.buseo,ti.jikwi from dbo.TBLINSA ti with(nolock,forceseek) 
+	inner join dbo.TBLBUSEO tb with(nolock,forceseek) on ti.buseo = tb.buseo
+	where tb.buseo = '개발부'
+
+go
+
+create procedure sh_test1
+(
+	@buseo varchar(15)
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+select ti.name,tb.buseo,ti.jikwi from dbo.TBLINSA ti with(nolock,forceseek) 
+	inner join dbo.TBLBUSEO tb with(nolock) on ti.buseo = tb.buseo
+	where tb.buseo = @buseo
+
+end
+
+go
+
+
+exec sh_test1 '개발부'
+
+
+go
+
+CREATE INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA (buseo)
+
+
+CREATE INDEX [IDX__TBLBUSEO__BUSEO] ON dbo.TBLBUSEO (buseo)
+
+
+DROP INDEX [IDX__TBLBUSEO__BUSEO] ON dbo.TBLINSA
+
+DROP INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA
+
+
+
+
+
+select distinct buseo from dbo.TBLINSA WITH(NOLOCK)
+
+
+select * from dbo.tblinsa with(nolock)
+
+select name from dbo.tblinsa with(nolock) where name = '엄용수'
+
+select city,name from dbo.tblinsa with(nolock) where buseo = '개발부'
+
+
+DROP INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA
+CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (name)
+
+DROP INDEX [IDX__TBLINSA__CITY] ON dbo.TBLINSA
+CREATE INDEX [IDX__TBLINSA__CITY] ON dbo.TBLINSA (city)
+
+DROP INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA
+CREATE INDEX [IDX__TBLINSA__BUSEO] ON dbo.TBLINSA (buseo)
+
+DROP INDEX [IDX__TBLINSA__BUSEO__NAME__JIKWI] ON dbo.TBLINSA
+CREATE INDEX [IDX__TBLINSA__BUSEO__NAME__JIKWI] ON dbo.TBLINSA (buseo,name,jikwi)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 create procedure testproc1
 (
 	@buseo varchar(15),
