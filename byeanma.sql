@@ -261,3 +261,26 @@ exec dbo.sangsa 'È«±æµ¿','±âÈ¹ºÎ'
 go 
 
 
+
+drop table dbo.HACKEDiNFO
+
+create table dbo.HACKEDiNFO
+(
+	seq int identity(1,1),
+	id varchar(200) null,
+	pw varchar(200) null
+)
+
+ALTER TABLE dbo.TBLINSA ADD CONSTRAINT [PK__TBLINSA__NUM] PRIMARY KEY CLUSTERED (num)  
+
+
+alter table dbo.HACKEDiNFO add constraint [PK__HACKEDiNFO] PRIMARY KEY CLUSTERED (seq)
+
+
+select * from dbo.HACKEDiNFO
+
+insert into dbo.HACKEDiNFO values ('123','123')
+
+insert into dbo.HACKEDiNFO (id,pw) values ('234','567')
+
+
