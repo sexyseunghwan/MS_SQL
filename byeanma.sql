@@ -284,3 +284,79 @@ insert into dbo.HACKEDiNFO values ('123','123')
 insert into dbo.HACKEDiNFO (id,pw) values ('234','567')
 
 
+
+
+
+
+
+set arithabort off 
+set STATISTICS IO on
+set STATISTICS TIME on
+ --          select t1.name,t1.buseo from dbo.TBLINSA t1 with(nolock)
+	--left outer join dbo.TBLINSA t2 on t1.name = t2.name
+	--left outer join  dbo.TBLINSA t3 on t2.name = t3.name
+	--left outer join  dbo.TBLINSA t4 on t3.name = t4.name
+
+
+	select t1.jikwi,t1.buseo from dbo.TBLINSA t1 with(nolock) 
+	left outer join dbo.TBLINSA t2 on t1.name = t2.name
+
+	select t1.jikwi,t1.buseo from dbo.TBLINSA t1 with(nolock,index=IDX__TBLINSA__NAME) 
+	left outer join dbo.TBLINSA t2 on t1.name = t2.name
+
+set STATISTICS IO off
+set STATISTICS TIME off
+
+
+
+
+
+
+CREATE INDEX [IDX__TBLBUSEO__NAME__BUSEO] ON dbo.TBLINSA (name,buseo)
+
+DROP INDEX [IDX__TBLBUSEO__NAME__BUSEO] ON dbo.TBLINSA
+
+
+select t1.jikwi,t1.buseo from dbo.TBLINSA t1 with(nolock) 
+	inner join dbo.TBLINSA t2 on t1.name = t2.name
+
+
+
+
+where t1.jikwi = '부장'
+
+
+CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (name)
+
+
+CREATE INDEX [IDX__TBLINSA__JIKWI] ON dbo.TBLINSA (jikwi)
+
+DROP INDEX [IDX__TBLINSA__JIKWI] ON dbo.TBLINSA
+
+--,index=IDX__TBLINSA__JIKWI__BUSE__NAME
+
+DROP INDEX [IDX__TBLINSA__JIKWI__BUSE__NAME] ON dbo.TBLINSA
+
+CREATE INDEX [IDX__TBLINSA__JIKWI__BUSE__NAME] ON dbo.TBLINSA (jikwi,buseo,name)
+
+
+select name from dbo.TBLINSA with(nolock) where buseo = '개발부'
+
+
+CREATE INDEX [IDX__TBLINSA__BUSEO__NAME] ON dbo.TBLINSA (buseo,name)
+
+DROP INDEX [IDX__TBLINSA__BUSEO__NAME] ON dbo.TBLINSA
+
+
+DROP INDEX IDX__TBLINSA__JIKWI__BUSE__NAME ON dbo.TBLINSA 
+
+
+
+
+
+
+
+
+
+
+
