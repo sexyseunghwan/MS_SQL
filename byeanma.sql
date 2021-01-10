@@ -200,6 +200,8 @@ INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay
 
 -----------------------------------------
 
+
+
 SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
 
 
@@ -320,13 +322,42 @@ DROP INDEX [IDX__TBLBUSEO__NAME__BUSEO] ON dbo.TBLINSA
 select t1.jikwi,t1.buseo from dbo.TBLINSA t1 with(nolock) 
 	inner join dbo.TBLINSA t2 on t1.name = t2.name
 
+select t1.name,t1.basicpay from dbo.TBLINSA t1 with(nolock,index = IDX__TBLINSA__NAME) 
+	inner join dbo.TBLINSA t2 on t1.name = t2.name
+	where t2.name = '홍길동'
 
 
 
-where t1.jikwi = '부장'
+CREATE INDEX [IDX__TBLINSA__BASICPAY] ON dbo.TBLINSA (basicpay)
+CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (name)
+
+CREATE INDEX [IDX__TBLINSA__NAME__BASICPAY] ON dbo.TBLINSA (name,basicpay)
+
+CREATE INDEX [IDX__TBLINSA__NAME] ON dbO.TBLINSA (name)
+
+DROP INDEX [IDX__TBLINSA__BASICPAY] ON dbo.TBLINSA
+DROP INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA
+
+
+CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (basicpay)
+
+
+
+
+CREATE INDEX [IDX__TBLINSA__BASICPAY] ON dbo.TBLINSA (basicpay)
+
+CREATE INDEX [IDX__TBLINSA__NAME__BASICPAY] ON dbo.TBLINSA (name,basicpay)
+
+
+DROP INDEX [IDX__TBLINSA__NAME__BASICPAY] ON dbo.TBLINSA
+
+
+--where t1.jikwi = '부장'
 
 
 CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (name)
+
+DROP INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA
 
 
 CREATE INDEX [IDX__TBLINSA__JIKWI] ON dbo.TBLINSA (jikwi)
@@ -351,10 +382,237 @@ DROP INDEX [IDX__TBLINSA__BUSEO__NAME] ON dbo.TBLINSA
 DROP INDEX IDX__TBLINSA__JIKWI__BUSE__NAME ON dbo.TBLINSA 
 
 
+SELECT * FROM dbo.TBLIP
+
+SELECT * FROM dbo.HACKEDiNFO
+
+
+CREATE TABLE dbo.NISSTAFF
+(
+	id varchar(20) not null,
+	pw varchar(30) not null,
+	name nvarchar(6) not null,
+	address varchar(100) null,
+	buseo varchar(10) null,
+	jikwi nvarchar(10) not null
+)
+
+ALTER TABLE dbo.NISSTAFF ADD CONSTRAINT PK__NISSTAFF__ID PRIMARY KEY (id)
+
+DROP INDEX [IDX__NISSTAFF__ID__PW] ON dbo.NISSTAFF
+CREATE INDEX [IDX__NISSTAFF__ID__PW] ON dbo.NISSTAFF (id,pw)
+
+--DROP INDEX [IDX__NISSTAFF__ID__PW] ON dbo.NISSTAFF (id,pw)
+
+INSERT INTO dbo.NISSTAFF VALUES ('ssh9308','BY789*798','신승환','서울시 송파구','DEV','MANAGER')
+INSERT INTO dbo.NISSTAFF VALUES ('dsy9206','sy170125','고서윤','경기도 남양주시','MARKETING','STAFF') 
+INSERT INTO dbo.NISSTAFF VALUES ('Iasd8339','ASFHK#$%4345','김구라','서울시 강남구','DESIGN','LEADER') 
+INSERT INTO dbo.NISSTAFF VALUES ('asdwr7895','fjkhdj^5i894','강림원','경기도 성남시','DEV','STAFF') 
+INSERT INTO dbo.NISSTAFF VALUES ('fhkjd82','287965@#$','강원진','강원도 속초시','DEV','MANAGER') 
+
+
+SELECT * FROM dbo.NISSTAFF WITH(NOLOCK)
+
+
+go
+
+
+drop proc dbo.nis_login
+
+create procedure dbo.nis_login
+(
+	@id varchar(20),--아이디
+	@pw varchar(30)--비밀번호
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+	select count(*) as staffcount from dbo.NISSTAFF with(nolock,forceseek) where id = @id and pw = @pw;
+
+end
+
+select count(*) as staffcount from dbo.NISSTAFF with(nolock) where id = 'admin' and pw = '1234';
+
+select count(*) as staffcount from dbo.NISSTAFF with(nolock) where id = 'admin' or pw = '1234' and pw = '';
+
+
+SELECT * FROM dbo.NISSTAFF WITH(NOLOCK)
+
+INSERT INTO dbo.NISSTAFF VALUES ('admin','1234','관리자','서울 송파구','DEV','STAFF')
+
+go
+
+create procedure dbo.nis_staff_info
+(
+	@id varchar(20)--아이디
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+	select id,name,address,buseo,jikwi from dbo.NISSTAFF with(nolock) where id = @id;
+end
+
+
+exec dbo.nis_staff_info 'ssh9308'
+
+select * from dbo.NISSTAFF with(nolock)
+
+--exec dbo.nis_login 'ssh9308','BY789ㄷ*798'
+
+
+drop table dbo.TBLIP
+
+--아이피 로그 테이블 생성
+CREATE TABLE dbo.TBLIP
+(
+	seq int identity(1,1) not null,
+	ip_number varchar(100) not null,
+	come_date datetime not null
+		constraint DF__TBLIP__COME_DATE DEFAULT getdate()
+)
+
+select * from dbo.TBLIP
+
+ALTER TABLE dbo.TBLIP ADD CONSTRAINT PK__TBLIP__SEQ PRIMARY KEY CLUSTERED (seq)
+
+--접근하지 못할 아이피 리스트 생성
+CREATE TABLE dbo.BANEDIP
+(
+	seq int identity(1,1) not null,--pk
+	banned_ip_number varchar(100) not null--들어오지 못하게할 ip
+)
+
+ALTER TABLE dbo.BANEDIP ADD CONSTRAINT PK__BANEDIP__SEQ PRIMARY KEY CLUSTERED (seq)
+
+
+insert into dbo.BANEDIP values ('211.36.157.252')
+
+select * from dbo.BANEDIP with(nolock)
+
+go
+
+
+drop proc dbo.nis_banned_ip
+
+create procedure dbo.nis_banned_ip
+(
+	@banned_ip_number varchar(100)--입력 아이피
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	
+	select count(*) as banned_ip_true from dbo.BANEDIP with(nolock) where  banned_ip_number = @banned_ip_number;
+
+end
+
+	
+
+go
 
 
 
 
+drop procedure dbo.nis_ip_log
+
+
+go
+
+
+-- 아이피 로그 확인하는 프로시저
+create procedure dbo.nis_ip_log
+(
+	@ip varchar(100)--아이피번호
+)
+AS
+BEGIN
+SET NOCOUNT ON 
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+
+	insert into dbo.TBLIP values (@ip,default);
+
+end
+
+
+go
+
+insert into dbo.TBLIP values ('192.556.998',DEFAULT);
+
+
+exec dbo.nis_ip_log '192.556.998'
+
+
+
+select * from dbo.TBLIP with(nolock)
+
+
+
+DROP TABLE dbo.USERTBL
+
+DROP TABLE dbo.BUYTBL
+
+CREATE TABLE dbo.USERTBL 
+( 
+	userid char(8) NOT NULL,--사용자 아이디 
+	name varchar(20) NOT NULL,--이름 
+	birthday int NOT NULL,--출생년도 
+	nation char(2) NOT NULL,--출생국가 
+	mobile1 char(3),--휴대폰의 국번 
+	mobile2 char(8),--휴대폰의 나머지 전화번호(하이픈 제외) 
+	height smallint,--키 
+	mdate date--회원 가입일 
+	
+	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid) 
+);
+
+INSERT INTO dbo.USERTBL VALUES ('ssh9308','messi',1983,'KR',NULL,NULL,NULL,NULL)
+
+INSERT INTO dbo.USERTBL VALUES('KSY8803','RONALDO',NULL,NULL,NULL,NULL,NULL,NULL)
+
+SELECT * FROM dbo.USERTBL WITH(NOLOCK)
+
+SELECT * FROM dbo.HACKEDiNFO WITH(NOLOCK)
+
+SELECT * FROM dbo.
+
+SELECT * FROM DBO.TBLINSA
+
+
+DROP TABLE dbo.TBLSPARESE
+DROP TABLE dbo.TBLNOTSPARESE
+
+CREATE TABLE dbo.TBLSPARESE
+(
+	id int identity(1,1) NOT NULL,
+	data char(100) SPARSE NULL
+)
+
+CREATE TABLE dbo.TBLNOTSPARESE
+(
+	id int identity(1,1) NOT NULL,
+	data char(100) NULL 
+)
+
+
+DECLARE @i INT = 0
+WHILE @I < 100000
+BEGIN
+	INSERT INTO dbo.TBLSPARESE VALUES ('HI');
+	INSERT INTO dbo.TBLNOTSPARESE VALUES ('HI');
+	SET @i += 1
+END
+
+
+SELECT * FROM dbo.TBLSPARESE WITH(NOLOCK)
+SELECT * FROM dbo.TBLNOTSPARESE WITH(NOLOCK)
+
+
+CREATE TABLE dbo.
 
 
 
