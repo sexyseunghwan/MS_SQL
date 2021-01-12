@@ -612,9 +612,8 @@ SELECT * FROM dbo.TBLSPARESE WITH(NOLOCK)
 SELECT * FROM dbo.TBLNOTSPARESE WITH(NOLOCK)
 
 
-CREATE TABLE dbo.
+go
 
-
-
+select * from dbo.tblinsa with(nolock)
 
 
