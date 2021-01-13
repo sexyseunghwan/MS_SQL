@@ -614,6 +614,151 @@ SELECT * FROM dbo.TBLNOTSPARESE WITH(NOLOCK)
 
 go
 
-select * from dbo.tblinsa with(nolock)
+drop table dbo.USERTBL
+
+CREATE TABLE dbo.USERTBL 
+( 
+	userid char(8) NOT NULL,--사용자 아이디 
+	name varchar(20) NOT NULL,--이름 
+	birthday int NOT NULL,--출생년도 
+	nation char(2) NOT NULL,--출생국가 
+	mobile1 char(3) NULL,--휴대폰의 국번 
+	mobile2 char(8) NULL,--휴대폰의 나머지 전화번호(하이픈 제외) 
+	height smallint NULL,--키 
+	mdate date NULL--회원 가입일 
+	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid) 
+);
+
+INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL 에 데이터 하나 삽입
+
+CREATE TABLE dbo.BUYTBL 
+( 
+	num int IDENTITY(1,1) NOT NULL,--순번(pk) 
+	userid char(8) NOT NULL,--아이디(fk) 
+	prodname varchar(10) NOT NULL,--물품명 
+	groupname varchar(10) NULL,--분류 
+	price int NOT NULL,--단가 
+	amount smallint NOT NULL--수량 
+	CONSTRAINT FK__BUYTBL__USERTBL__USERID 
+		FOREIGN KEY (userid) REFERENCES dbo.USERTBL (userid) 
+		ON UPDATE CASCADE 
+)
+
+INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL 에 존재하는 ID를 REFERENCES 
+
+UPDATE dbo.USERTBL SET userid = 'ssh9301' where userid = 'ssh9308' 
+
+
+SELECT * FROM dbo.USERTBL WITH(NOLOCK)
+SELECT * FROM dbo.BUYTBL WITH(NOLOCK)
+
+DROP TABLE dbo.BUYTBL
+DROP TABLE dbo.USERTBL
+
+
+CREATE TABLE dbo.USERTBL
+(
+	userid char(8) NOT NULL,--사용자 아이디
+	name varchar(20) NOT NULL,--이름
+	birthday int NOT NULL,--출생년도
+	nation char(2) NOT NULL,--출생국가
+	mobile1 char(3) NULL,--휴대폰의 국번
+	mobile2 char(8) NULL,--휴대폰의 나머지 전화번호(하이픈 제외)
+	height smallint NULL,--키
+	mdate date NULL--회원 가입일
+	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid)
+);
+
+INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL 에 데이터 하나 삽입
+
+CREATE TABLE dbo.BUYTBL
+(
+	num int IDENTITY(1,1) NOT NULL,--순번(pk)
+	userid char(8) NOT NULL,--아이디(fk)
+	prodname varchar(10) NOT NULL,--물품명
+	groupname varchar(10) NULL,--분류
+	price int NOT NULL,--단가
+	amount smallint NOT NULL--수량
+	CONSTRAINT FK__BUYTBL__USERTBL__USERID
+		FOREIGN KEY (userid) REFERENCES dbo.USERTBL (userid)
+		ON DELETE CASCADE
+);
+
+INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL 에 존재하는 ID를 REFERENCES 
+
+DELETE FROM dbo.USERTBL WHERE userid = 'ssh9308' -- USERTBL 에 존재하는 한행의 데이터 삭제
+
+
+
+
+
+--임시테이블 설정
+CREATE TABLE #TBL_SH_PRIME
+(
+    seq int identity(1,1) not null,
+    prime_number int not null
+);
+
+CREATE PROCEDURE dbo.sh_prime_test 
+( 
+    @input_num int--sp 파라미터 : upper bound 
+) 
+as 
+begin 
+    set nocount on 
+    set transaction isolation level read uncommitted 
+     
+    declare @num int = 2 
+    while(@num < @input_num) 
+    begin 
+        if not exists (select prime_number from #TBL_SH_PRIME where prime_number % @num = 0) 
+        begin 
+            insert into #TBL_SH_PRIME values (@num) 
+        end 
+         
+        -- 프로시저 생성할 경우(준표) 검수 할 경우 중요한것 UPDATE INSERT DELETE 구문 직후에는 ERROR 처리를 반드시 해줘야 한다.
+	if @@error <> 0 
+	begin 
+		return -1 
+	end 
+        set @num += 1 
+    end 
+end;
+
+
+drop proc dbo.sh_prime_test
+
+CREATE PROCEDURE dbo.sh_prime_test 
+( 
+    @input_num int--sp 파라미터 : upper bound 
+) 
+as 
+begin 
+    set nocount on 
+    set transaction isolation level read uncommitted 
+     
+    declare @num int = 2 
+    while(@num < @input_num) 
+    begin 
+        if not exists (select prime_number from #TBL_SH_PRIME where @num % prime_number = 0) 
+        begin 
+            insert into #TBL_SH_PRIME values (@num) 
+        end 
+         
+        -- 프로시저 생성할 경우(준표) 검수 할 경우 중요한것 UPDATE INSERT DELETE 구문 직후에는 ERROR 처리를 반드시 해줘야 한다.
+	if @@error <> 0 
+	begin 
+		return -1 
+	end 
+        set @num += 1 
+    end 
+end;
+
+
+exec dbo.sh_prime_test 1000 -- 1000 보다 작은 정수중 소수인 숫자를 모두 임시테이블에 넣어준다.
+
+drop table #TBL_SH_PRIME
+
+select * from #TBL_SH_PRIME -- 임시테이블 불러오기
 
 
