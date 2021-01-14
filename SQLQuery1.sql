@@ -398,3 +398,18 @@ SELECT h.hacker_id,h.name,ct.countci FROM HACKERS h
                         HAVING COUNT(countci) = 1 )
     ORDER BY ct.countci DESC
 
+
+with CTE_TBL(h_id,cnt)
+as
+(
+    select hacker_id,count(challenge_id) from Challenges 
+        group by hacker_id 
+)
+
+select ct.h_id , h.name, ct.cnt from CTE_TBL ct
+    inner join Hackers h on h.hacker_id = ct.h_id
+    where ct.cnt = (select max(cnt) from CTE_TBL)
+       or ct.cnt in (select cnt from CTE_TBL 
+                        group by cnt
+                        having count(h_id) = 1)
+    order by ct.cnt desc
