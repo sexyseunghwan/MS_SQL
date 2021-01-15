@@ -762,3 +762,75 @@ drop table #TBL_SH_PRIME
 select * from #TBL_SH_PRIME -- 임시테이블 불러오기
 
 
+create table dbo.WANDS
+(
+	id int identity(1,1) not null,
+	code int not null,
+	coins_needed int not null,
+	power int not null
+)
+
+
+insert into dbo.WANDS values (4,3688,8)
+insert into dbo.WANDS values (3,9365,3)
+insert into dbo.WANDS values (3,7187,10)
+insert into dbo.WANDS values (3,734,8)
+insert into dbo.WANDS values (1,6020,2)
+insert into dbo.WANDS values (2,6773,7)
+insert into dbo.WANDS values (3,9873,9)
+insert into dbo.WANDS values (3,7721,7)
+insert into dbo.WANDS values (1,1647,10)
+insert into dbo.WANDS values (4,504,5)
+insert into dbo.WANDS values (2,7587,5)
+insert into dbo.WANDS values (5,9897,10)
+insert into dbo.WANDS values (3,4651,8)
+insert into dbo.WANDS values (2,5408,1)
+insert into dbo.WANDS values (2,6018,7)
+insert into dbo.WANDS values (4,7710,5)
+insert into dbo.WANDS values (2,8798,7)
+insert into dbo.WANDS values (2,3312,3)
+insert into dbo.WANDS values (4,7651,6)
+insert into dbo.WANDS values (5,5689,3)
+
+select count(*) from dbo.WANDS
+
+
+create table dbo.WANDS_PROPERTY
+(
+	code int not null,
+	age int not null,
+	is_evil int not null
+)
+
+insert into dbo.WANDS_PROPERTY values (1,45,0)
+insert into dbo.WANDS_PROPERTY values (2,40,0)
+insert into dbo.WANDS_PROPERTY values (3,4,1)
+insert into dbo.WANDS_PROPERTY values (4,20,0)
+insert into dbo.WANDS_PROPERTY values (5,17,0)
+
+
+select * from dbo.WANDS
+
+
+
+select w.id,wp.age,w.coins_needed,w.power from dbo.wands w
+    inner join dbo.wands_property wp on w.code = wp.code
+    where wp.is_evil = 0
+    order by w.power desc, wp.age desc 
+
+
+--w.id,wp.age,w.coins_needed,w.power
+
+with CTE_SH_TBL
+as
+(
+	select w.code,w.id,wp.age,min(w.coins_needed),w.power from wands w
+    inner join wands_property wp on w.code = wp.code
+    where wp.is_evil = 0
+	group by w.code,w.id,wp.age,w.power
+)
+
+select * from CTE_SH_TBL
+
+
+
