@@ -833,4 +833,35 @@ as
 select * from CTE_SH_TBL
 
 
+-- select h.hacker_id,h.name from Hackers h
+--     inner join Challenge c on h.hacker
+
+--select hacker_id from Submission s
+
+-- select 
+--     s.submission_id,--제출아이디
+--     h.name,--해커 이름
+--     s.score,-- 해당 제출 아이디로 얻은 점수
+--     s.hacker_id,--해커아이디
+--     s.challenge_id,--도전과제아이디
+--     c.difficulty_level,--난이도 
+--     d.score--난이도 대비 만점 점수
+-- from Submissions s
+--     inner join Challenges c on s.challenge_id = c.challenge_id
+--     inner join Difficulty d on d.difficulty_level = c.difficulty_level
+--     inner join Hackers h on h.hacker_id = s.hacker_id
+-- group by s.challenge_id
+
+with cte_tbl(c_id,s_id,min_score,d_score)
+as
+(
+select s.challenge_id,s.hacker_id,min(s.score),d.score from Submissions s
+    inner join Challenges c on c.challenge_id = s.challenge_id
+    inner join Difficulty d on d.difficulty_level = c.difficulty_level
+    where s.score = d.score
+    group by s.challenge_id,s.hacker_id,d.score
+)    
+select s_id from cte_tbl
+having count(s_id) > 1 
+
 
