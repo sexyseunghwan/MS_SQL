@@ -852,16 +852,233 @@ select * from CTE_SH_TBL
 --     inner join Hackers h on h.hacker_id = s.hacker_id
 -- group by s.challenge_id
 
-with cte_tbl(c_id,s_id,min_score,d_score)
-as
+--with cte_tbl(c_id,s_id,min_score,d_score)
+--as
+--(
+--select s.challenge_id,s.hacker_id,min(s.score),d.score from Submissions s
+--    inner join Challenges c on c.challenge_id = s.challenge_id
+--    inner join Difficulty d on d.difficulty_level = c.difficulty_level
+--    where s.score = d.score
+--    group by s.challenge_id,s.hacker_id,d.score
+--)    
+--select s_id from cte_tbl
+--having count(s_id) > 1 
+
+--inner join 은 항상 교집합인걸 생각하면 편하다 진짜로 ㅋㅋ 쒸발 
+
+select * from CHALLENGES c
+	inner join DIFFICULTY d on c.difficulty_level = d.difficulty_level
+
+
+create table dbo.HACKERS
 (
+	hacker_id int,
+	name varchar(20)
+)
+
+insert into dbo.HACKERS values (5580,'Rose')
+insert into dbo.HACKERS values (8439,'Angela')
+insert into dbo.HACKERS values (27205,'Frank')
+insert into dbo.HACKERS values (52243,'Patrick')
+insert into dbo.HACKERS values (52348,'Lisa')
+insert into dbo.HACKERS values (57645,'Kimberly')
+insert into dbo.HACKERS values (77726,'Bonnie')
+insert into dbo.HACKERS values (83082,'Michael')
+insert into dbo.HACKERS values (86870,'Todd')
+insert into dbo.HACKERS values (90411,'Joe')
+
+
+select * from dbo.HACKERS
+
+
+create table dbo.DIFFICULTY
+(
+	difficulty_level int identity(1,1),
+	score int
+)
+
+insert into dbo.DIFFICULTY values (20)
+insert into dbo.DIFFICULTY values (30)
+insert into dbo.DIFFICULTY values (40)
+insert into dbo.DIFFICULTY values (60)
+insert into dbo.DIFFICULTY values (80)
+insert into dbo.DIFFICULTY values (100)
+insert into dbo.DIFFICULTY values (120)
+
+
+
+select * from dbo.DIFFICULTY
+
+create table dbo.CHALLENGES
+(
+	challenge_id int,
+	hacker_id int,
+	difficulty_level int
+)
+
+insert into dbo.CHALLENGES values (4810,77726,4)
+insert into dbo.CHALLENGES values (21089,27205,1)
+insert into dbo.CHALLENGES values (36566,5580,7)
+insert into dbo.CHALLENGES values (66730,52243,6)
+insert into dbo.CHALLENGES values (71055,52243,2)
+
+
+
+create table dbo.SUBMISSIONS
+(
+	submission_id int,
+	hacker_id int,
+	challenge_id int,
+	score int
+)
+
+insert into dbo.SUBMISSIONS values (68628,77726,36566,30)
+insert into dbo.SUBMISSIONS values (65300,77726,21089,10)
+insert into dbo.SUBMISSIONS values (40326,52243,36566,77)
+insert into dbo.SUBMISSIONS values (8941,27205,4810,4)
+insert into dbo.SUBMISSIONS values (83554,77726,66730,30)
+insert into dbo.SUBMISSIONS values (43353,52243,66730,0)
+insert into dbo.SUBMISSIONS values (55385,52348,71055,20)
+insert into dbo.SUBMISSIONS values (39784,27205,71055,23)
+insert into dbo.SUBMISSIONS values (94613,86870,71055,30)
+insert into dbo.SUBMISSIONS values (45788,52348,36566,0)
+insert into dbo.SUBMISSIONS values (93058,86870,36566,30)
+insert into dbo.SUBMISSIONS values (7344,8439,66730,92)
+insert into dbo.SUBMISSIONS values (2721,8439,4810,36)
+insert into dbo.SUBMISSIONS values (523,5580,71055,4)
+insert into dbo.SUBMISSIONS values (49105,52348,66730,0)
+insert into dbo.SUBMISSIONS values (55877,57645,66730,80)
+insert into dbo.SUBMISSIONS values (38355,27205,66730,35)
+insert into dbo.SUBMISSIONS values (3924,8439,36566,80)
+insert into dbo.SUBMISSIONS values (97397,90411,66730,100)
+insert into dbo.SUBMISSIONS values (84162,83082,4810,40)
+insert into dbo.SUBMISSIONS values (97431,90411,71055,30)
+
+
+
+
+
+
 select s.challenge_id,s.hacker_id,min(s.score),d.score from Submissions s
     inner join Challenges c on c.challenge_id = s.challenge_id
     inner join Difficulty d on d.difficulty_level = c.difficulty_level
     where s.score = d.score
     group by s.challenge_id,s.hacker_id,d.score
-)    
-select s_id from cte_tbl
-having count(s_id) > 1 
+
+
+/*
+select s.challenge_id,s.hacker_id,s.score,d.score from Submissions s
+	inner join Challenges c on c.challenge_id = s.challenge_id
+	inner join Difficulty d on d.difficulty_level = c.difficulty_level
+	 where s.score = d.score
+
+*/
+
+
+go
+
+--	inner join Hackers h on h.hacker_id = s.hacker_id
+
+with cte_tbl(s_id,d_score)
+as
+(
+select s.hacker_id,count(d.score) as cnt from Submissions s
+	inner join Challenges c on c.challenge_id = s.challenge_id
+	inner join Difficulty d on d.difficulty_level = c.difficulty_level
+	 where s.score = d.score
+	 group by s.hacker_id 
+)	 
+select ct.s_id, h.name from cte_tbl ct
+	inner join Hackers h on h.hacker_id = ct.s_id
+where ct.d_score > 1 
+order by ct.d_score desc ,ct.s_id
+
+--(select max(d_score) from cte_tbl)
+
+/*
+정답리스트
+27232 Phillip 
+28614 Willie 
+15719 Christina 
+43892 Roy 
+14246 David 
+14372 Michelle 
+18330 Lawrence 
+26133 Jacqueline 
+26253 John 
+30128 Brandon 
+35583 Norma 
+13944 Victor 
+17295 Elizabeth 
+19076 Matthew 
+26895 Evelyn 
+32172 Jonathan 
+41293 Robin 
+45386 Christina 
+45785 Jesse 
+49652 Christine 
+13391 Robin 
+14366 Donna 
+14777 Gerald 
+16259 Brandon 
+17762 Joseph 
+28275 Debra 
+36228 Nancy 
+37704 Keith 
+40226 Anna 
+49307 Brian 
+12539 Paul 
+14363 Joyce 
+14658 Stephanie 
+19448 Jesse 
+20504 John 
+20534 Martha 
+22196 Anthony 
+23678 Kimberly 
+28299 David 
+30721 Ann 
+32254 Dorothy 
+46205 Joyce 
+47641 Patricia 
+13122 James 
+13762 Gloria 
+14863 Walter 
+18690 Marilyn 
+18983 Lori 
+21212 Timothy 
+25732 Antonio 
+28250 Evelyn 
+30755 Emily 
+38852 Benjamin 
+42052 Andrew 
+44188 Diana 
+48984 Gregory 
+13380 Kelly 
+13523 Ralph 
+21463 Christine 
+24663 Louise 
+26243 Diana 
+26289 Dorothy 
+39277 Charles 
+23278 Paula 
+25184 Martin 
+32121 Dorothy 
+36322 Andrew 
+39782 Tammy 
+40257 James 
+41319 Jean 
+10857 Kevin 
+25238 Paul 
+34242 Marilyn 
+39771 Alan 
+49789 Lillian 
+57947 Justin 
+74413 Harry
+
+*/
+
+
+
+
 
 
