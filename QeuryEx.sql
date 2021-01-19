@@ -102,7 +102,7 @@ insert into dbo.APPLEINC values ('mac book pro 13',1700000);
 insert into dbo.APPLEINC values ('mac book pro 16',2300000);
 
 
-select * from dbo.APPLEINC with(nolock)
+--select * from dbo.APPLEINC with(nolock)
 
 
 
