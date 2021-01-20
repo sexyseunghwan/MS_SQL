@@ -111,6 +111,10 @@ insert into dbo.APPLEINC values ('mac book pro 16',2300000);
 QOOUSERTBLTEST
 
 
+
+
+
+
 create table dbo.QOOUSERTBL
 (
 	idseq int identity(1,1) not null,
@@ -157,3 +161,33 @@ end
 
 exec dbo.insert_tuning '211434329','jacqulineleong@gmail.com','F','SG','203.117.37.215'
 
+--DROP TABLE dbo.SELLER_INFO_TEST
+
+CREATE TABLE dbo.SELLER_INFO_TEST
+(
+	seller_id varchar(100) not null,
+	seller_name varchar(50) not null,
+	seller_grade int not null
+)
+
+insert into dbo.SELLER_INFO_TEST values ('hr6799','harry',1)
+insert into dbo.SELLER_INFO_TEST values ('jh12032','jhone',3)
+insert into dbo.SELLER_INFO_TEST values ('kly9080','kelly',6)
+insert into dbo.SELLER_INFO_TEST values ('mml43','maserti',3)
+insert into dbo.SELLER_INFO_TEST values ('kee123','chyki',5)
+insert into dbo.SELLER_INFO_TEST values ('maeng9','maenha',2)
+insert into dbo.SELLER_INFO_TEST values ('legeno1974','zelda',4)
+insert into dbo.SELLER_INFO_TEST values ('klesin98000','hustler',7)
+insert into dbo.SELLER_INFO_TEST values ('plol1998','polhamer',5)
+insert into dbo.SELLER_INFO_TEST values ('mountain1668','aphelacia',1)
+
+
+select * from dbo.SELLER_INFO_TEST 
+
+--select count(*) from dbo.SELLER_INFO_TEST with(nolock)
+
+SELECT * FROM dbo.SELLER_INFO_TEST WITH(NOLOCK)
+
+ALTER TABLE dbo.SELLER_INFO_TEST ADD CONSTRAINT PK__SELLER_INFO_TEST__SELLER_ID PRIMARY KEY CLUSTERED (seller_id)
+
+--INSERT INTO dbo.SELLER_INFO_TEST VALUES ()
