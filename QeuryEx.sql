@@ -108,12 +108,26 @@ insert into dbo.APPLEINC values ('mac book pro 16',2300000);
 
 
 
-QOOUSERTBLTEST
+--QOOUSERTBLTEST
+
+--drop table dbo.QOO10USER
+
+create table dbo.QOO10USER
+(
+	usercode int identity(1,1) not null,
+	id varchar(100) not null,
+	email varchar(200) null,
+	gender char(1) null,
+	nation char(2) null,
+	ipaddress varchar(200) null
+)
 
 
 
 
+SELECT * FROM dbo.QOO10USER WITH(NOLOCK)
 
+SELECT * FROM dbo.QOOUSERTBL WITH(NOLOCK)
 
 create table dbo.QOOUSERTBL
 (
@@ -130,6 +144,14 @@ alter table dbo.QOOUSERTBL add constraint [PK__QOOUSERTBL__IDSEQ] PRIMARY KEY CL
 create index [IDX__QOOUSERTBL__ID] ON dbo.QOOUSERTBL (id)
 
 select * from dbo.QOOUSERTBL with(nolock)
+
+select email from dbo.QOOUSERTBL with(nolock) where id = 'chinys33'
+
+
+--create index IDX__QOOUSERTBL__ID ON dbo.QOOUSERTBL (id)
+
+--drop index IDX__QOOUSERTBL__NATION on dbo.QOOUSERTBL
+
 
 drop table dbo.QOOUSERTBL
 
@@ -190,4 +212,8 @@ SELECT * FROM dbo.SELLER_INFO_TEST WITH(NOLOCK)
 
 ALTER TABLE dbo.SELLER_INFO_TEST ADD CONSTRAINT PK__SELLER_INFO_TEST__SELLER_ID PRIMARY KEY CLUSTERED (seller_id)
 
---INSERT INTO dbo.SELLER_INFO_TEST VALUES ()
+INSERT INTO dbo.SELLER_INFO_TEST VALUES ('icandoit','mario',1)
+
+INSERT INTO dbo.SELLER_INFO_TEST VALUES ('klfe1654','koku',6)
+
+select * from dbo.SELLER_INFO_TEST
