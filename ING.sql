@@ -11,7 +11,7 @@ set @num = '930823-1058818'
 
 print @num
 -- 010-5139-3792
-
+--
 
 select * from dbo.TBLINSA with(nolock)
 
