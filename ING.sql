@@ -44,6 +44,8 @@ insert into dbo.TBLBUSEO values ('개발부',102)
 insert into dbo.TBLBUSEO values ('개발부',103)
 insert into dbo.TBLBUSEO values ('개발부',104)
 
+insert into dbo.TBLBUSEO values ('개발부',109)
+
 insert into dbo.TBLBUSEO values ('기획부',105)
 insert into dbo.TBLBUSEO values ('기획부',106)
 insert into dbo.TBLBUSEO values ('기획부',107)
