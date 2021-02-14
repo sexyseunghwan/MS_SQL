@@ -1,5 +1,5 @@
 
-
+--public void 
 CREATE TABLE dbo.TBLINSA(
         num INT NOT NULL
        ,name VARCHAR(20) NOT NULL
@@ -17,185 +17,185 @@ CREATE TABLE dbo.TBLINSA(
 ALTER TABLE dbo.TBLINSA ADD CONSTRAINT [PK__TBLINSA__NUM] PRIMARY KEY CLUSTERED (num)  
 
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1001, 'È«±æµ¿', '871212-1022432', '2008-10-11', '¼­¿ï', '011-2356-4528', '±âÈ¹ºÎ',
-   'ºÎÀå', 2610000, 200000);
+  (1001, 'í™ê¸¸ë™', '871212-1022432', '2008-10-11', 'ì„œìš¸', '011-2356-4528', 'ê¸°íšë¶€',
+   'ë¶€ì¥', 2610000, 200000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1002, 'ÀÌ¼ø½Å', '901007-1544236', '2010-11-29', '°æ±â', '010-4758-6532', 'ÃÑ¹«ºÎ',
-   '»ç¿ø', 1320000, 200000);
+  (1002, 'ì´ìˆœì‹ ', '901007-1544236', '2010-11-29', 'ê²½ê¸°', '010-4758-6532', 'ì´ë¬´ë¶€',
+   'ì‚¬ì›', 1320000, 200000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1003, 'ÀÌ¼ø¾Ö', '870922-2312547', '2009-02-25', 'ÀÎÃµ', '010-4231-1236', '°³¹ßºÎ',
-   'ºÎÀå', 2550000, 160000);
+  (1003, 'ì´ìˆœì• ', '870922-2312547', '2009-02-25', 'ì¸ì²œ', '010-4231-1236', 'ê°œë°œë¶€',
+   'ë¶€ì¥', 2550000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1004, '±èÁ¤ÈÆ', '890304-1788896', '2010-10-01', 'ÀüºÏ', '019-5236-4221', '¿µ¾÷ºÎ',
-   '´ë¸®', 1954200, 170000);
+  (1004, 'ê¹€ì •í›ˆ', '890304-1788896', '2010-10-01', 'ì „ë¶', '019-5236-4221', 'ì˜ì—…ë¶€',
+   'ëŒ€ë¦¬', 1954200, 170000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1005, 'ÇÑ¼®ºÀ', '911112-1566789', '2014-08-13', '¼­¿ï', '018-5211-3542', 'ÃÑ¹«ºÎ',
-   '»ç¿ø', 1420000, 160000);
+  (1005, 'í•œì„ë´‰', '911112-1566789', '2014-08-13', 'ì„œìš¸', '018-5211-3542', 'ì´ë¬´ë¶€',
+   'ì‚¬ì›', 1420000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1006, 'ÀÌ±âÀÚ', '880505-2978541', '2012-02-11', 'ÀÎÃµ', '010-3214-5357', '°³¹ßºÎ',
-   '°úÀå', 2265000, 150000);
+  (1006, 'ì´ê¸°ì', '880505-2978541', '2012-02-11', 'ì¸ì²œ', '010-3214-5357', 'ê°œë°œë¶€',
+   'ê³¼ì¥', 2265000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1007, 'ÀåÀÎÃ¶', '880506-1625148', '2008-03-16', 'Á¦ÁÖ', '011-2345-2525', '°³¹ßºÎ',
-   '´ë¸®', 1250000, 150000);
+  (1007, 'ì¥ì¸ì² ', '880506-1625148', '2008-03-16', 'ì œì£¼', '011-2345-2525', 'ê°œë°œë¶€',
+   'ëŒ€ë¦¬', 1250000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1008, '±è¿µ³â', '921011-2362514', '2012-04-30', '¼­¿ï', '016-2222-4444', 'È«º¸ºÎ',
-'»ç¿ø', 950000 , 145000);
+  (1008, 'ê¹€ì˜ë…„', '921011-2362514', '2012-04-30', 'ì„œìš¸', '016-2222-4444', 'í™ë³´ë¶€',
+'ì‚¬ì›', 950000 , 145000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1009, '³ªÀ±±Õ', '910810-1552147', '2013-10-10', '°æ±â', '019-1111-2222', 'ÀÎ»çºÎ',
-   '»ç¿ø', 840000 , 220400);
+  (1009, 'ë‚˜ìœ¤ê· ', '910810-1552147', '2013-10-10', 'ê²½ê¸°', '019-1111-2222', 'ì¸ì‚¬ë¶€',
+   'ì‚¬ì›', 840000 , 220400);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1010, '±èÁ¾¼­', '851010-1122233', '2007-08-08', 'ºÎ»ê', '011-3214-5555', '¿µ¾÷ºÎ',
-   'ºÎÀå', 2540000, 130000);
+  (1010, 'ê¹€ì¢…ì„œ', '851010-1122233', '2007-08-08', 'ë¶€ì‚°', '011-3214-5555', 'ì˜ì—…ë¶€',
+   'ë¶€ì¥', 2540000, 130000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1011, 'À¯°ü¼ø', '901010-2987897', '2010-07-07', '¼­¿ï', '010-8888-4422', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1020000, 140000);
+  (1011, 'ìœ ê´€ìˆœ', '901010-2987897', '2010-07-07', 'ì„œìš¸', '010-8888-4422', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1020000, 140000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1012, 'Á¤ÇÑ±¹', '860909-1333333', '2009-10-16', '°­¿ø', '018-2222-4242', 'È«º¸ºÎ',
-   '»ç¿ø', 880000 , 114000);
+  (1012, 'ì •í•œêµ­', '860909-1333333', '2009-10-16', 'ê°•ì›', '018-2222-4242', 'í™ë³´ë¶€',
+   'ì‚¬ì›', 880000 , 114000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1013, 'Á¶¹Ì¼÷', '890102-2777777', '2008-06-07', '°æ±â', '019-6666-4444', 'È«º¸ºÎ',
-   '´ë¸®', 1601000, 103000);
+  (1013, 'ì¡°ë¯¸ìˆ™', '890102-2777777', '2008-06-07', 'ê²½ê¸°', '019-6666-4444', 'í™ë³´ë¶€',
+   'ëŒ€ë¦¬', 1601000, 103000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1014, 'È²ÁøÀÌ', '910707-2574812', '2012-02-15', 'ÀÎÃµ', '010-3214-5467', '°³¹ßºÎ',
-   '»ç¿ø', 1100000, 130000);
+  (1014, 'í™©ì§„ì´', '910707-2574812', '2012-02-15', 'ì¸ì²œ', '010-3214-5467', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 1100000, 130000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1015, 'ÀÌÇö¼÷', '900606-2954687', '2009-07-26', '°æ±â', '016-2548-3365', 'ÃÑ¹«ºÎ',
-   '»ç¿ø', 1050000, 104000);
+  (1015, 'ì´í˜„ìˆ™', '900606-2954687', '2009-07-26', 'ê²½ê¸°', '016-2548-3365', 'ì´ë¬´ë¶€',
+   'ì‚¬ì›', 1050000, 104000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1016, 'ÀÌ»óÇå', '881010-1666678', '2011-11-29', '°æ±â', '010-4526-1234', '°³¹ßºÎ',
-   '°úÀå', 2350000, 150000);
+  (1016, 'ì´ìƒí—Œ', '881010-1666678', '2011-11-29', 'ê²½ê¸°', '010-4526-1234', 'ê°œë°œë¶€',
+   'ê³¼ì¥', 2350000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1017, '¾ö¿ë¼ö', '920507-1452365', '2010-08-28', 'ÀÎÃµ', '010-3254-2542', '°³¹ßºÎ',
-   '»ç¿ø', 950000 , 210000);
+  (1017, 'ì—„ìš©ìˆ˜', '920507-1452365', '2010-08-28', 'ì¸ì²œ', '010-3254-2542', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 950000 , 210000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1018, 'ÀÌ¼º±æ', '901028-1849534', '2014-08-08', 'ÀüºÏ', '018-1333-3333', '°³¹ßºÎ',
-   '»ç¿ø', 880000 , 123000);
+  (1018, 'ì´ì„±ê¸¸', '901028-1849534', '2014-08-08', 'ì „ë¶', '018-1333-3333', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 880000 , 123000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1019, '¹Ú¹®¼ö', '880710-1985632', '2009-12-10', '¼­¿ï', '017-4747-4848', 'ÀÎ»çºÎ',
-   '°úÀå', 2300000, 165000);
+  (1019, 'ë°•ë¬¸ìˆ˜', '880710-1985632', '2009-12-10', 'ì„œìš¸', '017-4747-4848', 'ì¸ì‚¬ë¶€',
+   'ê³¼ì¥', 2300000, 165000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1020, 'À¯¿µÈñ', '900304-2741258', '2013-10-10', 'Àü³²', '011-9595-8585', 'ÀÚÀçºÎ',
-   '»ç¿ø', 880000 , 140000);
+  (1020, 'ìœ ì˜í¬', '900304-2741258', '2013-10-10', 'ì „ë‚¨', '011-9595-8585', 'ìì¬ë¶€',
+   'ì‚¬ì›', 880000 , 140000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1021, 'È«±æ³²', '901010-1111111', '2011-09-07', '°æ±â', '011-9999-7575', '°³¹ßºÎ',
-   '»ç¿ø', 875000 , 120000);
+  (1021, 'í™ê¸¸ë‚¨', '901010-1111111', '2011-09-07', 'ê²½ê¸°', '011-9999-7575', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 875000 , 120000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1022, 'ÀÌ¿µ¼÷', '900501-2312456', '2013-02-25', 'Àü³²', '017-5214-5282', '±âÈ¹ºÎ',
-   '´ë¸®', 1960000, 180000);
+  (1022, 'ì´ì˜ìˆ™', '900501-2312456', '2013-02-25', 'ì „ë‚¨', '017-5214-5282', 'ê¸°íšë¶€',
+   'ëŒ€ë¦¬', 1960000, 180000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1023, '±èÀÎ¼ö', '831211-1214576', '2005-02-23', '¼­¿ï', NULL           , '¿µ¾÷ºÎ',
-   'ºÎÀå', 2500000, 170000);
+  (1023, 'ê¹€ì¸ìˆ˜', '831211-1214576', '2005-02-23', 'ì„œìš¸', NULL           , 'ì˜ì—…ë¶€',
+   'ë¶€ì¥', 2500000, 170000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1024, '±è¸»ÀÚ', '930225-2633334', '2009-08-28', '¼­¿ï', '011-5248-7789', '±âÈ¹ºÎ',
-   '´ë¸®', 1900000, 170000);
+  (1024, 'ê¹€ë§ì', '930225-2633334', '2009-08-28', 'ì„œìš¸', '011-5248-7789', 'ê¸°íšë¶€',
+   'ëŒ€ë¦¬', 1900000, 170000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1025, '¿ìÀç¿Á', '901103-1654442', '2010-10-01', '¼­¿ï', '010-4563-2587', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1100000, 160000);
+  (1025, 'ìš°ì¬ì˜¥', '901103-1654442', '2010-10-01', 'ì„œìš¸', '010-4563-2587', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1100000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1026, '±è¼÷³²', '910907-2015457', '2012-08-28', '°æ±â', '010-2112-5225', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1050000, 150000);
+  (1026, 'ê¹€ìˆ™ë‚¨', '910907-2015457', '2012-08-28', 'ê²½ê¸°', '010-2112-5225', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1050000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1027, '±è¿µ±æ', '901216-1898752', '2010-10-18', '¼­¿ï', '019-8523-1478', 'ÃÑ¹«ºÎ',
-   '°úÀå', 2340000, 170000);
+  (1027, 'ê¹€ì˜ê¸¸', '901216-1898752', '2010-10-18', 'ì„œìš¸', '019-8523-1478', 'ì´ë¬´ë¶€',
+   'ê³¼ì¥', 2340000, 170000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1028, 'ÀÌ³²½Å', '910101-1010101', '2011-09-07', 'Á¦ÁÖ', '016-1818-4848', 'ÀÎ»çºÎ',
-   '»ç¿ø', 892000 , 110000);
+  (1028, 'ì´ë‚¨ì‹ ', '910101-1010101', '2011-09-07', 'ì œì£¼', '016-1818-4848', 'ì¸ì‚¬ë¶€',
+   'ì‚¬ì›', 892000 , 110000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1029, '±è¸»¼÷', '900301-2020202', '2010-09-08', '¼­¿ï', '016-3535-3636', 'ÃÑ¹«ºÎ',
-   '»ç¿ø', 920000 , 124000);
+  (1029, 'ê¹€ë§ìˆ™', '900301-2020202', '2010-09-08', 'ì„œìš¸', '016-3535-3636', 'ì´ë¬´ë¶€',
+   'ì‚¬ì›', 920000 , 124000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1030, 'Á¤Á¤ÇØ', '890210-2101010', '2009-10-17', 'ºÎ»ê', '019-6564-6752', 'ÃÑ¹«ºÎ',
-   '°úÀå', 2304000, 124000);
+  (1030, 'ì •ì •í•´', '890210-2101010', '2009-10-17', 'ë¶€ì‚°', '019-6564-6752', 'ì´ë¬´ë¶€',
+   'ê³¼ì¥', 2304000, 124000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1031, 'ÁöÀçÈ¯', '871115-1687988', '2011-01-21', '¼­¿ï', '019-5552-7511', '±âÈ¹ºÎ',
-   'ºÎÀå', 2450000, 160000);
+  (1031, 'ì§€ì¬í™˜', '871115-1687988', '2011-01-21', 'ì„œìš¸', '019-5552-7511', 'ê¸°íšë¶€',
+   'ë¶€ì¥', 2450000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1032, '½É½ÉÇØ', '910206-2222222', '2010-05-05', 'ÀüºÏ', '016-8888-7474', 'ÀÚÀçºÎ',
-   '»ç¿ø', 880000 , 108000);
+  (1032, 'ì‹¬ì‹¬í•´', '910206-2222222', '2010-05-05', 'ì „ë¶', '016-8888-7474', 'ìì¬ë¶€',
+   'ì‚¬ì›', 880000 , 108000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1033, '±è¹Ì³ª', '880505-2999999', '2008-06-07', '¼­¿ï', '011-2444-4444', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1020000, 104000);
+  (1033, 'ê¹€ë¯¸ë‚˜', '880505-2999999', '2008-06-07', 'ì„œìš¸', '011-2444-4444', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1020000, 104000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1034, 'ÀÌÁ¤¼®', '920505-1325468', '2015-09-26', '°æ±â', '011-3697-7412', '±âÈ¹ºÎ',
-   '»ç¿ø', 1100000, 160000);
+  (1034, 'ì´ì •ì„', '920505-1325468', '2015-09-26', 'ê²½ê¸°', '011-3697-7412', 'ê¸°íšë¶€',
+   'ì‚¬ì›', 1100000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1035, 'Á¤¿µÈñ', '931010-2153252', '2012-05-16', 'ÀÎÃµ', NULL           , '°³¹ßºÎ',
-   '»ç¿ø', 1050000, 140000);
+  (1035, 'ì •ì˜í¬', '931010-2153252', '2012-05-16', 'ì¸ì²œ', NULL           , 'ê°œë°œë¶€',
+   'ì‚¬ì›', 1050000, 140000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1036, 'ÀÌÀç¿µ', '801126-2852147', '2013-08-10', '¼­¿ï', '011-9999-9999', 'ÀÚÀçºÎ',
-   '»ç¿ø', 960400 , 190000);
+  (1036, 'ì´ì¬ì˜', '801126-2852147', '2013-08-10', 'ì„œìš¸', '011-9999-9999', 'ìì¬ë¶€',
+   'ì‚¬ì›', 960400 , 190000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1037, 'ÃÖ¼®±Ô', '870129-1456987', '2008-10-15', 'ÀÎÃµ', '011-7777-7777', 'È«º¸ºÎ',
-   '°úÀå', 2350000, 187000);
+  (1037, 'ìµœì„ê·œ', '870129-1456987', '2008-10-15', 'ì¸ì²œ', '011-7777-7777', 'í™ë³´ë¶€',
+   'ê³¼ì¥', 2350000, 187000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1038, '¼ÕÀÎ¼ö', '891009-2321456', '2009-11-15', 'ºÎ»ê', '010-6542-7412', '¿µ¾÷ºÎ',
-   '´ë¸®', 2000000, 150000);
+  (1038, 'ì†ì¸ìˆ˜', '891009-2321456', '2009-11-15', 'ë¶€ì‚°', '010-6542-7412', 'ì˜ì—…ë¶€',
+   'ëŒ€ë¦¬', 2000000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1039, '°í¼øÁ¤', '900504-2000032', '2013-12-28', '°æ±â', '010-2587-7895', '¿µ¾÷ºÎ',
-   '´ë¸®', 2010000, 160000);
+  (1039, 'ê³ ìˆœì •', '900504-2000032', '2013-12-28', 'ê²½ê¸°', '010-2587-7895', 'ì˜ì—…ë¶€',
+   'ëŒ€ë¦¬', 2010000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1040, '¹Ú¼¼¿­', '890509-1635214', '2010-09-10', '°æºÏ', '016-4444-7777', 'ÀÎ»çºÎ',
-   '´ë¸®', 2100000, 130000);
+  (1040, 'ë°•ì„¸ì—´', '890509-1635214', '2010-09-10', 'ê²½ë¶', '016-4444-7777', 'ì¸ì‚¬ë¶€',
+   'ëŒ€ë¦¬', 2100000, 130000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1041, '¹®±æ¼ö', '821217-1951357', '2011-12-10', 'Ãæ³²', '016-4444-5555', 'ÀÚÀçºÎ',
-   '°úÀå', 2300000, 150000);
+  (1041, 'ë¬¸ê¸¸ìˆ˜', '821217-1951357', '2011-12-10', 'ì¶©ë‚¨', '016-4444-5555', 'ìì¬ë¶€',
+   'ê³¼ì¥', 2300000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1042, 'Ã¤Á¤Èñ', '910709-2000054', '2013-10-17', '°æ±â', '011-5125-5511', '°³¹ßºÎ',
-   '»ç¿ø', 1020000, 200000);
+  (1042, 'ì±„ì •í¬', '910709-2000054', '2013-10-17', 'ê²½ê¸°', '011-5125-5511', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 1020000, 200000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1043, '¾ç¹Ì¿Á', '930504-2471523', '2013-09-24', '¼­¿ï', '016-8548-6547', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1100000, 210000);
+  (1043, 'ì–‘ë¯¸ì˜¥', '930504-2471523', '2013-09-24', 'ì„œìš¸', '016-8548-6547', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1100000, 210000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1044, 'Áö¼öÈ¯', '920305-1475286', '2014-01-21', '¼­¿ï', '011-5555-7548', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1060000, 220000);
+  (1044, 'ì§€ìˆ˜í™˜', '920305-1475286', '2014-01-21', 'ì„œìš¸', '011-5555-7548', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1060000, 220000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1045, 'È«¿ø½Å', '690906-1985214', '2013-03-16', 'ÀüºÏ', '011-7777-7777', '¿µ¾÷ºÎ',
-   '»ç¿ø', 960000 , 152000);
+  (1045, 'í™ì›ì‹ ', '690906-1985214', '2013-03-16', 'ì „ë¶', '011-7777-7777', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 960000 , 152000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1046, 'Çã°æ¿î', '860105-1458752', '2009-05-04', '°æ³²', '017-3333-3333', 'ÃÑ¹«ºÎ',
-   'ºÎÀå', 2650000, 150000);
+  (1046, 'í—ˆê²½ìš´', '860105-1458752', '2009-05-04', 'ê²½ë‚¨', '017-3333-3333', 'ì´ë¬´ë¶€',
+   'ë¶€ì¥', 2650000, 150000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1047, '»ê¸¶·ç', '880505-1234567', '2011-07-15', '¼­¿ï', '018-0505-0505', '¿µ¾÷ºÎ',
-   '´ë¸®', 2100000, 112000);
+  (1047, 'ì‚°ë§ˆë£¨', '880505-1234567', '2011-07-15', 'ì„œìš¸', '018-0505-0505', 'ì˜ì—…ë¶€',
+   'ëŒ€ë¦¬', 2100000, 112000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1048, 'ÀÌ±â»ó', '890604-1415141', '2011-06-07', 'Àü³²', NULL           , '°³¹ßºÎ',
-   '´ë¸®', 2050000, 106000);
+  (1048, 'ì´ê¸°ìƒ', '890604-1415141', '2011-06-07', 'ì „ë‚¨', NULL           , 'ê°œë°œë¶€',
+   'ëŒ€ë¦¬', 2050000, 106000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1049, 'ÀÌ¹Ì¼º', '930908-2456548', '2010-04-07', 'ÀÎÃµ', '010-6654-8854', '°³¹ßºÎ',
-   '»ç¿ø', 1300000, 130000);
+  (1049, 'ì´ë¯¸ì„±', '930908-2456548', '2010-04-07', 'ì¸ì²œ', '010-6654-8854', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 1300000, 130000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1050, 'ÀÌ¹ÌÀÎ', '910403-2828287', '2013-06-07', '°æ±â', '011-8585-5252', 'È«º¸ºÎ',
-   '´ë¸®', 1950000, 103000);
+  (1050, 'ì´ë¯¸ì¸', '910403-2828287', '2013-06-07', 'ê²½ê¸°', '011-8585-5252', 'í™ë³´ë¶€',
+   'ëŒ€ë¦¬', 1950000, 103000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1051, '±Ç¿µ¹Ì', '890303-2155554', '2010-06-04', '¼­¿ï', '011-5555-7548', '¿µ¾÷ºÎ',
-   '°úÀå', 2260000, 104000);
+  (1051, 'ê¶Œì˜ë¯¸', '890303-2155554', '2010-06-04', 'ì„œìš¸', '011-5555-7548', 'ì˜ì—…ë¶€',
+   'ê³¼ì¥', 2260000, 104000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1052, '±Ç¿Á°æ', '920406-2000456', '2010-10-10', '°æ±â', '010-3644-5577', '±âÈ¹ºÎ',
-   '»ç¿ø', 1020000, 105000);
+  (1052, 'ê¶Œì˜¥ê²½', '920406-2000456', '2010-10-10', 'ê²½ê¸°', '010-3644-5577', 'ê¸°íšë¶€',
+   'ì‚¬ì›', 1020000, 105000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1053, '±è½Ì½Ä', '900715-1313131', '2009-12-12', 'ÀüºÏ', '011-7585-7474', 'ÀÚÀçºÎ',
-   '»ç¿ø', 960000 , 108000);
+  (1053, 'ê¹€ì‹±ì‹', '900715-1313131', '2009-12-12', 'ì „ë¶', '011-7585-7474', 'ìì¬ë¶€',
+   'ì‚¬ì›', 960000 , 108000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1054, 'Á¤»óÈ£', '910705-1212141', '2009-10-16', '°­¿ø', '016-1919-4242', 'È«º¸ºÎ',
-   '»ç¿ø', 980000 , 114000);
+  (1054, 'ì •ìƒí˜¸', '910705-1212141', '2009-10-16', 'ê°•ì›', '016-1919-4242', 'í™ë³´ë¶€',
+   'ì‚¬ì›', 980000 , 114000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1055, 'Á¤ÇÑ³ª', '920506-2425153', '2014-06-07', '¼­¿ï', '016-2424-4242', '¿µ¾÷ºÎ',
-   '»ç¿ø', 1000000, 104000);
+  (1055, 'ì •í•œë‚˜', '920506-2425153', '2014-06-07', 'ì„œìš¸', '016-2424-4242', 'ì˜ì—…ë¶€',
+   'ì‚¬ì›', 1000000, 104000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1056, 'Àü¿ëÀç', '900605-1456987', '2014-08-13', 'ÀÎÃµ', '010-7549-8654', '¿µ¾÷ºÎ',
-   '´ë¸®', 1950000, 200000);
+  (1056, 'ì „ìš©ì¬', '900605-1456987', '2014-08-13', 'ì¸ì²œ', '010-7549-8654', 'ì˜ì—…ë¶€',
+   'ëŒ€ë¦¬', 1950000, 200000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1057, 'ÀÌ¹Ì°æ', '880406-2003214', '2008-02-11', '°æ±â', '016-6542-7546', 'ÀÚÀçºÎ',
-   'ºÎÀå', 2520000, 160000);
+  (1057, 'ì´ë¯¸ê²½', '880406-2003214', '2008-02-11', 'ê²½ê¸°', '016-6542-7546', 'ìì¬ë¶€',
+   'ë¶€ì¥', 2520000, 160000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1058, '±è½ÅÁ¦', '900709-1321456', '2013-08-08', 'ÀÎÃµ', '010-2415-5444', '±âÈ¹ºÎ',
-   '´ë¸®', 1950000, 180000);
+  (1058, 'ê¹€ì‹ ì œ', '900709-1321456', '2013-08-08', 'ì¸ì²œ', '010-2415-5444', 'ê¸°íšë¶€',
+   'ëŒ€ë¦¬', 1950000, 180000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1059, 'ÀÓ¼öºÀ', '910809-2121244', '2011-10-10', '¼­¿ï', '011-4151-4154', '°³¹ßºÎ',
-   '»ç¿ø', 890000 , 102000);
+  (1059, 'ì„ìˆ˜ë´‰', '910809-2121244', '2011-10-10', 'ì„œìš¸', '011-4151-4154', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 890000 , 102000);
 INSERT INTO tblInsa (num, name, ssn, ibsaDate, city, tel, buseo, jikwi, basicPay, sudang) VALUES
-  (1060, '±è½Å¾Ö', '910809-2111111', '2011-10-10', '¼­¿ï', '011-4151-4444', '°³¹ßºÎ',
-   '»ç¿ø', 900000 , 102000);
+  (1060, 'ê¹€ì‹ ì• ', '910809-2111111', '2011-10-10', 'ì„œìš¸', '011-4151-4444', 'ê°œë°œë¶€',
+   'ì‚¬ì›', 900000 , 102000);
 
 
 -----------------------------------------
@@ -219,13 +219,13 @@ SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 end
 
 
-exec dbo.sh_test1 '±âÈ¹ºÎ'
+exec dbo.sh_test1 'ê¸°íšë¶€'
 
 
 
 select * from dbo.TBLINSA with(nolock)
 
---ÀÚ±â ÀÌ¸§ , ºÎ¼­ ÀÌ¸§À» ÀÔ·ÂÇßÀ» °æ¿ì¿¡ ÀÚ±â »ó»çµéÀÌ ³ª¿À°Ô ÇÏ´Â ÇÁ·Î½ÃÀú¸¦ Â¥º¸ÀÚ
+--ìê¸° ì´ë¦„ , ë¶€ì„œ ì´ë¦„ì„ ì…ë ¥í–ˆì„ ê²½ìš°ì— ìê¸° ìƒì‚¬ë“¤ì´ ë‚˜ì˜¤ê²Œ í•˜ëŠ” í”„ë¡œì‹œì €ë¥¼ ì§œë³´ì
 go
 
 
@@ -242,10 +242,10 @@ BEGIN
 SET NOCOUNT ON 
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
 
-declare @empJikwi varchar(15) -- Á÷¿ø ÁöÀ§
+declare @empJikwi varchar(15) -- ì§ì› ì§€ìœ„
 select @empJikwi = jikwi from dbo.TBLINSA with(nolock) where name = @name and buseo = @buseo;
 
-if (@empJikwi='»ç¿ø')
+if (@empJikwi='ì‚¬ì›')
 begin
 	select name,buseo,jikwi from dbo.TBLINSA with (nolock) where buseo = @buseo and jiwi
 end
@@ -258,7 +258,7 @@ end
 
 select * from tblinsa
 
-exec dbo.sangsa 'È«±æµ¿','±âÈ¹ºÎ'
+exec dbo.sangsa 'í™ê¸¸ë™','ê¸°íšë¶€'
 
 go 
 
@@ -324,7 +324,7 @@ select t1.jikwi,t1.buseo from dbo.TBLINSA t1 with(nolock)
 
 select t1.name,t1.basicpay from dbo.TBLINSA t1 with(nolock,index = IDX__TBLINSA__NAME) 
 	inner join dbo.TBLINSA t2 on t1.name = t2.name
-	where t2.name = 'È«±æµ¿'
+	where t2.name = 'í™ê¸¸ë™'
 
 
 
@@ -352,7 +352,7 @@ CREATE INDEX [IDX__TBLINSA__NAME__BASICPAY] ON dbo.TBLINSA (name,basicpay)
 DROP INDEX [IDX__TBLINSA__NAME__BASICPAY] ON dbo.TBLINSA
 
 
---where t1.jikwi = 'ºÎÀå'
+--where t1.jikwi = 'ë¶€ì¥'
 
 
 CREATE INDEX [IDX__TBLINSA__NAME] ON dbo.TBLINSA (name)
@@ -371,7 +371,7 @@ DROP INDEX [IDX__TBLINSA__JIKWI__BUSE__NAME] ON dbo.TBLINSA
 CREATE INDEX [IDX__TBLINSA__JIKWI__BUSE__NAME] ON dbo.TBLINSA (jikwi,buseo,name)
 
 
-select name from dbo.TBLINSA with(nolock) where buseo = '°³¹ßºÎ'
+select name from dbo.TBLINSA with(nolock) where buseo = 'ê°œë°œë¶€'
 
 
 CREATE INDEX [IDX__TBLINSA__BUSEO__NAME] ON dbo.TBLINSA (buseo,name)
@@ -404,11 +404,11 @@ CREATE INDEX [IDX__NISSTAFF__ID__PW] ON dbo.NISSTAFF (id,pw)
 
 --DROP INDEX [IDX__NISSTAFF__ID__PW] ON dbo.NISSTAFF (id,pw)
 
-INSERT INTO dbo.NISSTAFF VALUES ('ssh9308','BY789*798','½Å½ÂÈ¯','¼­¿ï½Ã ¼ÛÆÄ±¸','DEV','MANAGER')
-INSERT INTO dbo.NISSTAFF VALUES ('dsy9206','sy170125','°í¼­À±','°æ±âµµ ³²¾çÁÖ½Ã','MARKETING','STAFF') 
-INSERT INTO dbo.NISSTAFF VALUES ('Iasd8339','ASFHK#$%4345','±è±¸¶ó','¼­¿ï½Ã °­³²±¸','DESIGN','LEADER') 
-INSERT INTO dbo.NISSTAFF VALUES ('asdwr7895','fjkhdj^5i894','°­¸²¿ø','°æ±âµµ ¼º³²½Ã','DEV','STAFF') 
-INSERT INTO dbo.NISSTAFF VALUES ('fhkjd82','287965@#$','°­¿øÁø','°­¿øµµ ¼ÓÃÊ½Ã','DEV','MANAGER') 
+INSERT INTO dbo.NISSTAFF VALUES ('ssh9308','BY789*798','ì‹ ìŠ¹í™˜','ì„œìš¸ì‹œ ì†¡íŒŒêµ¬','DEV','MANAGER')
+INSERT INTO dbo.NISSTAFF VALUES ('dsy9206','sy170125','ê³ ì„œìœ¤','ê²½ê¸°ë„ ë‚¨ì–‘ì£¼ì‹œ','MARKETING','STAFF') 
+INSERT INTO dbo.NISSTAFF VALUES ('Iasd8339','ASFHK#$%4345','ê¹€êµ¬ë¼','ì„œìš¸ì‹œ ê°•ë‚¨êµ¬','DESIGN','LEADER') 
+INSERT INTO dbo.NISSTAFF VALUES ('asdwr7895','fjkhdj^5i894','ê°•ë¦¼ì›','ê²½ê¸°ë„ ì„±ë‚¨ì‹œ','DEV','STAFF') 
+INSERT INTO dbo.NISSTAFF VALUES ('fhkjd82','287965@#$','ê°•ì›ì§„','ê°•ì›ë„ ì†ì´ˆì‹œ','DEV','MANAGER') 
 
 
 SELECT * FROM dbo.NISSTAFF WITH(NOLOCK)
@@ -421,8 +421,8 @@ drop proc dbo.nis_login
 
 create procedure dbo.nis_login
 (
-	@id varchar(20),--¾ÆÀÌµğ
-	@pw varchar(30)--ºñ¹Ğ¹øÈ£
+	@id varchar(20),--ì•„ì´ë””
+	@pw varchar(30)--ë¹„ë°€ë²ˆí˜¸
 )
 AS
 BEGIN
@@ -440,13 +440,13 @@ select count(*) as staffcount from dbo.NISSTAFF with(nolock) where id = 'admin' 
 
 SELECT * FROM dbo.NISSTAFF WITH(NOLOCK)
 
-INSERT INTO dbo.NISSTAFF VALUES ('admin','1234','°ü¸®ÀÚ','¼­¿ï ¼ÛÆÄ±¸','DEV','STAFF')
+INSERT INTO dbo.NISSTAFF VALUES ('admin','1234','ê´€ë¦¬ì','ì„œìš¸ ì†¡íŒŒêµ¬','DEV','STAFF')
 
 go
 
 create procedure dbo.nis_staff_info
 (
-	@id varchar(20)--¾ÆÀÌµğ
+	@id varchar(20)--ì•„ì´ë””
 )
 AS
 BEGIN
@@ -461,12 +461,12 @@ exec dbo.nis_staff_info 'ssh9308'
 
 select * from dbo.NISSTAFF with(nolock)
 
---exec dbo.nis_login 'ssh9308','BY789¤§*798'
+--exec dbo.nis_login 'ssh9308','BY789ã„·*798'
 
 
 drop table dbo.TBLIP
 
---¾ÆÀÌÇÇ ·Î±× Å×ÀÌºí »ı¼º
+--ì•„ì´í”¼ ë¡œê·¸ í…Œì´ë¸” ìƒì„±
 CREATE TABLE dbo.TBLIP
 (
 	seq int identity(1,1) not null,
@@ -479,11 +479,11 @@ select * from dbo.TBLIP
 
 ALTER TABLE dbo.TBLIP ADD CONSTRAINT PK__TBLIP__SEQ PRIMARY KEY CLUSTERED (seq)
 
---Á¢±ÙÇÏÁö ¸øÇÒ ¾ÆÀÌÇÇ ¸®½ºÆ® »ı¼º
+--ì ‘ê·¼í•˜ì§€ ëª»í•  ì•„ì´í”¼ ë¦¬ìŠ¤íŠ¸ ìƒì„±
 CREATE TABLE dbo.BANEDIP
 (
 	seq int identity(1,1) not null,--pk
-	banned_ip_number varchar(100) not null--µé¾î¿ÀÁö ¸øÇÏ°ÔÇÒ ip
+	banned_ip_number varchar(100) not null--ë“¤ì–´ì˜¤ì§€ ëª»í•˜ê²Œí•  ip
 )
 
 ALTER TABLE dbo.BANEDIP ADD CONSTRAINT PK__BANEDIP__SEQ PRIMARY KEY CLUSTERED (seq)
@@ -500,7 +500,7 @@ drop proc dbo.nis_banned_ip
 
 create procedure dbo.nis_banned_ip
 (
-	@banned_ip_number varchar(100)--ÀÔ·Â ¾ÆÀÌÇÇ
+	@banned_ip_number varchar(100)--ì…ë ¥ ì•„ì´í”¼
 )
 AS
 BEGIN
@@ -524,10 +524,10 @@ drop procedure dbo.nis_ip_log
 go
 
 
--- ¾ÆÀÌÇÇ ·Î±× È®ÀÎÇÏ´Â ÇÁ·Î½ÃÀú
+-- ì•„ì´í”¼ ë¡œê·¸ í™•ì¸í•˜ëŠ” í”„ë¡œì‹œì €
 create procedure dbo.nis_ip_log
 (
-	@ip varchar(100)--¾ÆÀÌÇÇ¹øÈ£
+	@ip varchar(100)--ì•„ì´í”¼ë²ˆí˜¸
 )
 AS
 BEGIN
@@ -558,14 +558,14 @@ DROP TABLE dbo.BUYTBL
 
 CREATE TABLE dbo.USERTBL 
 ( 
-	userid char(8) NOT NULL,--»ç¿ëÀÚ ¾ÆÀÌµğ 
-	name varchar(20) NOT NULL,--ÀÌ¸§ 
-	birthday int NOT NULL,--Ãâ»ı³âµµ 
-	nation char(2) NOT NULL,--Ãâ»ı±¹°¡ 
-	mobile1 char(3),--ÈŞ´ëÆùÀÇ ±¹¹ø 
-	mobile2 char(8),--ÈŞ´ëÆùÀÇ ³ª¸ÓÁö ÀüÈ­¹øÈ£(ÇÏÀÌÇÂ Á¦¿Ü) 
-	height smallint,--Å° 
-	mdate date--È¸¿ø °¡ÀÔÀÏ 
+	userid char(8) NOT NULL,--ì‚¬ìš©ì ì•„ì´ë”” 
+	name varchar(20) NOT NULL,--ì´ë¦„ 
+	birthday int NOT NULL,--ì¶œìƒë…„ë„ 
+	nation char(2) NOT NULL,--ì¶œìƒêµ­ê°€ 
+	mobile1 char(3),--íœ´ëŒ€í°ì˜ êµ­ë²ˆ 
+	mobile2 char(8),--íœ´ëŒ€í°ì˜ ë‚˜ë¨¸ì§€ ì „í™”ë²ˆí˜¸(í•˜ì´í”ˆ ì œì™¸) 
+	height smallint,--í‚¤ 
+	mdate date--íšŒì› ê°€ì…ì¼ 
 	
 	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid) 
 );
@@ -618,33 +618,33 @@ drop table dbo.USERTBL
 
 CREATE TABLE dbo.USERTBL 
 ( 
-	userid char(8) NOT NULL,--»ç¿ëÀÚ ¾ÆÀÌµğ 
-	name varchar(20) NOT NULL,--ÀÌ¸§ 
-	birthday int NOT NULL,--Ãâ»ı³âµµ 
-	nation char(2) NOT NULL,--Ãâ»ı±¹°¡ 
-	mobile1 char(3) NULL,--ÈŞ´ëÆùÀÇ ±¹¹ø 
-	mobile2 char(8) NULL,--ÈŞ´ëÆùÀÇ ³ª¸ÓÁö ÀüÈ­¹øÈ£(ÇÏÀÌÇÂ Á¦¿Ü) 
-	height smallint NULL,--Å° 
-	mdate date NULL--È¸¿ø °¡ÀÔÀÏ 
+	userid char(8) NOT NULL,--ì‚¬ìš©ì ì•„ì´ë”” 
+	name varchar(20) NOT NULL,--ì´ë¦„ 
+	birthday int NOT NULL,--ì¶œìƒë…„ë„ 
+	nation char(2) NOT NULL,--ì¶œìƒêµ­ê°€ 
+	mobile1 char(3) NULL,--íœ´ëŒ€í°ì˜ êµ­ë²ˆ 
+	mobile2 char(8) NULL,--íœ´ëŒ€í°ì˜ ë‚˜ë¨¸ì§€ ì „í™”ë²ˆí˜¸(í•˜ì´í”ˆ ì œì™¸) 
+	height smallint NULL,--í‚¤ 
+	mdate date NULL--íšŒì› ê°€ì…ì¼ 
 	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid) 
 );
 
-INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL ¿¡ µ¥ÀÌÅÍ ÇÏ³ª »ğÀÔ
+INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL ì— ë°ì´í„° í•˜ë‚˜ ì‚½ì…
 
 CREATE TABLE dbo.BUYTBL 
 ( 
-	num int IDENTITY(1,1) NOT NULL,--¼ø¹ø(pk) 
-	userid char(8) NOT NULL,--¾ÆÀÌµğ(fk) 
-	prodname varchar(10) NOT NULL,--¹°Ç°¸í 
-	groupname varchar(10) NULL,--ºĞ·ù 
-	price int NOT NULL,--´Ü°¡ 
-	amount smallint NOT NULL--¼ö·® 
+	num int IDENTITY(1,1) NOT NULL,--ìˆœë²ˆ(pk) 
+	userid char(8) NOT NULL,--ì•„ì´ë””(fk) 
+	prodname varchar(10) NOT NULL,--ë¬¼í’ˆëª… 
+	groupname varchar(10) NULL,--ë¶„ë¥˜ 
+	price int NOT NULL,--ë‹¨ê°€ 
+	amount smallint NOT NULL--ìˆ˜ëŸ‰ 
 	CONSTRAINT FK__BUYTBL__USERTBL__USERID 
 		FOREIGN KEY (userid) REFERENCES dbo.USERTBL (userid) 
 		ON UPDATE CASCADE 
 )
 
-INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL ¿¡ Á¸ÀçÇÏ´Â ID¸¦ REFERENCES 
+INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL ì— ì¡´ì¬í•˜ëŠ” IDë¥¼ REFERENCES 
 
 UPDATE dbo.USERTBL SET userid = 'ssh9301' where userid = 'ssh9308' 
 
@@ -658,41 +658,41 @@ DROP TABLE dbo.USERTBL
 
 CREATE TABLE dbo.USERTBL
 (
-	userid char(8) NOT NULL,--»ç¿ëÀÚ ¾ÆÀÌµğ
-	name varchar(20) NOT NULL,--ÀÌ¸§
-	birthday int NOT NULL,--Ãâ»ı³âµµ
-	nation char(2) NOT NULL,--Ãâ»ı±¹°¡
-	mobile1 char(3) NULL,--ÈŞ´ëÆùÀÇ ±¹¹ø
-	mobile2 char(8) NULL,--ÈŞ´ëÆùÀÇ ³ª¸ÓÁö ÀüÈ­¹øÈ£(ÇÏÀÌÇÂ Á¦¿Ü)
-	height smallint NULL,--Å°
-	mdate date NULL--È¸¿ø °¡ÀÔÀÏ
+	userid char(8) NOT NULL,--ì‚¬ìš©ì ì•„ì´ë””
+	name varchar(20) NOT NULL,--ì´ë¦„
+	birthday int NOT NULL,--ì¶œìƒë…„ë„
+	nation char(2) NOT NULL,--ì¶œìƒêµ­ê°€
+	mobile1 char(3) NULL,--íœ´ëŒ€í°ì˜ êµ­ë²ˆ
+	mobile2 char(8) NULL,--íœ´ëŒ€í°ì˜ ë‚˜ë¨¸ì§€ ì „í™”ë²ˆí˜¸(í•˜ì´í”ˆ ì œì™¸)
+	height smallint NULL,--í‚¤
+	mdate date NULL--íšŒì› ê°€ì…ì¼
 	CONSTRAINT PK__USERTBL__USERID PRIMARY KEY (userid)
 );
 
-INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL ¿¡ µ¥ÀÌÅÍ ÇÏ³ª »ğÀÔ
+INSERT INTO dbo.USERTBL VALUES ('ssh9308','ssh',1993,'KR','010','51393792',180,'2020-01-01') -- USERTBL ì— ë°ì´í„° í•˜ë‚˜ ì‚½ì…
 
 CREATE TABLE dbo.BUYTBL
 (
-	num int IDENTITY(1,1) NOT NULL,--¼ø¹ø(pk)
-	userid char(8) NOT NULL,--¾ÆÀÌµğ(fk)
-	prodname varchar(10) NOT NULL,--¹°Ç°¸í
-	groupname varchar(10) NULL,--ºĞ·ù
-	price int NOT NULL,--´Ü°¡
-	amount smallint NOT NULL--¼ö·®
+	num int IDENTITY(1,1) NOT NULL,--ìˆœë²ˆ(pk)
+	userid char(8) NOT NULL,--ì•„ì´ë””(fk)
+	prodname varchar(10) NOT NULL,--ë¬¼í’ˆëª…
+	groupname varchar(10) NULL,--ë¶„ë¥˜
+	price int NOT NULL,--ë‹¨ê°€
+	amount smallint NOT NULL--ìˆ˜ëŸ‰
 	CONSTRAINT FK__BUYTBL__USERTBL__USERID
 		FOREIGN KEY (userid) REFERENCES dbo.USERTBL (userid)
 		ON DELETE CASCADE
 );
 
-INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL ¿¡ Á¸ÀçÇÏ´Â ID¸¦ REFERENCES 
+INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL ì— ì¡´ì¬í•˜ëŠ” IDë¥¼ REFERENCES 
 
-DELETE FROM dbo.USERTBL WHERE userid = 'ssh9308' -- USERTBL ¿¡ Á¸ÀçÇÏ´Â ÇÑÇàÀÇ µ¥ÀÌÅÍ »èÁ¦
+DELETE FROM dbo.USERTBL WHERE userid = 'ssh9308' -- USERTBL ì— ì¡´ì¬í•˜ëŠ” í•œí–‰ì˜ ë°ì´í„° ì‚­ì œ
 
 
 SELECT * FROM dbo.BUYTBL WITH(NOLOCK)
 
 
---ÀÓ½ÃÅ×ÀÌºí ¼³Á¤
+--ì„ì‹œí…Œì´ë¸” ì„¤ì •
 CREATE TABLE #TBL_SH_PRIME
 (
     seq int identity(1,1) not null,
@@ -701,7 +701,7 @@ CREATE TABLE #TBL_SH_PRIME
 
 CREATE PROCEDURE dbo.sh_prime_test 
 ( 
-    @input_num int--sp ÆÄ¶ó¹ÌÅÍ : upper bound 
+    @input_num int--sp íŒŒë¼ë¯¸í„° : upper bound 
 ) 
 as 
 begin 
@@ -716,7 +716,7 @@ begin
             insert into #TBL_SH_PRIME values (@num) 
         end 
          
-        -- ÇÁ·Î½ÃÀú »ı¼ºÇÒ °æ¿ì(ÁØÇ¥) °Ë¼ö ÇÒ °æ¿ì Áß¿äÇÑ°Í UPDATE INSERT DELETE ±¸¹® Á÷ÈÄ¿¡´Â ERROR Ã³¸®¸¦ ¹İµå½Ã ÇØÁà¾ß ÇÑ´Ù.
+        -- í”„ë¡œì‹œì € ìƒì„±í•  ê²½ìš°(ì¤€í‘œ) ê²€ìˆ˜ í•  ê²½ìš° ì¤‘ìš”í•œê²ƒ UPDATE INSERT DELETE êµ¬ë¬¸ ì§í›„ì—ëŠ” ERROR ì²˜ë¦¬ë¥¼ ë°˜ë“œì‹œ í•´ì¤˜ì•¼ í•œë‹¤.
 	if @@error <> 0 
 	begin 
 		return -1 
@@ -730,7 +730,7 @@ drop proc dbo.sh_prime_test
 
 CREATE PROCEDURE dbo.sh_prime_test 
 ( 
-    @input_num int--sp ÆÄ¶ó¹ÌÅÍ : upper bound 
+    @input_num int--sp íŒŒë¼ë¯¸í„° : upper bound 
 ) 
 as 
 begin 
@@ -745,7 +745,7 @@ begin
             insert into #TBL_SH_PRIME values (@num) 
         end 
          
-        -- ÇÁ·Î½ÃÀú »ı¼ºÇÒ °æ¿ì(ÁØÇ¥) °Ë¼ö ÇÒ °æ¿ì Áß¿äÇÑ°Í UPDATE INSERT DELETE ±¸¹® Á÷ÈÄ¿¡´Â ERROR Ã³¸®¸¦ ¹İµå½Ã ÇØÁà¾ß ÇÑ´Ù.
+        -- í”„ë¡œì‹œì € ìƒì„±í•  ê²½ìš°(ì¤€í‘œ) ê²€ìˆ˜ í•  ê²½ìš° ì¤‘ìš”í•œê²ƒ UPDATE INSERT DELETE êµ¬ë¬¸ ì§í›„ì—ëŠ” ERROR ì²˜ë¦¬ë¥¼ ë°˜ë“œì‹œ í•´ì¤˜ì•¼ í•œë‹¤.
 	if @@error <> 0 
 	begin 
 		return -1 
@@ -755,11 +755,11 @@ begin
 end;
 
 
-exec dbo.sh_prime_test 1000 -- 1000 º¸´Ù ÀÛÀº Á¤¼öÁß ¼Ò¼öÀÎ ¼ıÀÚ¸¦ ¸ğµÎ ÀÓ½ÃÅ×ÀÌºí¿¡ ³Ö¾îÁØ´Ù.
+exec dbo.sh_prime_test 1000 -- 1000 ë³´ë‹¤ ì‘ì€ ì •ìˆ˜ì¤‘ ì†Œìˆ˜ì¸ ìˆ«ìë¥¼ ëª¨ë‘ ì„ì‹œí…Œì´ë¸”ì— ë„£ì–´ì¤€ë‹¤.
 
 drop table #TBL_SH_PRIME
 
-select * from #TBL_SH_PRIME -- ÀÓ½ÃÅ×ÀÌºí ºÒ·¯¿À±â
+select * from #TBL_SH_PRIME -- ì„ì‹œí…Œì´ë¸” ë¶ˆëŸ¬ì˜¤ê¸°
 
 
 create table dbo.WANDS
@@ -839,13 +839,13 @@ select * from CTE_SH_TBL
 --select hacker_id from Submission s
 
 -- select 
---     s.submission_id,--Á¦Ãâ¾ÆÀÌµğ
---     h.name,--ÇØÄ¿ ÀÌ¸§
---     s.score,-- ÇØ´ç Á¦Ãâ ¾ÆÀÌµğ·Î ¾òÀº Á¡¼ö
---     s.hacker_id,--ÇØÄ¿¾ÆÀÌµğ
---     s.challenge_id,--µµÀü°úÁ¦¾ÆÀÌµğ
---     c.difficulty_level,--³­ÀÌµµ 
---     d.score--³­ÀÌµµ ´ëºñ ¸¸Á¡ Á¡¼ö
+--     s.submission_id,--ì œì¶œì•„ì´ë””
+--     h.name,--í•´ì»¤ ì´ë¦„
+--     s.score,-- í•´ë‹¹ ì œì¶œ ì•„ì´ë””ë¡œ ì–»ì€ ì ìˆ˜
+--     s.hacker_id,--í•´ì»¤ì•„ì´ë””
+--     s.challenge_id,--ë„ì „ê³¼ì œì•„ì´ë””
+--     c.difficulty_level,--ë‚œì´ë„ 
+--     d.score--ë‚œì´ë„ ëŒ€ë¹„ ë§Œì  ì ìˆ˜
 -- from Submissions s
 --     inner join Challenges c on s.challenge_id = c.challenge_id
 --     inner join Difficulty d on d.difficulty_level = c.difficulty_level
@@ -864,7 +864,7 @@ select * from CTE_SH_TBL
 --select s_id from cte_tbl
 --having count(s_id) > 1 
 
---inner join Àº Ç×»ó ±³ÁıÇÕÀÎ°É »ı°¢ÇÏ¸é ÆíÇÏ´Ù ÁøÂ¥·Î ¤»¤» ¾¯¹ß 
+--inner join ì€ í•­ìƒ êµì§‘í•©ì¸ê±¸ ìƒê°í•˜ë©´ í¸í•˜ë‹¤ ì§„ì§œë¡œ ã…‹ã…‹ ì’¸ë°œ 
 
 select * from CHALLENGES c
 	inner join DIFFICULTY d on c.difficulty_level = d.difficulty_level
@@ -994,6 +994,88 @@ where ct.d_score > 1
 order by ct.d_score desc ,ct.s_id
 
 
+<<<<<<< HEAD
+=======
+/*
+ì •ë‹µë¦¬ìŠ¤íŠ¸
+27232 Phillip 
+28614 Willie 
+15719 Christina 
+43892 Roy 
+14246 David 
+14372 Michelle 
+18330 Lawrence 
+26133 Jacqueline 
+26253 John 
+30128 Brandon 
+35583 Norma 
+13944 Victor 
+17295 Elizabeth 
+19076 Matthew 
+26895 Evelyn 
+32172 Jonathan 
+41293 Robin 
+45386 Christina 
+45785 Jesse 
+49652 Christine 
+13391 Robin 
+14366 Donna 
+14777 Gerald 
+16259 Brandon 
+17762 Joseph 
+28275 Debra 
+36228 Nancy 
+37704 Keith 
+40226 Anna 
+49307 Brian 
+12539 Paul 
+14363 Joyce 
+14658 Stephanie 
+19448 Jesse 
+20504 John 
+20534 Martha 
+22196 Anthony 
+23678 Kimberly 
+28299 David 
+30721 Ann 
+32254 Dorothy 
+46205 Joyce 
+47641 Patricia 
+13122 James 
+13762 Gloria 
+14863 Walter 
+18690 Marilyn 
+18983 Lori 
+21212 Timothy 
+25732 Antonio 
+28250 Evelyn 
+30755 Emily 
+38852 Benjamin 
+42052 Andrew 
+44188 Diana 
+48984 Gregory 
+13380 Kelly 
+13523 Ralph 
+21463 Christine 
+24663 Louise 
+26243 Diana 
+26289 Dorothy 
+39277 Charles 
+23278 Paula 
+25184 Martin 
+32121 Dorothy 
+36322 Andrew 
+39782 Tammy 
+40257 James 
+41319 Jean 
+10857 Kevin 
+25238 Paul 
+34242 Marilyn 
+39771 Alan 
+49789 Lillian 
+57947 Justin 
+74413 Harry
+>>>>>>> 04a745c8959dd38c13f1459e3c037b8918246746
 
 SELECT COUNT(*) FROM dbo.APPLEBUYTBL WITH(NOLOCK)
 --APPLEBUYTBL
