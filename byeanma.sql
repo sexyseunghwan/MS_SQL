@@ -689,7 +689,7 @@ INSERT INTO dbo.BUYTBL VALUES ('ssh9308','ps5','sony',500000,1) -- USERTBL 에 존
 DELETE FROM dbo.USERTBL WHERE userid = 'ssh9308' -- USERTBL 에 존재하는 한행의 데이터 삭제
 
 
-
+SELECT * FROM dbo.BUYTBL WITH(NOLOCK)
 
 
 --임시테이블 설정
@@ -993,92 +993,104 @@ select ct.s_id, h.name from cte_tbl ct
 where ct.d_score > 1 
 order by ct.d_score desc ,ct.s_id
 
---(select max(d_score) from cte_tbl)
 
-/*
-정답리스트
-27232 Phillip 
-28614 Willie 
-15719 Christina 
-43892 Roy 
-14246 David 
-14372 Michelle 
-18330 Lawrence 
-26133 Jacqueline 
-26253 John 
-30128 Brandon 
-35583 Norma 
-13944 Victor 
-17295 Elizabeth 
-19076 Matthew 
-26895 Evelyn 
-32172 Jonathan 
-41293 Robin 
-45386 Christina 
-45785 Jesse 
-49652 Christine 
-13391 Robin 
-14366 Donna 
-14777 Gerald 
-16259 Brandon 
-17762 Joseph 
-28275 Debra 
-36228 Nancy 
-37704 Keith 
-40226 Anna 
-49307 Brian 
-12539 Paul 
-14363 Joyce 
-14658 Stephanie 
-19448 Jesse 
-20504 John 
-20534 Martha 
-22196 Anthony 
-23678 Kimberly 
-28299 David 
-30721 Ann 
-32254 Dorothy 
-46205 Joyce 
-47641 Patricia 
-13122 James 
-13762 Gloria 
-14863 Walter 
-18690 Marilyn 
-18983 Lori 
-21212 Timothy 
-25732 Antonio 
-28250 Evelyn 
-30755 Emily 
-38852 Benjamin 
-42052 Andrew 
-44188 Diana 
-48984 Gregory 
-13380 Kelly 
-13523 Ralph 
-21463 Christine 
-24663 Louise 
-26243 Diana 
-26289 Dorothy 
-39277 Charles 
-23278 Paula 
-25184 Martin 
-32121 Dorothy 
-36322 Andrew 
-39782 Tammy 
-40257 James 
-41319 Jean 
-10857 Kevin 
-25238 Paul 
-34242 Marilyn 
-39771 Alan 
-49789 Lillian 
-57947 Justin 
-74413 Harry
 
-*/
+SELECT COUNT(*) FROM dbo.APPLEBUYTBL WITH(NOLOCK)
+--APPLEBUYTBL
+--APPLEINC
+--QOO10USER
+
+SELECT * FROM dbo.QOO10USER WITH(NOLOCK) 
+
+
+CREATE TABLE dbo.BANKBOOK
+(
+	uname nvarchar(10),
+	umoney int
+)
+
+ALTER TABLE dbo.BANKBOOK ADD CONSTRAINT CK__BANKBOOK__UMONEY CHECK(umoney >= 0)
+
+INSERT INTO dbo.BANKBOOK VALUES (N'구매자',1000);
+INSERT INTO dbo.BANKBOOK VALUES (N'판매자',0);
+
+
+UPDATE dbo.BANKBOOK SET umoney = umoney - 500 WHERE uname = N'구매자'
+UPDATE dbo.BANKBOOK SET umoney = umoney + 500 WHERE uname = N'판매자'
+
+
+UPDATE dbo.BANKBOOK SET umoney = umoney - 600 WHERE uname = N'구매자'
+UPDATE dbo.BANKBOOK SET umoney = 500 WHERE uname = N'판매자'
+
+
+BEGIN TRAN 
+	UPDATE dbo.BANKBOOK SET umoney = umoney - 600 WHERE uname = N'구매자'
+	UPDATE dbo.BANKBOOK SET umoney = umoney + 600 WHERE uname = N'판매자'
+COMMIT TRAN
+
+
+SELECT * FROM dbo.BANKBOOK WITH(NOLOCK)
+
+
+BEGIN TRY
+	BEGIN TRAN
+		UPDATE dbo.BANKBOOK SET umoney = umoney - 600 WHERE uname = N'구매자'
+		UPDATE dbo.BANKBOOK SET umoney = umoney + 600 WHERE uname = N'판매자'
+	COMMIT TRAN
+END TRY
+BEGIN CATCH
+	ROLLBACK TRAN
+END CATCH
 
 
 
+UPDATE dbo.BANKBOOK SET umoney = umoney - 600 WHERE uname = N'구매자'
+UPDATE dbo.BANKBOOK SET umoney = umoney + 600 WHERE uname = N'판매자'
+
+UPDATE dbo.BANKBOOK SET umoney = umoney - 600 WHERE uname = N'구매자'
+PRINT(@@ERROR)
+
+
+if (@@ERROR > 1)
+BEGIN
+	ROLLBACK TRAN
+END
+
+
+CREATE TABLE dbo.TEST1 (num int)
+CREATE TABLE dbo.TEST2 (num int)
+
+INSERT INTO dbo.TEST1 VALUES (1)
+INSERT INTO dbo.TEST2 VALUES (2)
+
+SAVE TRAN [tranPoint1]
+BEGIN TRAN
+	UPDATE dbo.TEST1 SET num = 111;
+	SAVE TRAN [tranPoint2]
+	BEGIN TRAN 
+		UPDATE dbo.TEST2 SET num = 222
+		SELECT * FROM dbo.TEST1;
+		SELECT * FROM dbo.TEST2;
+	ROLLBACK TRAN [tranPoint2]
+	SELECT * FROM dbo.TEST1;
+	SELECT * FROM dbo.TEST2;
+ROLLBACK TRAN [tranPoint1]
+
+SELECT * FROM dbo.TEST1;
+SELECT * FROM dbo.TEST2;
 
 
 
+BEGIN TRAN
+	UPDATE dbo.TEST1 SET num = 111;
+ROLLBACK TRAN
+
+DROP TABLE dbo.TEST4
+
+
+CREATE TABLE dbo.TEST4 (num int)
+
+
+insert into dbo.TEST4 values (3)
+
+SELECT * FROM dbo.TEST4 WITH(NOLOCK)
