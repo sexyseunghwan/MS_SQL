@@ -419,87 +419,87 @@ CREATE INDEX IDX__APPLEBUYTBL__BUYDATE ON dbo.APPLEBUYTBL (buydate)
 --exec dbo.sh_test_tuning 777,'airpod 1th','2016-08-07','2018-08-07' -- 777번호의 회원이 airpod 1th를 2016-08-07 ~ 2018-08-07 사이에 구매한적 있는지 확인하는 데이터
 
 
-drop proc dbo.sh_test_tuning_basic
+--drop proc dbo.sh_test_tuning_basic
 
-CREATE PROC dbo.sh_test_tuning_basic
-( 
-	@userseq int,--회원 고유코드 
-	@prodname varchar(100), -- 상품이름 
-	@start_dt datetime, -- 시작날짜 
-	@end_dt datetime -- 끝 날짜 
-) 
-AS 
-BEGIN 
-    set nocount on  
-    set transaction isolation level read uncommitted 
+--CREATE PROC dbo.sh_test_tuning_basic
+--( 
+--	@userseq int,--회원 고유코드 
+--	@prodname varchar(100), -- 상품이름 
+--	@start_dt datetime, -- 시작날짜 
+--	@end_dt datetime -- 끝 날짜 
+--) 
+--AS 
+--BEGIN 
+--    set nocount on  
+--    set transaction isolation level read uncommitted 
 	
-	select  
-		ac.prodname, 
-		qu.id, 
-		ac.price, 
-		ab.quantity, 
-		ab.buydate, 
-		ab.quantity*ac.price as totalprice 
-	from dbo.QOO10USER qu with(nolock) 
-	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
-	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial 
-	where qu.usercode = @userseq and ac.prodname = @prodname and ab.buydate between @start_dt and @end_dt 
-END
+--	select  
+--		ac.prodname, 
+--		qu.id, 
+--		ac.price, 
+--		ab.quantity, 
+--		ab.buydate, 
+--		ab.quantity*ac.price as totalprice 
+--	from dbo.QOO10USER qu with(nolock) 
+--	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
+--	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial 
+--	where qu.usercode = @userseq and ac.prodname = @prodname and ab.buydate between @start_dt and @end_dt 
+--END
 
 
---어떤 고객이 가장 많은 지출을 했나
+----어떤 고객이 가장 많은 지출을 했나
 	
-	with cte_sh_test(ac_prodname,qu_id,ac_price,ab_quantity,ab_buydate)
-	as
-	(
-		select  
-			ac.prodname, 
-			qu.id, 
-			ac.price, 
-			ab.quantity, 
-			ab.buydate 
-		from dbo.QOO10USER qu with(nolock) 
-		inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
-		inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial
-	)
+--	with cte_sh_test(ac_prodname,qu_id,ac_price,ab_quantity,ab_buydate)
+--	as
+--	(
+--		select  
+--			ac.prodname, 
+--			qu.id, 
+--			ac.price, 
+--			ab.quantity, 
+--			ab.buydate 
+--		from dbo.QOO10USER qu with(nolock) 
+--		inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
+--		inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial
+--	)
 
 
 
-	select  
-			qu.id,
-			--ac.prodname,
-			--ac.price, 
-			--ab.quantity, 
-			--ab.buydate
-			sum(ac.price*ab.quantity) as totalsum
-		from dbo.QOO10USER qu with(nolock) 
-		inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
-		inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial
-	where ab.buydate between '2015-01-01' and '2019-01-01'
-	group by qu.id
-	order by totalsum desc
-	
-	
+--	select  
+--			qu.id,
+--			--ac.prodname,
+--			--ac.price, 
+--			--ab.quantity, 
+--			--ab.buydate
+--			sum(ac.price*ab.quantity) as totalsum
+--		from dbo.QOO10USER qu with(nolock) 
+--		inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
+--		inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial
+--	where ab.buydate between '2015-01-01' and '2019-01-01'
+--	group by qu.id
+--	order by totalsum desc
 	
 	
-	--and qu_id = (select 
-	--																			top 1 qu_id
-	--																	from cte_sh_test
-	--																	where ab_buydate between '2015-01-01' and '2019-01-01'
-	--																	group by qu_id
-	--																	order by sum(ac_price*ab_quantity) desc)
+	
+	
+--	--and qu_id = (select 
+--	--																			top 1 qu_id
+--	--																	from cte_sh_test
+--	--																	where ab_buydate between '2015-01-01' and '2019-01-01'
+--	--																	group by qu_id
+--	--																	order by sum(ac_price*ab_quantity) desc)
 
 
 
 
 
-	select  
-		ac.prodname, 
-		qu.id, 
-		ac.price, 
-		ab.quantity, 
-		ab.buydate, 
-		--ab.quantity*ac.price as totalprice 
-	from dbo.QOO10USER qu with(nolock) 
-	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
-	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial	where ab.buydate between '2015-01-01' and '2019-01-01' and qu.id = 
+--	select  
+--		ac.prodname, 
+--		qu.id, 
+--		ac.price, 
+--		ab.quantity, 
+--		ab.buydate, 
+--		--ab.quantity*ac.price as totalprice 
+--	from dbo.QOO10USER qu with(nolock) 
+--	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
+--	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial--	where ab.buydate between '2015-01-01' and '2019-01-01' and qu.id = -- APPLEBUYTBL-- APPLEINCselect * from dbo.HACKEDiNFO with(nolock)select count(*) from dbo.QOO10USER with(nolock)select count(*) from dbo.APPLEBUYTBL with(nolock)

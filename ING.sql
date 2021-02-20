@@ -1249,23 +1249,6 @@ select * from USERTBL
 
 
 
-exec usp_return 'sd'
+select * from 
 
 
-declare @num int
-set @num = 
-print @num
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> 04a745c8959dd38c13f1459e3c037b8918246746
