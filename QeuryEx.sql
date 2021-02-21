@@ -502,4 +502,16 @@ CREATE INDEX IDX__APPLEBUYTBL__BUYDATE ON dbo.APPLEBUYTBL (buydate)
 --		--ab.quantity*ac.price as totalprice 
 --	from dbo.QOO10USER qu with(nolock) 
 --	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
---	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial--	where ab.buydate between '2015-01-01' and '2019-01-01' and qu.id = -- APPLEBUYTBL-- APPLEINCselect * from dbo.HACKEDiNFO with(nolock)select count(*) from dbo.QOO10USER with(nolock)select count(*) from dbo.APPLEBUYTBL with(nolock)
+--	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial
+--	where ab.buydate between '2015-01-01' and '2019-01-01' and qu.id = 
+
+
+-- APPLEBUYTBL
+-- APPLEINC
+
+select * from dbo.HACKEDiNFO with(nolock)
+
+
+select count(*) from dbo.QOO10USER with(nolock)
+
+select count(*) from dbo.APPLEBUYTBL with(nolock)
