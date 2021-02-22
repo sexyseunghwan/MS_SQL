@@ -1,18 +1,4 @@
 
-
-
-declare @day varchar(8)
-set @day = '20201223'
-print @day
-
-
-declare @num varchar(14)
-set @num = '930823-1058818'
-
-print @num
--- 010-5139-3792
---
-
 select * from dbo.TBLINSA with(nolock)
 
 
