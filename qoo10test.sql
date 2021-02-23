@@ -12,18 +12,21 @@ having count(*) > 1
 
 drop table dbo.QOO10USER
 
--- QOO10 ÀÇ È¸¿ø Å×ÀÌºí(´õ¹Ìµ¥ÀÌÅÍ·Î ¸¸µç°Í)
+-- QOO10 ì˜ íšŒì› í…Œì´ë¸”(ë”ë¯¸ë°ì´í„°ë¡œ ë§Œë“ ê²ƒ)
 create table dbo.QOO10USER 
 ( 
-	usercode int identity(1,1) not null,--È¸¿ø°íÀ¯ÄÚµå 
-	id varchar(100) not null,--È¸¿ø ¾ÆÀÌµğ
-	pw varchar(100) not null,--È¸¿ø ºñ¹Ğ¹øÈ£
-	email varchar(200) null,--È¸¿ø ÀÌ¸ŞÀÏ 
-	gender char(1) null,--È¸¿ø ¼ºº° 
-	nation char(2) null,-- È¸¿ø ±¹°¡ 
-	ipaddress varchar(200) null,-- È¸¿ø ¾ÆÀÌÇÇÁÖ¼Ò
-	hascoin int -- È¸¿øÀÌ ¼ÒÀ¯ÇÑ ÄÚÀÎ
+	usercode int identity(1,1) not null,--íšŒì›ê³ ìœ ì½”ë“œ 
+	id varchar(100) not null,--íšŒì› ì•„ì´ë””
+	pw varchar(100) not null,--íšŒì› ë¹„ë°€ë²ˆí˜¸
+	email varchar(200) null,--íšŒì› ì´ë©”ì¼ 
+	gender char(1) null,--íšŒì› ì„±ë³„ 
+	nation char(2) null,-- íšŒì› êµ­ê°€ 
+	ipaddress varchar(200) null,-- íšŒì› ì•„ì´í”¼ì£¼ì†Œ
+	hascoin int -- íšŒì›ì´ ì†Œìœ í•œ ì½”ì¸
 )
+
+
+insert into dbo.QOO10USER values ('%s','%s','%s','%s','%s','%s',%d)
 
 ALTER TABLE dbo.QOO10USER ADD CONSTRAINT PK__QOO10USER__USERCODE PRIMARY KEY CLUSTERED (usercode)
 ALTER TABLE dbo.QOO10USER ADD CONSTRAINT CK__QOO10USER__HASCOIN CHECK (hascoin >= 0)
@@ -32,12 +35,12 @@ select * from dbo.QOO10USER with(nolock)
 
 create table dbo.QOO10SELLER
 (
-	sellercode int identity(1,1),-- ¼¿·¯ °íÀ¯ ÄÚµå
-	seller_id varchar(100) not null,-- ¼¿·¯ ¾ÆÀÌµğ
-	seller_pw varchar(100) not null,-- ¼¿·¯ ºñ¹Ğ¹øÈ£
-	seller_gender char(1) null,--È¸¿ø ¼ºº° 
-	seller_nation char(2) null, -- ¼¿·¯ ±¹°¡
-	seller_hascoin int -- ¼¿·¯°¡ ¼ÒÀ¯ÇÑ ÄÚÀÎ
+	sellercode int identity(1,1),-- ì…€ëŸ¬ ê³ ìœ  ì½”ë“œ
+	seller_id varchar(100) not null,-- ì…€ëŸ¬ ì•„ì´ë””
+	seller_pw varchar(100) not null,-- ì…€ëŸ¬ ë¹„ë°€ë²ˆí˜¸
+	seller_gender char(1) null,--íšŒì› ì„±ë³„ 
+	seller_nation char(2) null, -- ì…€ëŸ¬ êµ­ê°€
+	seller_hascoin int -- ì…€ëŸ¬ê°€ ì†Œìœ í•œ ì½”ì¸
 )
 
 ALTER TABLE dbo.QOO10SELLER ADD CONSTRAINT PK__QOO10SELLER__SELLERCODE PRIMARY KEY CLUSTERED (sellercode)
@@ -66,9 +69,9 @@ select * from
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
-	Description : ´õ¹Ìµ¥ÀÌÅÍ »ı¼º : È¸¿ø°ü·Ã
+	Description : ë”ë¯¸ë°ì´í„° ìƒì„± : íšŒì›ê´€ë ¨
 	    
-	History		: 2021-02-20 Seunghwan Shin	#ÃÖÃÊ »ı¼º
+	History		: 2021-02-20 Seunghwan Shin	#ìµœì´ˆ ìƒì„±
 
 */
 create proc [dbo].[qoo10_dummy_init]
@@ -100,9 +103,9 @@ end
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
-	Description : ·Î±×ÀÎ Ã³¸®
+	Description : ë¡œê·¸ì¸ ì²˜ë¦¬
 	    
-	History		: 2021-02-20 Seunghwan Shin	#ÃÖÃÊ »ı¼º
+	History		: 2021-02-20 Seunghwan Shin	#ìµœì´ˆ ìƒì„±
 
 */
 create proc [dbo].[qoo10_login]
@@ -135,27 +138,27 @@ DROP PROC qoo10_buy_product
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
-	Description : »óÇ° ±¸¸Å
+	Description : ìƒí’ˆ êµ¬ë§¤
 	    
-	History		: 2021-02-20 Seunghwan Shin	#ÃÖÃÊ »ı¼º
+	History		: 2021-02-20 Seunghwan Shin	#ìµœì´ˆ ìƒì„±
 
 */
 create proc [dbo].[qoo10_buy_product]
-	@user_code int,--À¯Àú °íÀ¯ ÄÚµå
-	@seller_code varchar(100),--¼¿·¯ °íÀ¯ ÄÚµå
-	@prod_serial int,--Á¦Ç° ½Ã¸®¾ó ¹øÈ£
-	@quantity int--Á¦Ç° ¼ö·®
+	@user_code int,--ìœ ì € ê³ ìœ  ì½”ë“œ
+	@seller_code varchar(100),--ì…€ëŸ¬ ê³ ìœ  ì½”ë“œ
+	@prod_serial int,--ì œí’ˆ ì‹œë¦¬ì–¼ ë²ˆí˜¸
+	@quantity int--ì œí’ˆ ìˆ˜ëŸ‰
 as
 set nocount on
 set transaction isolation level read uncommitted
 begin
 	
-	declare @use_coin int,--»ç¿ëµÉ ÄÚÀÎÇÕ
-			@prod_price int--Á¦Ç° °¡°İ
+	declare @use_coin int,--ì‚¬ìš©ë  ì½”ì¸í•©
+			@prod_price int--ì œí’ˆ ê°€ê²©
 			
 	select @prod_price = price from dbo.APPLEINC with(nolock) where prodserial = @prod_serial
 
-	set @use_coin = @prod_price * @quantity -- »ç¿ëµÉ ÄÚÀÎÀÇ ÇÕ.
+	set @use_coin = @prod_price * @quantity -- ì‚¬ìš©ë  ì½”ì¸ì˜ í•©.
 
 	begin try
 		begin tran
