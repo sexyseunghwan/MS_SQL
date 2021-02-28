@@ -5,6 +5,8 @@ alter table dbo.TBLINSA add constraint PK__TBLINSA__NUM primary key (num)
 
 alter table dbo.TBLINSA drop tblInsa_pk
 
+--alter table dbo.TBLINSA
+
 
 drop index tblInsa_pk on dbo.TBLINSA
 
