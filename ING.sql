@@ -1,7 +1,4 @@
 
-select * from dbo.TBLINSA with(nolock)
-
-
 select * from dbo.TBLINSA with(nolock) where city = N'서울'
 
 alter table dbo.TBLINSA add constraint PK__TBLINSA__NUM primary key (num)
