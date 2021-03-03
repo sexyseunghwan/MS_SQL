@@ -185,10 +185,47 @@ select * from dbo.APPLEINC with(nolock)
 
 select count(*) from dbo.QOO10USER with(nolock)
 
+
 select * from dbo.QOO10USER with(nolock) where usercode = 15001
+
+
+--DROP TABLE dbo.QOO10USERLOG
+
+create table dbo.QOO10USERLOG 
+(
+	log_seq int identity(1,1) not null,
+	log_user_code int not null,
+	log_user_id varchar(100) not null,
+	log_dt datetime not null,
+	ip_address varchar(100) not null
+)
+
+ALTER TABLE dbo.QOO10USERLOG add constraint PK__QOO10USERLOG__LOG_SEQ PRIMARY KEY (log_seq)
+ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_SEQ DEFAULT getdate() FOR log_dt 
+
+SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
+
+ALTER TABLE dbo.QOO10SELLER ADD CONSTRAINT PK__QOO10SELLER__SELLERCODE PRIMARY KEY CLUSTERED (sellercode)
 
 update dbo.QOO10USER set hascoin = 1500000 where usercode = 15001
 
 select * from dbo.QOO10SELLER WITH(NOLOCK)
 
 update dbo.QOO10SELLER set seller_hascoin = 0 where sellercode=1
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-02 
+	Description : 로그인 기록 
+	    
+	History		: 2021-03-02 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_log_stack]
+	@user_code int,--유저 고유 코드
+
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+	
