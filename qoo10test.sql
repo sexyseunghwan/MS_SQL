@@ -55,13 +55,9 @@ select * from dbo.QOO10SELLER with(nolock)
 
 
 
-
-
-
-
 select count(*) from QOO10USER with(nolock)
 
-select * from QOO10USER with(nolock)
+select * from dbo.QOO10USER with(nolock) where usercode = (select count(*) from QOO10USER with(nolock))
 
 
 select count(*) from dbo.APPLEBUYTBL with(nolock)
@@ -189,19 +185,18 @@ select count(*) from dbo.QOO10USER with(nolock)
 select * from dbo.QOO10USER with(nolock) where usercode = 15001
 
 
---DROP TABLE dbo.QOO10USERLOG
+DROP TABLE dbo.QOO10USERLOG
 
 create table dbo.QOO10USERLOG 
 (
-	log_seq int identity(1,1) not null,
-	log_user_code int not null,
+	log_seq bigint identity(1,1) not null,
 	log_user_id varchar(100) not null,
 	log_dt datetime not null,
 	ip_address varchar(100) not null
 )
 
 ALTER TABLE dbo.QOO10USERLOG add constraint PK__QOO10USERLOG__LOG_SEQ PRIMARY KEY (log_seq)
-ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_SEQ DEFAULT getdate() FOR log_dt 
+ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_DT DEFAULT getdate() FOR log_dt 
 
 SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
 
@@ -213,6 +208,13 @@ select * from dbo.QOO10SELLER WITH(NOLOCK)
 
 update dbo.QOO10SELLER set seller_hascoin = 0 where sellercode=1
 
+
+
+--select * from dbo.QOO10USERLOG with(nolock)
+
+
+--drop proc qoo10_log_stack
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-03-02 
@@ -222,10 +224,112 @@ update dbo.QOO10SELLER set seller_hascoin = 0 where sellercode=1
 
 */
 create proc [dbo].[qoo10_log_stack]
-	@user_code int,--유저 고유 코드
-
+	@user_id varchar(100),-- 유저 아이디
+	@user_ip_address varchar(100) -- 유저의 ip주소
 as
 set nocount on
 set transaction isolation level read uncommitted
 begin
+
+	insert into dbo.QOO10USERLOG 
+	(
+		log_user_id
+	,	log_dt
+	,	ip_address
+	)
+	values 
+	(	@user_id
+	,	default
+	,	@user_ip_address
+	)
+
+	if @@ERROR <> 0
+	begin
+		return -1
+	end
+end
+
+
+
+--select * from dbo.LOGINTRYIP with(nolock)
+
+--drop table dbo.LOGINTRYIP
+-- 로그인시도 얼마나 하는지 데이터
+CREATE TABLE dbo.LOGINTRYIP
+(
+	ip_address_seq bigint identity(1,1) not null,--기본키역할
+	ip_address varchar(100),-- 아이피주소
+	try_time datetime not null --접속시간
+)
+
+ALTER TABLE dbo.LOGINTRYIP ADD CONSTRAINT  PK__LOGINTRYIP__IP_ADDRESS_SEQ PRIMARY KEY CLUSTERED (ip_address_seq)
+ALTER TABLE dbo.LOGINTRYIP add constraint DF__LOGINTRYIP__TRY_TIME DEFAULT getdate() FOR try_time 
+
+--벤당한 아이피 리스트 목록
+CREATE TABLE dbo.TBLBANNEDIPLIST
+(
+	banned_ip_address varchar(100) not null,--벤시킬 아이피
+
+)
+
+ALTER TABLE dbo.TBLBANNEDIPLIST ADD CONSTRAINT PK__TBLBANNEDIPLIST__BANNED_IP_ADDRESS PRIMARY KEY CLUSTERED (banned_ip_address)
+
+
+--drop proc qoo10_login_try
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-06 
+	Description : 로그인시도하는 아이피 스택으로 쌓을것 
+	    
+	History		: 2021-03-06 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_login_try]
+	@user_ip_address varchar(100)-- 유저의 ip주소
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+		
+		insert into dbo.LOGINTRYIP 
+		(
+			ip_address
+		,	try_time
+		)
+		values
+		(
+			@user_ip_address,
+			default
+		)
+
+	if @@ERROR <> 0
+	begin
+		return -1
+	end
+
+end
+
+
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-06 
+	Description : 한 아이피에서 로그인을 비정상적으로 많이 시도하는 경우 해당 아이피를 차단시켜준다. 
+	    
+	History		: 2021-03-06 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_banned]
+	@user_ip_address varchar(100)-- 유저의 ip주소
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+		
+	declare @try_count int,--시도한 횟수 : 10초안에 4번이상 시도하면, 밴을 시킨다.
 	
+	select @try_count = count(*) from 
+				
+
+end
