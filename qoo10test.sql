@@ -251,7 +251,7 @@ end
 
 
 
---select * from dbo.LOGINTRYIP with(nolock)
+select * from dbo.LOGINTRYIP with(nolock)
 
 --drop table dbo.LOGINTRYIP
 -- 로그인시도 얼마나 하는지 데이터
@@ -265,6 +265,8 @@ CREATE TABLE dbo.LOGINTRYIP
 ALTER TABLE dbo.LOGINTRYIP ADD CONSTRAINT  PK__LOGINTRYIP__IP_ADDRESS_SEQ PRIMARY KEY CLUSTERED (ip_address_seq)
 ALTER TABLE dbo.LOGINTRYIP add constraint DF__LOGINTRYIP__TRY_TIME DEFAULT getdate() FOR try_time 
 
+
+--drop table dbo.TBLBANNEDIPLIST
 --벤당한 아이피 리스트 목록
 CREATE TABLE dbo.TBLBANNEDIPLIST
 (
@@ -273,6 +275,13 @@ CREATE TABLE dbo.TBLBANNEDIPLIST
 )
 
 ALTER TABLE dbo.TBLBANNEDIPLIST ADD CONSTRAINT PK__TBLBANNEDIPLIST__BANNED_IP_ADDRESS PRIMARY KEY CLUSTERED (banned_ip_address)
+
+--192.168.0.1
+
+insert into dbo.TBLBANNEDIPLIST values ('192.168.0.1')
+
+
+select * from dbo.TBLBANNEDIPLIST with(nolock)
 
 
 --drop proc qoo10_login_try
@@ -310,7 +319,11 @@ begin
 
 end
 
+select * from dbo.LOGINTRYIP with(nolock)
 
+--insert into dbo.LOGINTRYIP values ('0:0:0:0:0:0:0:1',default)
+
+--drop proc dbo.qoo10_banned
 
 /*
 	Author      : Seunghwan Shin
@@ -327,9 +340,185 @@ set nocount on
 set transaction isolation level read uncommitted
 begin
 		
-	declare @try_count int,--시도한 횟수 : 10초안에 4번이상 시도하면, 밴을 시킨다.
+	declare @try_count int--시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
 	
-	select @try_count = count(*) from 
-				
+	select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
+	where ip_address = @user_ip_address 
+	and  DATEDIFF(ss,try_time,getdate()) <= 15
+	
+	if (@try_count >= 4)
+	begin
+		insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
+
+		if @@ERROR <> 0
+		begin
+			return -1
+		end
+	end
+end
+
+
+
+--drop proc dbo.qoo10_banned_list_check
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-07 
+	Description : 벤당한 아이피인경우 로그인자체를 무효화 한다. 
+	    
+	History		: 2021-03-07 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_banned_list_check]
+	@user_ip_address varchar(100)-- 유저의 ip주소
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+		
+	select count(*) as cnt from dbo.TBLBANNEDIPLIST with(nolock) where banned_ip_address = @user_ip_address	
 
 end
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-02-10  
+	Description : 상품 구매 
+	     
+    	History	: 2021-02-10 Seunghwan Shin #최초 생성 
+*/ 
+create proc [dbo].[qoo10_buy_product] 
+	@user_code int,--유저 고유 코드 
+	@seller_code varchar(100),--셀러 고유 코드 
+	@prod_serial int,--제품 시리얼 번호 
+	@quantity int--제품 수량 
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+	declare @use_coin int,--사용될 코인합 
+		@prod_price int--제품 가격 
+	select @prod_price = price from dbo.APPLEINC with(nolock) where prodserial = @prod_serial 
+	set @use_coin = @prod_price * @quantity -- 사용될 코인의 합. 
+        begin try 
+		begin tran 
+			update dbo.QOO10USER set hascoin -= @use_coin where usercode = @user_code; 
+			update dbo.QOO10SELLER set seller_hascoin += @use_coin where sellercode = @seller_code; 
+		commit tran 
+	end try 
+	begin catch 
+		rollback tran 
+	end catch 
+end
+
+
+
+select * from dbo.QOO10SELLER with(nolock)
+
+select * from dbo.QOO10USER with(nolock) where usercode = (select count(*) from dbo.QOO10USER)
+
+update dbo.QOO10USER set hascoin = 1500000 where usercode = (select count(*) from dbo.QOO10USER)
+
+update dbo.QOO10SELLER set seller_hascoin = 0 where sellercode = 1
+
+
+select * from dbo.APPLEINC with(nolock)
+
+
+drop proc dbo.qoo10_buy_product_test
+
+create proc [dbo].[qoo10_buy_product_test] 
+	@user_code int,--유저 고유 코드 
+	@seller_code varchar(100),--셀러 고유 코드 
+	@prod_serial int,--제품 시리얼 번호 
+	@quantity int--제품 수량 
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+	declare @use_coin int,--사용될 코인합 
+		@prod_price int--제품 가격 
+	select @prod_price = price from dbo.APPLEINC with(nolock) where prodserial = @prod_serial 
+	set @use_coin = @prod_price * @quantity -- 사용될 코인의 합. 
+        
+	begin tran
+		
+	update dbo.QOO10USER set hascoin -= @use_coin where usercode = @user_code; 
+
+	if @@ERROR <> 0
+	begin
+		rollback tran
+	end
+	
+	else
+	begin
+		update dbo.QOO10SELLER set seller_hascoin += @use_coin where sellercode = @seller_code;
+			
+		insert into dbo.APPLEBUYTBL 
+		(
+			userseq
+		,	prodserial
+		,	quantity
+		,	buydate
+		)
+		values
+		(
+			@user_code
+		,	@prod_serial
+		,	@quantity
+		,	getdate()
+		)
+
+		commit tran
+	end	 
+end
+
+select * from dbo.APPLEBUYTBL with(nolock) where buyseq = (select count(*) from dbo.APPLEBUYTBL with(nolock))
+
+
+
+
+create proc [dbo].[qoo10_buy_product_test] 
+	@user_code int,--유저 고유 코드 
+	@seller_code varchar(100),--셀러 고유 코드 
+	@prod_serial int,--제품 시리얼 번호 
+	@quantity int--제품 수량 
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+	declare @use_coin int,--사용될 코인합 
+		@prod_price int--제품 가격 
+	select @prod_price = price from dbo.APPLEINC with(nolock) where prodserial = @prod_serial 
+	set @use_coin = @prod_price * @quantity -- 사용될 코인의 합. 
+        begin try 
+		begin tran 
+			update dbo.QOO10USER set hascoin -= @use_coin where usercode = @user_code; 
+			update dbo.QOO10SELLER set seller_hascoin += @use_coin where sellercode = @seller_code;
+
+                insert into dbo.APPLEBUYTBL 
+    		(
+			userseq
+		,	prodserial
+		,	quantity
+		,	buydate
+		)
+		values
+		(
+			@user_code
+		,	@prod_serial
+		,	@quantity
+		,	getdate()
+		)
+ 
+		commit tran 
+	end try 
+	begin catch 
+		rollback tran 
+	end catch 
+end
+
+
+EXEC dbo.qoo10_buy_product_test 15001,1,1,4
