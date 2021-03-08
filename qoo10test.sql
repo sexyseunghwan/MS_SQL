@@ -1,5 +1,17 @@
 
 
+create table dbo.APPLEBUYTBL 
+( 
+	buyseq int identity(1,1) not null,  -- 구매코드
+	userseq int not null,  -- 회원고유코드
+	prodserial int not null,  -- 제품 고유 코드
+	quantity int not null,  -- 수량
+	buydate date not null  -- 구매 일자
+)
+
+ALTER TABLE dbo.APPLEBUYTBL ADD CONSTRAINT PK__APPLEBUYTBL__BUYSEQ PRIMARY KEY CLUSTERED (buyseq)
+
+
 select * from APPLEINC with(nolock)
 
 select count(*) from dbo.QOO10USER with(nolock)
@@ -201,6 +213,9 @@ ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_DT DEFAULT get
 SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
 
 ALTER TABLE dbo.QOO10SELLER ADD CONSTRAINT PK__QOO10SELLER__SELLERCODE PRIMARY KEY CLUSTERED (sellercode)
+
+
+select * from dbo.QOO10USER WITH(NOLOCK) Where usercode = 15001
 
 update dbo.QOO10USER set hascoin = 1500000 where usercode = 15001
 
