@@ -38,6 +38,12 @@ create table dbo.QOO10USER
 )
 
 
+select count(*) from dbo.QOO10USER with(nolock)
+
+
+
+
+
 insert into dbo.QOO10USER values ('%s','%s','%s','%s','%s','%s',%d)
 
 --
@@ -291,6 +297,8 @@ CREATE TABLE dbo.TBLBANNEDIPLIST
 
 ALTER TABLE dbo.TBLBANNEDIPLIST ADD CONSTRAINT PK__TBLBANNEDIPLIST__BANNED_IP_ADDRESS PRIMARY KEY CLUSTERED (banned_ip_address)
 
+select * from dbo.TBLBANNEDIPLIST witth(nolock)
+
 --192.168.0.1
 
 insert into dbo.TBLBANNEDIPLIST values ('192.168.0.1')
@@ -537,3 +545,97 @@ end
 
 
 EXEC dbo.qoo10_buy_product_test 15001,1,1,4
+
+
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-11 
+	Description : 새로운 로그인 처리
+	    
+	History		: 2021-03-11 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_new_login]
+	@id varchar(100),
+	@pw varchar(100)
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+
+	
+
+end
+
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-03-11 
+	Description : ip 검증개체
+	    
+	History		: 2021-03-11 Seunghwan Shin	#최초 생성
+
+*/
+create proc [dbo].[qoo10_new_ip_check]
+	@user_ip_address varchar(100),-- 유저의 ip주소
+	@pass_fail char(1) output-- 'y'면 pass 'n'이면 block
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+	
+	--declare @error int = 0 -- 에러의 갯수
+	declare @try_count int -- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
+	set @pass_fail = 'Y' -- 접속승인 할것인지 안할것인지 판단.
+
+begin try
+	begin tran
+		-- 아이피 로그기록 남기기
+		insert into dbo.LOGINTRYIP 
+		(
+			ip_address
+		,	try_time
+		)
+		values 
+		(
+			@user_ip_address
+		,	default
+		)
+	commit tran
+
+	-- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
+	select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
+	where ip_address = @user_ip_address 
+	and  DATEDIFF(ss,try_time,getdate()) <= 15
+	
+
+	if (@try_count >= 4)
+	begin
+		begin tran
+			insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
+		commit tran
+	end
+
+	-- 밴 당한 아이피인지 확인해준다.
+	if ((select count(*) from dbo.TBLBANNEDIPLIST where banned_ip_address = @user_ip_address) <> 0)
+	begin
+		set @pass_fail = 'N'
+	end
+
+
+end try
+begin catch
+	rollback tran
+end catch
+
+
+end
+
+select * from dbo.LOGINTRYIP
+
+select * from dbo.TBLBANNEDIPLIST with(nolock)
+
+declare @result char(1)
+exec qoo10_new_ip_check '192.168.0.1',@result output
+print @result
