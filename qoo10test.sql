@@ -37,16 +37,6 @@ create table dbo.QOO10USER
 	hascoin int -- 회원이 소유한 코인
 )
 
-
-select count(*) from dbo.QOO10USER with(nolock)
-
-
-
-
-
-insert into dbo.QOO10USER values ('%s','%s','%s','%s','%s','%s',%d)
-
---
 ALTER TABLE dbo.QOO10USER ADD CONSTRAINT PK__QOO10USER__USERCODE PRIMARY KEY CLUSTERED (usercode)
 
 ALTER TABLE dbo.QOO10USER ADD CONSTRAINT PK__QOO10USER__USERCODE PRIMARY KEY CLUSTERED (usercode)
@@ -205,12 +195,13 @@ select * from dbo.QOO10USER with(nolock) where usercode = 15001
 
 DROP TABLE dbo.QOO10USERLOG
 
+-- Q0010 의 회원 로그인 기록
 create table dbo.QOO10USERLOG 
 (
-	log_seq bigint identity(1,1) not null,
-	log_user_id varchar(100) not null,
-	log_dt datetime not null,
-	ip_address varchar(100) not null
+	log_seq bigint identity(1,1) not null, -- 로그인 번호
+	log_user_id varchar(100) not null, -- 로그인한 아이디
+	log_dt datetime not null, -- 로그인한 날짜 시간
+	ip_address varchar(100) not null -- 로그인 한 ip주소
 )
 
 ALTER TABLE dbo.QOO10USERLOG add constraint PK__QOO10USERLOG__LOG_SEQ PRIMARY KEY (log_seq)
@@ -220,7 +211,6 @@ SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
 
 ALTER TABLE dbo.QOO10SELLER ADD CONSTRAINT PK__QOO10SELLER__SELLERCODE PRIMARY KEY CLUSTERED (sellercode)
 
-
 select * from dbo.QOO10USER WITH(NOLOCK) Where usercode = 15001
 
 update dbo.QOO10USER set hascoin = 1500000 where usercode = 15001
@@ -228,7 +218,6 @@ update dbo.QOO10USER set hascoin = 1500000 where usercode = 15001
 select * from dbo.QOO10SELLER WITH(NOLOCK)
 
 update dbo.QOO10SELLER set seller_hascoin = 0 where sellercode=1
-
 
 
 --select * from dbo.QOO10USERLOG with(nolock)
@@ -275,7 +264,8 @@ end
 select * from dbo.LOGINTRYIP with(nolock)
 
 --drop table dbo.LOGINTRYIP
--- 로그인시도 얼마나 하는지 데이터
+
+-- 해당 아이피에서 로그인시도 얼마나 하는지 데이터
 CREATE TABLE dbo.LOGINTRYIP
 (
 	ip_address_seq bigint identity(1,1) not null,--기본키역할
@@ -569,25 +559,38 @@ begin
 end
 
 
+--drop proc dbo.qoo10_new_ip_check
+
+
+declare @out int
+exec dbo.qoo10_new_ip_check '192.168.0.1','admin','qwe12',@out output
+select @out
+
+
+select * from dbo.LOGINTRYIP with(nolock)
+
+select * from dbo.TBLBANNEDIPLIST with(nolock)
+
 /*
 	Author      : Seunghwan Shin
-	Create date : 2021-03-11 
+	Create date : 2021-03-16 
 	Description : ip 검증개체
 	    
-	History		: 2021-03-11 Seunghwan Shin	#최초 생성
+	History		: 2021-03-16 Seunghwan Shin	#최초 생성
 
 */
 create proc [dbo].[qoo10_new_ip_check]
 	@user_ip_address varchar(100),-- 유저의 ip주소
-	@pass_fail char(1) output-- 'y'면 pass 'n'이면 block
+	@user_id varchar(100), -- 유저 id
+	@user_pw varchar(100), -- 유저 pw
+	@login_code int output -- 로그인에 관련된 코드 0 : 로그인 성공, 1 : 로그인 실패(아이디,비번 오류) , -1 : 아이피 접속 승인불가
 as
 set nocount on
 set transaction isolation level read uncommitted
 begin
 	
-	--declare @error int = 0 -- 에러의 갯수
 	declare @try_count int -- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
-	set @pass_fail = 'Y' -- 접속승인 할것인지 안할것인지 판단.
+	declare @pass_fail char(1) = 'Y' -- 접속승인 할것인지 안할것인지 판단.
 
 begin try
 	begin tran
@@ -623,19 +626,51 @@ begin try
 		set @pass_fail = 'N'
 	end
 
+	
+	if (@pass_fail = 'Y')
+	begin
+		-- 해당 아이피에 대한 접속은 승인
+		-- 로그인 정보 비교대조
+		declare @log_on int = 0
+		select @log_on = count(*) from dbo.QOO10USER where id = @user_id and pw = @user_pw
+
+		if(@log_on <> 1)-- 로그인에 성공하는경우
+		begin
+			set @login_code = 1
+		end
+		else -- 로그인에 성공하지 못하는 경우
+		begin
+			set @login_code = 0
+		end
+	end
+	else
+	begin
+		--해당 아이피건은 접속불가
+		set @login_code = -1
+	end
+
 
 end try
 begin catch
 	rollback tran
 end catch
 
-
 end
+
+
+
+
 
 select * from dbo.LOGINTRYIP
 
 select * from dbo.TBLBANNEDIPLIST with(nolock)
 
+
+update dbo.TBLBANNEDIPLIST set banned_ip_address = '1:1:1'
+
 declare @result char(1)
 exec qoo10_new_ip_check '192.168.0.1',@result output
 print @result
+
+
+SELECT * FROM dbo.QOO10USER WHERE usercode = (SELECT COUNT(*) FROM dbo.QOO10USER WITH(NOLOCK))
