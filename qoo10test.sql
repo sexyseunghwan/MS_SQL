@@ -209,6 +209,8 @@ ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_DT DEFAULT get
 
 SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
 
+DROP TABLE dbo.QOO10USERLOG
+
 ALTER TABLE dbo.QOO10SELLER ADD CONSTRAINT PK__QOO10SELLER__SELLERCODE PRIMARY KEY CLUSTERED (sellercode)
 
 select * from dbo.QOO10USER WITH(NOLOCK) Where usercode = 15001
@@ -571,6 +573,14 @@ select * from dbo.LOGINTRYIP with(nolock)
 
 select * from dbo.TBLBANNEDIPLIST with(nolock)
 
+--drop proc dbo.qoo10_new_ip_check
+
+drop proc dbo.qoo10_total_login
+
+declare @num int
+exec dbo.qoo10_total_login '123.322.143','admin','qwe123', @num output
+select @num
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-03-16 
@@ -579,7 +589,7 @@ select * from dbo.TBLBANNEDIPLIST with(nolock)
 	History		: 2021-03-16 Seunghwan Shin	#최초 생성
 
 */
-create proc [dbo].[qoo10_new_ip_check]
+create proc [dbo].[qoo10_total_login]
 	@user_ip_address varchar(100),-- 유저의 ip주소
 	@user_id varchar(100), -- 유저 id
 	@user_pw varchar(100), -- 유저 pw
@@ -634,13 +644,32 @@ begin try
 		declare @log_on int = 0
 		select @log_on = count(*) from dbo.QOO10USER where id = @user_id and pw = @user_pw
 
-		if(@log_on <> 1)-- 로그인에 성공하는경우
+		if(@log_on <> 1)-- 로그인에 실패하는 경우
 		begin
 			set @login_code = 1
 		end
-		else -- 로그인에 성공하지 못하는 경우
+		else -- 로그인에 성공하는 경우
 		begin
 			set @login_code = 0
+			
+			-- 로그인 성공시간 기록 남기기
+			begin tran
+
+				insert into dbo.QOO10USERLOG
+				(
+					log_user_id
+				,	log_dt
+				,	ip_address
+				)
+				values
+				(
+					@user_id
+				,	default
+				,	@user_ip_address
+				)
+
+			commit tran
+
 		end
 	end
 	else
@@ -654,9 +683,12 @@ end try
 begin catch
 	rollback tran
 end catch
-
 end
 
+
+select * from dbo.QOO10USERLOG with(nolock)
+
+select * from dbo.LOGINTRYIP witth(nolock)
 
 
 
@@ -665,7 +697,7 @@ select * from dbo.LOGINTRYIP
 
 select * from dbo.TBLBANNEDIPLIST with(nolock)
 
-
+--drop table dbo.TBLBANNEDIPLIST
 update dbo.TBLBANNEDIPLIST set banned_ip_address = '1:1:1'
 
 declare @result char(1)
