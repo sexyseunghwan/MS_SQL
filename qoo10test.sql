@@ -690,7 +690,7 @@ select * from dbo.QOO10USERLOG with(nolock)
 
 select * from dbo.LOGINTRYIP witth(nolock)
 
-
+SELECT * FROM dbo.QOO10USER WITH(NOLOCK) WHERE usercode < 10
 
 
 select * from dbo.LOGINTRYIP
@@ -706,3 +706,52 @@ print @result
 
 
 SELECT * FROM dbo.QOO10USER WHERE usercode = (SELECT COUNT(*) FROM dbo.QOO10USER WITH(NOLOCK))
+
+
+/*  
+	Author      : Seunghwan Shin  
+	Create date : 2021-03-11   
+	Description : 국가별, 성별, 기기별 가장 많이산 고객의 아이디와 금액정보 (상위 n 건 조회)  
+	      
+    History	: 2021-03-11 Seunghwan Shin #최초 생성  
+*/  
+create proc [dbo].[sh_test_first_hash_test] 
+	@nation char(2),--국가코드 
+	@gender char(1),--성별 
+	@number int, --상위 몇명 가져올건지 체크 
+	@apple_prod_name varchar(100) -- 애플기기 이름 
+as  
+set nocount on  
+set transaction isolation level read uncommitted  
+begin 
+	select top (@number) qu.id,sum(ac.price) as summ from dbo.QOO10USER qu with(nolock) 
+	inner join dbo.APPLEBUYTBL ab with(nolock) on qu.usercode = ab.userseq 
+	inner join dbo.APPLEINC ac with(nolock) on ac.prodserial = ab.prodserial 
+	where qu.nation = @nation  
+	and qu.gender = @gender  
+	and ac.prodname = @apple_prod_name 
+	group by qu.id 
+	order by summ desc 
+end
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-03-21   
+	Description : 테스트  
+	     
+	History	: 2021-03-21 Seunghwan Shin	#최초 생성  
+*/ 
+create proc [dbo].[sh_recompile_login] 
+	@usercode int-- 유저의 ip주소  
+
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+    select * from dbo.QOO10USER with(nolock) where usercode < @usercode
+
+
+
+end
