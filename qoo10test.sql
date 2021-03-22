@@ -581,6 +581,8 @@ declare @num int
 exec dbo.qoo10_total_login '123.322.143','admin','qwe123', @num output
 select @num
 
+--drop proc dbo.qoo10_total_login
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-03-16 
@@ -707,7 +709,7 @@ print @result
 
 SELECT * FROM dbo.QOO10USER WHERE usercode = (SELECT COUNT(*) FROM dbo.QOO10USER WITH(NOLOCK))
 
-
+select * from dbo.APPLEINC
 /*  
 	Author      : Seunghwan Shin  
 	Create date : 2021-03-11   
