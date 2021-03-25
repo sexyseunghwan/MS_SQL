@@ -36,8 +36,28 @@ drop table dbo.QOO10USER
 	    
 	History		: 2021-02-20 Seunghwan Shin	#최초 생성
 
-*/create proc [dbo].[qoo10_dummy_init]	@id varchar(100),	@pw varchar(100),	@email varchar(200),	@gender char(1),	@nation char(2),	@ipaddress varchar(200),	@coin intasset nocount on
-set transaction isolation level read uncommittedbegin	insert into dbo.QOO10USER values (@id,@pw,@email,@gender,@nation,@ipaddress,@coin)	if @@error <> 0	begin		return 0;	endend
+*/
+create proc [dbo].[qoo10_dummy_init]
+	@id varchar(100),
+	@pw varchar(100),
+	@email varchar(200),
+	@gender char(1),
+	@nation char(2),
+	@ipaddress varchar(200),
+	@coin int
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+
+	insert into dbo.QOO10USER values (@id,@pw,@email,@gender,@nation,@ipaddress,@coin)
+
+	if @@error <> 0
+	begin
+		return 0;
+	end
+
+end
 
 
 --drop table dbo.QOO10USERENC
@@ -58,7 +78,9 @@ create table dbo.QOO10USERENC
 
 ALTER TABLE dbo.QOO10USERENC ADD CONSTRAINT PK__QOO10USERENC__USERCODE PRIMARY KEY CLUSTERED (usercode)
 
+drop table dbo.QOO10USERENC 
 
+select * from dbo.QOO10USERENC  with(nolock)
 
 
 
@@ -112,6 +134,7 @@ select count(*) from dbo.APPLEBUYTBL with(nolock)
 select * from 
 
 
+--drop proc dbo.qoo10_dummy_init
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
@@ -127,13 +150,14 @@ create proc [dbo].[qoo10_dummy_init]
 	@gender char(1),
 	@nation char(2),
 	@ipaddress varchar(200),
-	@coin int
+	@coin int,
+	@pwenc varchar(800)
 as
 set nocount on
 set transaction isolation level read uncommitted
 begin
 
-	insert into dbo.QOO10USER values (@id,@pw,@email,@gender,@nation,@ipaddress,@coin)
+	insert into dbo.QOO10USERENC values (@id,@pw,@email,@gender,@nation,@ipaddress,@coin,@pwenc)
 
 	if @@error <> 0
 	begin
