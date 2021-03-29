@@ -59,7 +59,6 @@ begin
 
 end
 
-
 --drop table dbo.QOO10USERENC
 
 -- QOO10 의 회원 테이블(더미데이터로 만든것) : 암호화작업 확인
@@ -644,7 +643,11 @@ declare @num int
 exec dbo.qoo10_total_login '123.322.143','admin','qwe123', @num output
 select @num
 
+--dbo.QOO10USERENC 
+
 --drop proc dbo.qoo10_total_login
+
+SELECT TOP(100) * FROM dbo.QOO10USERENC WITH(NOLOCK)
 
 /*
 	Author      : Seunghwan Shin
@@ -657,7 +660,7 @@ select @num
 create proc [dbo].[qoo10_total_login]
 	@user_ip_address varchar(100),-- 유저의 ip주소
 	@user_id varchar(100), -- 유저 id
-	@user_pw varchar(100), -- 유저 pw
+	@user_pw varchar(800), -- 유저 pw
 	@login_code int output -- 로그인에 관련된 코드 0 : 로그인 성공, 1 : 로그인 실패(아이디,비번 오류) , -1 : 아이피 접속 승인불가
 as
 set nocount on
@@ -707,7 +710,7 @@ begin try
 		-- 해당 아이피에 대한 접속은 승인
 		-- 로그인 정보 비교대조
 		declare @log_on int = 0
-		select @log_on = count(*) from dbo.QOO10USER where id = @user_id and pw = @user_pw
+		select @log_on = count(*) from dbo.QOO10USERENC where id = @user_id and pw_encryption = @user_pw
 
 		if(@log_on <> 1)-- 로그인에 실패하는 경우
 		begin
@@ -820,5 +823,10 @@ begin
 
 
 end
+
+
+SELECT * FROM TBLBANNEDIPLIST with(nolock)
+
+--update dbo.TBLBANNEDIPLIST set banned_ip_address = '123' 
 
 

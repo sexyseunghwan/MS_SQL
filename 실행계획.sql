@@ -2,6 +2,8 @@ set arithabort off
 set STATISTICS IO on
 set STATISTICS TIME on
            
+		   declare @num int = 0
+		   exec dbo.qoo10_total_login '123.123.123','asd','1231wsfd',@num output
 		   
 
 		 --  	SELECT * from dbo.QOO10USER qu with(nolock) 
@@ -38,3 +40,7 @@ set STATISTICS TIME on
 
 set STATISTICS IO off
 set STATISTICS TIME off
+
+--dbo.QOO10USERENC 
+
+--create index IDX__QOO10USERENC__ID__PW_ENCRYPTION ON dbo.QOO10USERENC (id,pw_encryption)
