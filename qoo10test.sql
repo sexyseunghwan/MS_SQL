@@ -59,23 +59,30 @@ begin
 
 end
 
---drop table dbo.QOO10USERENC
+drop table dbo.QOO10USERENC
 
 -- QOO10 의 회원 테이블(더미데이터로 만든것) : 암호화작업 확인
-create table dbo.QOO10USERENC 
+create table dbo.QOO10_USER_REAL 
 ( 
-	usercode int identity(1,1) not null,--회원고유코드 
-	id varchar(100) not null,--회원 아이디
-	pw varchar(100) not null,--회원 비밀번호
-	email varchar(200) null,--회원 이메일 
-	gender char(1) null,--회원 성별 
-	nation char(2) null,-- 회원 국가 
-	ipaddress varchar(200) null,-- 회원 아이피주소
-	hascoin int ,-- 회원이 소유한 코인
-	pw_encryption varchar(800) not null -- 회원 비밀번호 encryption
+	qoouser_code int identity(1,1) not null,--회원고유코드 
+	qoouser_id varchar(100) not null,--회원 아이디
+	qoouser_pw varchar(800) not null, -- 회원 비밀번호 encryption
+	qoouser_email varchar(200) null,--회원 이메일 
+	qoouser_gender char(1) null,--회원 성별 
+	qoouser_nation char(2) null,-- 회원 국가 
+	qoouser_ipaddress varchar(200) null,-- 회원 아이피주소
+	qoouser_hascoin int not null,-- 회원이 소유한 코인
+	qoouser_phone_num varchar(20) not null,-- 회원의 전화번호
+	qoouser_grade int not null, -- 회원의 등급
+	qoouser_receive_email char(1) not null, -- 회원의 이메일 수신 여부
+	qoouser_receive_sms char(1) not null, -- 회원의 문자 수신 여부
+	qoouser_denide char(1) not null, -- 차단된 회원인지 여부
+	qoouser_register_datetime datetime not null, -- 회원 등록일
+	qoouser_lastlogin_datetime datetime null, -- 회원이 최종 로그인 시간
+	qoouser_lastlogin_ipaddress varchar(200) null--회원의 최종 로그인 아이피
 )
 
-ALTER TABLE dbo.QOO10USERENC ADD CONSTRAINT PK__QOO10USERENC__USERCODE PRIMARY KEY CLUSTERED (usercode)
+ALTER TABLE dbo.QOO10_USER_REAL ADD CONSTRAINT PK__QOO10_USER_REAL__QOOUSER_CODE PRIMARY KEY CLUSTERED (qoouser_code)
 
 drop table dbo.QOO10USERENC 
 
@@ -134,29 +141,55 @@ select * from
 
 
 --drop proc dbo.qoo10_dummy_init
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
 	Description : 더미데이터 생성 : 회원관련
 	    
-	History		: 2021-02-20 Seunghwan Shin	#최초 생성
-
+	History		:	2021-02-20 Seunghwan Shin	#최초 생성
+					2021-03-30 Seunghwan Shin   #컬럼 추가
+			
 */
 create proc [dbo].[qoo10_dummy_init]
-	@id varchar(100),
-	@pw varchar(100),
-	@email varchar(200),
-	@gender char(1),
-	@nation char(2),
-	@ipaddress varchar(200),
-	@coin int,
-	@pwenc varchar(800)
+	@qoouser_id varchar(100),
+	@qoouser_pw varchar(800),
+	@qoouser_email varchar(200),
+	@qoouser_gender char(1),
+	@qoouser_nation char(2),
+	@qoouser_ipaddress varchar(200),
+	@qoouser_hascoin int,
+	@qoouser_phone_num varchar(20),
+	@qoouser_grade int,
+	@qoouser_receive_email char(1),
+	@qoouser_receive_sms char(1),
+	@qoouser_denide char(1),
+	@qoouser_register_datetime datetime,
+	@qoouser_lastlogin_datetime datetime,
+	@qoouser_lastlogin_ipaddress varchar(200)
 as
 set nocount on
 set transaction isolation level read uncommitted
 begin
 
-	insert into dbo.QOO10USERENC values (@id,@pw,@email,@gender,@nation,@ipaddress,@coin,@pwenc)
+	insert into dbo.QOO10_USER_REAL values 
+	(
+		@qoouser_id
+	,	@qoouser_pw
+	,	@qoouser_email
+	,	@qoouser_gender
+	,	@qoouser_nation
+	,	@qoouser_ipaddress
+	,	@qoouser_hascoin
+	,	@qoouser_phone_num
+	,	@qoouser_grade
+	,	@qoouser_receive_email 
+	,	@qoouser_receive_sms 
+	,	@qoouser_denide
+	,	@qoouser_register_datetime
+	,	@qoouser_lastlogin_datetime
+	,	@qoouser_lastlogin_ipaddress 
+	)
 
 	if @@error <> 0
 	begin
