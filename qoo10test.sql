@@ -61,6 +61,10 @@ end
 
 drop table dbo.QOO10USERENC
 
+drop table dbo.QOO10_USER_REAL
+
+select count(*) from dbo.QOO10_USER_REAL with(nolock)
+
 -- QOO10 의 회원 테이블(더미데이터로 만든것) : 암호화작업 확인
 create table dbo.QOO10_USER_REAL 
 ( 
