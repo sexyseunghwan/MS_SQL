@@ -63,7 +63,10 @@ drop table dbo.QOO10USERENC
 
 drop table dbo.QOO10_USER_REAL
 
-select count(*) from dbo.QOO10_USER_REAL with(nolock)
+select top(1000) * from dbo.QOO10_USER_REAL with(nolock)
+
+
+
 
 -- QOO10 의 회원 테이블(더미데이터로 만든것) : 암호화작업 확인
 create table dbo.QOO10_USER_REAL 
@@ -684,20 +687,24 @@ select @num
 
 --drop proc dbo.qoo10_total_login
 
-SELECT TOP(100) * FROM dbo.QOO10USERENC WITH(NOLOCK)
+--SELECT TOP(100) * FROM dbo.QOO10USERENC WITH(NOLOCK)
 
+select top(10) * from dbo.QOO10_USER_REAL 
+ 
+--drop proc qoo10_total_login
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-03-16 
 	Description : ip 검증개체
 	    
 	History		: 2021-03-16 Seunghwan Shin	#최초 생성
+				  2021-03-31 Seunghwan Shin	#마지막 회원접속시간,접속ip 추가
 
 */
 create proc [dbo].[qoo10_total_login]
 	@user_ip_address varchar(100),-- 유저의 ip주소
-	@user_id varchar(100), -- 유저 id
-	@user_pw varchar(800), -- 유저 pw
+	@qoouser_id varchar(100), -- 유저 id
+	@qoouser_pw varchar(800), -- 유저 pw
 	@login_code int output -- 로그인에 관련된 코드 0 : 로그인 성공, 1 : 로그인 실패(아이디,비번 오류) , -1 : 아이피 접속 승인불가
 as
 set nocount on
@@ -747,7 +754,7 @@ begin try
 		-- 해당 아이피에 대한 접속은 승인
 		-- 로그인 정보 비교대조
 		declare @log_on int = 0
-		select @log_on = count(*) from dbo.QOO10USERENC where id = @user_id and pw_encryption = @user_pw
+		select @log_on = count(*) from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw
 
 		if(@log_on <> 1)-- 로그인에 실패하는 경우
 		begin
@@ -757,9 +764,9 @@ begin try
 		begin
 			set @login_code = 0
 			
-			-- 로그인 성공시간 기록 남기기
+			
 			begin tran
-
+				-- 로그인 성공시간 기록 남기기
 				insert into dbo.QOO10USERLOG
 				(
 					log_user_id
@@ -768,10 +775,16 @@ begin try
 				)
 				values
 				(
-					@user_id
+					@qoouser_id
 				,	default
 				,	@user_ip_address
 				)
+
+				--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
+				update dbo.QOO10_USER_REAL set 
+					qoouser_lastlogin_datetime = getdate()
+				,	qoouser_lastlogin_ipaddress = @user_ip_address
+				where qoouser_id = @qoouser_id 
 
 			commit tran
 
