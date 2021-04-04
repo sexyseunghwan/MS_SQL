@@ -699,13 +699,14 @@ select top(10) * from dbo.QOO10_USER_REAL
 	    
 	History		: 2021-03-16 Seunghwan Shin	#최초 생성
 				  2021-03-31 Seunghwan Shin	#마지막 회원접속시간,접속ip 추가
+				  2021-04-03 Seunghwan Shin #자동로그인 방지 추가
 
 */
 create proc [dbo].[qoo10_total_login]
-	@user_ip_address varchar(100),-- 유저의 ip주소
+	@user_ip_address varchar(100),-- 접속한 ip주소
 	@qoouser_id varchar(100), -- 유저 id
 	@qoouser_pw varchar(800), -- 유저 pw
-	@login_code int output -- 로그인에 관련된 코드 0 : 로그인 성공, 1 : 로그인 실패(아이디,비번 오류) , -1 : 아이피 접속 승인불가
+	@login_code int output -- 로그인에 관련된 코드 0 : 로그인 성공, 1 : 로그인 실패(아이디,비번 오류) , -1 : 아이피 접속 승인불가, 2 : 로그인은 성공했지만 마지막으로 접속했던 ip와 현재 접속하는 ip의 위치가 달라 자동로그인 방지 정책을 따라야한다.
 as
 set nocount on
 set transaction isolation level read uncommitted
@@ -762,10 +763,16 @@ begin try
 		end
 		else -- 로그인에 성공하는 경우
 		begin
-			set @login_code = 0
+			--마지막으로 접속한 ip와 현재접속시도하고 있는 ip가 같은지 비교하고 다르다면 자동로그인 방지 절차를 거쳐야 한다.
+			declare @last_ip_address varchar(100)
+			select @last_ip_address = qoouser_lastlogin_ipaddress from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = @qoouser_id
 			
-			
-			begin tran
+			-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같은경우
+			if(@last_ip_address = @user_ip_address)
+			begin
+				set @login_code = 0
+
+				begin tran
 				-- 로그인 성공시간 기록 남기기
 				insert into dbo.QOO10USERLOG
 				(
@@ -786,7 +793,14 @@ begin try
 				,	qoouser_lastlogin_ipaddress = @user_ip_address
 				where qoouser_id = @qoouser_id 
 
-			commit tran
+				commit tran
+			end
+
+			-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같지 않은 경우
+			else
+			begin
+				set @login_code = 2
+			end
 
 		end
 	end
@@ -880,3 +894,269 @@ SELECT * FROM TBLBANNEDIPLIST with(nolock)
 --update dbo.TBLBANNEDIPLIST set banned_ip_address = '123' 
 
 
+--DROP TABLE dbo.XMLTESTTBL
+
+CREATE TABLE dbo.XMLTESTTBL
+(
+	seq int identity(1,1),
+	xml_data xml
+)
+
+ALTER TABLE dbo.XMLTESTTBL ADD CONSTRAINT PK__XMLTESTTBL__SEQ PRIMARY KEY (seq)
+
+
+select * from dbo.XMLTESTTBL with(nolock)
+
+declare @input nvarchar(max) = N'<document>
+    <userTbl name="이승기" birthYear="1987" addr="서울" />
+    <userTbl name="김범수" birthYear="1979" addr="경북" />
+    <userTbl name="김경호" birthYear="1971" addr="서울" />
+    <userTbl name="조용필" birthYear="1950" addr="충남" />
+</document>'
+
+insert into dbo.XMLTESTTBL VALUES (@input)
+
+
+INSERT INTO dbo.XMLTESTTBL VALUES (N'<document>
+    <userTbl name="이승기" birthYear="1987" addr="서울" />
+    <userTbl name="김범수" birthYear="1979" addr="경북" />
+    <userTbl name="김경호" birthYear="1971" addr="서울" />
+    <userTbl name="조용필" birthYear="1950" addr="충남" />
+</document>')
+
+SELECT * FROM dbo.XMLTESTTBL WITH(NOLOCK)
+
+
+drop table dbo.INDEXXMLTBL
+
+CREATE TABLE dbo.INDEXXMLTBL
+(
+	id int not null,
+	fullname varchar(30),
+	xmlinfo xml
+)
+
+ALTER TABLE dbo.INDEXXMLTBL ADD CONSTRAINT PK__INDEXXMLTBL__ID PRIMARY KEY (id)
+
+create table dbo.QOO10_USER_REAL 
+( 
+	qoouser_code int identity(1,1) not null,--회원고유코드 
+	qoouser_id varchar(100) not null,--회원 아이디
+	qoouser_pw varchar(800) not null, -- 회원 비밀번호 encryption
+	qoouser_email varchar(200) null,--회원 이메일 
+	qoouser_gender char(1) null,--회원 성별 
+	qoouser_nation char(2) null,-- 회원 국가 
+	qoouser_ipaddress varchar(200) null,-- 회원 아이피주소
+	qoouser_hascoin int not null,-- 회원이 소유한 코인
+	qoouser_phone_num varchar(20) not null,-- 회원의 전화번호
+	qoouser_grade int not null, -- 회원의 등급
+	qoouser_receive_email char(1) not null, -- 회원의 이메일 수신 여부
+	qoouser_receive_sms char(1) not null, -- 회원의 문자 수신 여부
+	qoouser_denide char(1) not null, -- 차단된 회원인지 여부
+	qoouser_register_datetime datetime not null, -- 회원 등록일
+	qoouser_lastlogin_datetime datetime null, -- 회원이 최종 로그인 시간
+	qoouser_lastlogin_ipaddress varchar(200) null--회원의 최종 로그인 아이피
+)
+
+
+--drop table dbo.QOOUSERXML 
+
+--drop table dbo.QOOUSERXML
+
+drop table dbo.QOOUSERXML
+
+CREATE TABLE dbo.QOOUSERXML
+(
+	seq int identity(1,1) not null,
+	user_data xml
+)
+
+ALTER TABLE dbo.QOOUSERXML ADD CONSTRAINT PK__QOOUSERXML__SEQ PRIMARY KEY (seq)
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_code = 1
+
+
+exec dbo.sh_xml_test 15000
+
+
+SELECT * FROM dbo.QOOUSERXML WITH(NOLOCK)
+
+
+select * from dbo.QOOUSERXML with(nolock) where user_data.exist('/row[@qoouser_id="onfyu878596"]') = 1
+
+
+drop proc dbo.sh_xml_test
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-04-04   
+	Description : 테스트  
+	     
+	History	: 2021-04-04 Seunghwan Shin	#최초 생성  
+*/ 
+create proc [dbo].[sh_xml_test] 
+	@cycle int -- 상위 몇개의 유저 데이터를 xml 화할것인지 지정  
+
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+	declare	@qoouser_id			varchar(100)
+	,		@qoouser_email		varchar(200)
+	,		@qoouser_gender		char(1)
+	,		@qoouser_nation		char(2)
+	,		@qoouser_ipaddress	varchar(200)
+	,		@num_i				int = 0
+	
+
+	while(@num_i < @cycle)
+	begin
+
+		set @num_i += 1
+
+		declare @xml_data nvarchar(max)
+
+		select 
+			@qoouser_id = qoouser_id
+		,	@qoouser_email = qoouser_email
+		,	@qoouser_gender = qoouser_gender
+		,	@qoouser_nation = qoouser_nation
+		,	@qoouser_ipaddress = qoouser_ipaddress
+		from dbo.QOO10_USER_REAL with(nolock) where qoouser_code = @num_i
+
+		set @xml_data = N'<row qoouser_id="'+@qoouser_id + N'" qoouser_email="' + @qoouser_email + N'" qoouser_gender="'+@qoouser_gender + N'" qoouser_nation="'+@qoouser_nation + N'" qoouser_grade="'+ @qoouser_ipaddress  +'"/>'
+
+		insert into dbo.QOOUSERXML values (@xml_data)
+	
+	end
+	
+
+end
+
+
+SELECT TOP(1) * FROM dbo.QOO10_USER_REAL FOR XML RAW,ELEMENTS,XMLSCHEMA
+
+
+CREATE TABLE dbo.SCHEMAXMLTBL
+(
+	id int identity(1,1),
+	xmlcol xml (schema_test)
+)
+
+insert into dbo.SCHEMAXMLTBL values (N'<row xmlns="urn:schemas-microsoft-com:sql:SqlRowSet5">
+  <qoouser_code>1</qoouser_code>
+  <qoouser_id>onfyu878596</qoouser_id>
+  <qoouser_pw>0b72f1346e49e278e1e001c5f955ab1146fc0d61cc2b6d7a4ff5f2d02b99cb52</qoouser_pw>
+  <qoouser_email>ipjphpy9965@gmail.com</qoouser_email>
+  <qoouser_gender>F</qoouser_gender>
+  <qoouser_nation>TW</qoouser_nation>
+  <qoouser_ipaddress>107.128.013.482</qoouser_ipaddress>
+  <qoouser_hascoin>5511769</qoouser_hascoin>
+  <qoouser_phone_num>01048277045</qoouser_phone_num>
+  <qoouser_grade>3</qoouser_grade>
+  <qoouser_receive_email>Y</qoouser_receive_email>
+  <qoouser_receive_sms>Y</qoouser_receive_sms>
+  <qoouser_denide>N</qoouser_denide>
+  <qoouser_register_datetime>2007-01-02T00:00:00</qoouser_register_datetime>
+  <qoouser_lastlogin_datetime>2021-04-03T18:10:42.427</qoouser_lastlogin_datetime>
+  <qoouser_lastlogin_ipaddress>0:0:0:0:0:0:0:1</qoouser_lastlogin_ipaddress>
+</row>')
+
+
+SELECT * FROM dbo.SCHEMAXMLTBL WITH(NOLOCK)
+
+
+CREATE XML SCHEMA COLLECTION schema_test as N'
+<xsd:schema targetNamespace="urn:schemas-microsoft-com:sql:SqlRowSet5" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" elementFormDefault="qualified">
+  <xsd:import namespace="http://schemas.microsoft.com/sqlserver/2004/sqltypes" schemaLocation="http://schemas.microsoft.com/sqlserver/2004/sqltypes/sqltypes.xsd" />
+  <xsd:element name="row">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="qoouser_code" type="sqltypes:int" />
+        <xsd:element name="qoouser_id">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="100" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_pw">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="800" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_email" minOccurs="0">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="200" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_gender" minOccurs="0">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="1" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_nation" minOccurs="0">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="2" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_ipaddress" minOccurs="0">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="200" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_hascoin" type="sqltypes:int" />
+        <xsd:element name="qoouser_phone_num">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="20" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_grade" type="sqltypes:int" />
+        <xsd:element name="qoouser_receive_email">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="1" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_receive_sms">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="1" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_denide">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="1" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="qoouser_register_datetime" type="sqltypes:datetime" />
+        <xsd:element name="qoouser_lastlogin_datetime" type="sqltypes:datetime" minOccurs="0" />
+        <xsd:element name="qoouser_lastlogin_ipaddress" minOccurs="0">
+          <xsd:simpleType>
+            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
+              <xsd:maxLength value="200" />
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>'
