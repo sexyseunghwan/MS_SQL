@@ -35,6 +35,7 @@ drop table dbo.QOO10USER
 	Description : 더미데이터 생성 : 회원관련
 	    
 	History		: 2021-02-20 Seunghwan Shin	#최초 생성
+				  2021-04-14 Seunghwan Shin	#qoouser_birthday 추가
 
 */
 create proc [dbo].[qoo10_dummy_init]
@@ -144,7 +145,7 @@ select * from dbo.QOO10USER with(nolock) where usercode = (select count(*) from 
 
 select count(*) from dbo.APPLEBUYTBL with(nolock)
 
-select * from 
+select * from dbo.QOO10_USER_REAL
 
 
 --drop proc dbo.qoo10_dummy_init
@@ -156,11 +157,13 @@ select * from
 	    
 	History		:	2021-02-20 Seunghwan Shin	#최초 생성
 					2021-03-30 Seunghwan Shin   #컬럼 추가
+					2021-04-14 Seunghwan Shin   #qoouser_birthday 컬럼추가
 			
 */
 create proc [dbo].[qoo10_dummy_init]
 	@qoouser_id varchar(100),
 	@qoouser_pw varchar(800),
+	@qoouser_birthday datetime,
 	@qoouser_email varchar(200),
 	@qoouser_gender char(1),
 	@qoouser_nation char(2),
@@ -183,6 +186,7 @@ begin
 	(
 		@qoouser_id
 	,	@qoouser_pw
+	,	@qoouser_birthday
 	,	@qoouser_email
 	,	@qoouser_gender
 	,	@qoouser_nation
@@ -690,7 +694,31 @@ select @num
 --SELECT TOP(100) * FROM dbo.QOO10USERENC WITH(NOLOCK)
 
 select top(10) * from dbo.QOO10_USER_REAL 
- 
+
+insert into dbo.QOO10_USER_REAL values 
+(
+	'admin'
+,	'24b0015e0d850b1c796d7586d21072b5f8ebdc180805edc074cdf034b245478b'
+,	'ssh9308@naver.com'
+,	'M'
+,	'KR'
+,	'123.123.123'
+,	5000000
+,	'01051393792'
+,	5
+,	'Y'
+,	'Y'
+,	'Y'
+,	GETDATE()
+,	getdate()
+,	'123.123.123'
+
+)
+
+
+select * from dbo.QOO10_USER_REAL with(nolock)
+
+
 --drop proc qoo10_total_login
 /*
 	Author      : Seunghwan Shin
@@ -938,11 +966,19 @@ CREATE TABLE dbo.INDEXXMLTBL
 
 ALTER TABLE dbo.INDEXXMLTBL ADD CONSTRAINT PK__INDEXXMLTBL__ID PRIMARY KEY (id)
 
+drop table dbo.QOO10_USER_REAL
+
+select count(*) from dbo.QOO10_USER_REAL with(nolock)
+
+select top(100) * from dbo.QOO10_USER_REAL with(nolock)
+
+
+-- 애가 진짜 qoouser라고 할 수 있지 : 생년월일이 없네
 create table dbo.QOO10_USER_REAL 
-( 
-	qoouser_code int identity(1,1) not null,--회원고유코드 
+(  
 	qoouser_id varchar(100) not null,--회원 아이디
 	qoouser_pw varchar(800) not null, -- 회원 비밀번호 encryption
+	qoouser_birthday datetime,--회원 생년월일
 	qoouser_email varchar(200) null,--회원 이메일 
 	qoouser_gender char(1) null,--회원 성별 
 	qoouser_nation char(2) null,-- 회원 국가 
@@ -957,6 +993,8 @@ create table dbo.QOO10_USER_REAL
 	qoouser_lastlogin_datetime datetime null, -- 회원이 최종 로그인 시간
 	qoouser_lastlogin_ipaddress varchar(200) null--회원의 최종 로그인 아이피
 )
+
+ALTER TABLE dbo.QOO10_USER_REAL ADD CONSTRAINT PK__QOO10_USER_REAL__QOOUSER_ID PRIMARY KEY (qoouser_id)
 
 
 --drop table dbo.QOOUSERXML 
@@ -1045,118 +1083,3 @@ CREATE TABLE dbo.SCHEMAXMLTBL
 	xmlcol xml (schema_test)
 )
 
-insert into dbo.SCHEMAXMLTBL values (N'<row xmlns="urn:schemas-microsoft-com:sql:SqlRowSet5">
-  <qoouser_code>1</qoouser_code>
-  <qoouser_id>onfyu878596</qoouser_id>
-  <qoouser_pw>0b72f1346e49e278e1e001c5f955ab1146fc0d61cc2b6d7a4ff5f2d02b99cb52</qoouser_pw>
-  <qoouser_email>ipjphpy9965@gmail.com</qoouser_email>
-  <qoouser_gender>F</qoouser_gender>
-  <qoouser_nation>TW</qoouser_nation>
-  <qoouser_ipaddress>107.128.013.482</qoouser_ipaddress>
-  <qoouser_hascoin>5511769</qoouser_hascoin>
-  <qoouser_phone_num>01048277045</qoouser_phone_num>
-  <qoouser_grade>3</qoouser_grade>
-  <qoouser_receive_email>Y</qoouser_receive_email>
-  <qoouser_receive_sms>Y</qoouser_receive_sms>
-  <qoouser_denide>N</qoouser_denide>
-  <qoouser_register_datetime>2007-01-02T00:00:00</qoouser_register_datetime>
-  <qoouser_lastlogin_datetime>2021-04-03T18:10:42.427</qoouser_lastlogin_datetime>
-  <qoouser_lastlogin_ipaddress>0:0:0:0:0:0:0:1</qoouser_lastlogin_ipaddress>
-</row>')
-
-
-SELECT * FROM dbo.SCHEMAXMLTBL WITH(NOLOCK)
-
-
-CREATE XML SCHEMA COLLECTION schema_test as N'
-<xsd:schema targetNamespace="urn:schemas-microsoft-com:sql:SqlRowSet5" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" elementFormDefault="qualified">
-  <xsd:import namespace="http://schemas.microsoft.com/sqlserver/2004/sqltypes" schemaLocation="http://schemas.microsoft.com/sqlserver/2004/sqltypes/sqltypes.xsd" />
-  <xsd:element name="row">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element name="qoouser_code" type="sqltypes:int" />
-        <xsd:element name="qoouser_id">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="100" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_pw">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="800" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_email" minOccurs="0">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="200" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_gender" minOccurs="0">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="1" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_nation" minOccurs="0">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="2" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_ipaddress" minOccurs="0">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="200" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_hascoin" type="sqltypes:int" />
-        <xsd:element name="qoouser_phone_num">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="20" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_grade" type="sqltypes:int" />
-        <xsd:element name="qoouser_receive_email">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="1" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_receive_sms">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="1" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_denide">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:char" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="1" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-        <xsd:element name="qoouser_register_datetime" type="sqltypes:datetime" />
-        <xsd:element name="qoouser_lastlogin_datetime" type="sqltypes:datetime" minOccurs="0" />
-        <xsd:element name="qoouser_lastlogin_ipaddress" minOccurs="0">
-          <xsd:simpleType>
-            <xsd:restriction base="sqltypes:varchar" sqltypes:localeId="1042" sqltypes:sqlCompareOptions="IgnoreCase IgnoreKanaType IgnoreWidth">
-              <xsd:maxLength value="200" />
-            </xsd:restriction>
-          </xsd:simpleType>
-        </xsd:element>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-</xsd:schema>'
