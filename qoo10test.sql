@@ -1083,3 +1083,30 @@ CREATE TABLE dbo.SCHEMAXMLTBL
 	xmlcol xml (schema_test)
 )
 
+
+
+CREATE TABLE dbo.TESTSHTBL
+(
+	seq int identity(1,1) not null,
+	test varchar(10) null
+
+)
+
+
+ALTER TABLE dbo.TESTSHTBL ADD CONSTRAINT PK__TESTSHTBL__SEQ PRIMARY KEY (seq)
+
+select * from dbo.TESTSHTBL with(nolock) where test = ''
+
+--CREATE INDEX IDX__TESTSHTBL__TEST ON dbo.TESTSHTBL (test)
+
+
+
+DECLARE @num int = 0
+
+WHILE (@num < 200)
+begin
+	insert into dbo.TESTSHTBL values (''+@num)
+	set @num += 1
+end
+
+
