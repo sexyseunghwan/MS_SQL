@@ -67,7 +67,7 @@ drop table dbo.QOO10_USER_REAL
 select top(1000) * from dbo.QOO10_USER_REAL with(nolock)
 
 
-
+select qoouser_email from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'nyigd609658'
 
 -- QOO10 의 회원 테이블(더미데이터로 만든것) : 암호화작업 확인
 create table dbo.QOO10_USER_REAL 
@@ -118,6 +118,42 @@ ALTER TABLE dbo.QOO10USER ADD CONSTRAINT PK__QOO10USER__USERCODE PRIMARY KEY CLU
 ALTER TABLE dbo.QOO10USER ADD CONSTRAINT CK__QOO10USER__HASCOIN CHECK (hascoin >= 0)
 
 select * from dbo.QOO10USER with(nolock)
+
+select * from dbo.QOO10SELLER with(nolock)
+
+
+-- 테스트용
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-02-20 
+	Description : 더미데이터 생성 : 회원관련
+	    
+	History		: 2021-02-20 Seunghwan Shin	#최초 생성
+				  2021-04-14 Seunghwan Shin	#qoouser_birthday 추가
+
+*/
+create proc [dbo].[qoo10_test_mybatis]
+	@seller_id varchar(100),
+	@new_seller_nation char(2)
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+
+	update dbo.QOO10SELLER set seller_nation = @new_seller_nation where seller_id = @seller_id
+
+	if @@error <> 0
+	begin
+		return 0;
+	end
+
+end
+
+
+
+
+
+
 
 create table dbo.QOO10SELLER
 (
@@ -974,6 +1010,7 @@ select top(100) * from dbo.QOO10_USER_REAL with(nolock)
 
 
 -- 애가 진짜 qoouser라고 할 수 있지 : 생년월일이 없네
+
 create table dbo.QOO10_USER_REAL 
 (  
 	qoouser_id varchar(100) not null,--회원 아이디
