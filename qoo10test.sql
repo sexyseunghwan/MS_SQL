@@ -1147,3 +1147,187 @@ begin
 end
 
 
+
+
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-04-26   
+	Description : 테스트  
+	     
+	History	: 2021-04-26 Seunghwan Shin	#최초 생성  
+*/ 
+create proc [dbo].[cust_generator] 
+	@user_name nvarchar(100)  
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+	insert into dbo.TB_CUST
+	(
+		cust_name
+	)
+	values
+	(
+		@user_name
+	)
+	
+
+end
+
+exec dbo.cust_generator 'HARRY'
+
+SELECT * FROM dbo.TB_CUST WITH(NOLOCK)
+
+DROP TABLE dbo.TB_CUST
+
+
+
+CREATE TABLE dbo.TB_CUST(
+
+	cust_no INT NOT NULL,
+
+	cust_name NVARCHAR(100) NOT NULL
+
+	CONSTRAINT PK_TB_CUST PRIMARY KEY(cust_no)
+);
+
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(1, 'MIKE');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(2, 'OBAMA');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(3, 'TRUMP');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(4, 'MESSI');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(5, 'RONALDO');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(6, 'MALDINI');
+
+INSERT INTO TB_CUST(CUST_NO, CUST_NAME) VALUES(7, 'SANCHEZ');
+
+-- drop TABLE dbo.TB_PRODUCT
+
+CREATE TABLE dbo.TB_PRODUCT(
+
+	product_no INT NOT NULL,
+
+	product_name NCHAR(100) NOT NULL
+
+	CONSTRAINT PK_TB_PRODUCT PRIMARY KEY(PRODUCT_NO)
+);
+
+INSERT INTO TB_PRODUCT(PRODUCT_NO, PRODUCT_NAME) VALUES(701, 'MacBook');
+
+INSERT INTO TB_PRODUCT(PRODUCT_NO, PRODUCT_NAME) VALUES(702, 'MagicMouse');
+
+INSERT INTO TB_PRODUCT(PRODUCT_NO, PRODUCT_NAME) VALUES(703, 'IPad');
+
+INSERT INTO TB_PRODUCT(PRODUCT_NO, PRODUCT_NAME) VALUES(704, 'IPhone');
+
+ 
+
+CREATE TABLE dbo.TB_ORDER(
+
+	order_no INT NOT NULL,
+
+	cust_no INT NOT NULL,
+
+	product_no INT NOT NULL
+
+	CONSTRAINT PK_TB_ORDER PRIMARY KEY(ORDER_NO));
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201901, 1, 701);
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201902, 1, 702);
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201904, 2, 704);
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201905, 3, 701);
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201906, 4, 703);
+
+INSERT INTO TB_ORDER(ORDER_NO, CUST_NO, PRODUCT_NO) VALUES(201907, 5, 701);
+
+ 
+
+-- O.*, C.CUST_NAME, P.PRODUCT_NAME
+
+ 
+
+SELECT *
+FROM dbo.TB_ORDER O
+LEFT JOIN dbo.TB_CUST C ON O.CUST_NO = C.CUST_NO 
+LEFT JOIN dbo.TB_PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+
+
+SELECT *
+FROM dbo.TB_CUST c
+LEFT JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no and c.cust_name = 'MIKE' and o.product_no = 701
+
+SELECT *
+FROM dbo.TB_CUST c
+LEFT JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no and o.product_no = 701 
+
+
+SELECT *
+FROM dbo.TB_CUST c
+LEFT JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no
+
+
+SELECT *
+FROM dbo.TB_CUST c
+LEFT JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no 
+
+and c.cust_name = 'MIKE' 
+
+
+SELECT *
+FROM dbo.TB_CUST c
+INNER JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no  
+
+
+select * from dbo.TB_ORDER with(nolock)
+
+
+SELECT *
+FROM dbo.TB_CUST c
+LEFT JOIN dbo.TB_ORDER o ON o.cust_no = c.cust_no
+WHERE c.cust_name = 'MIKE'
+
+
+
+select * from dbo.TB_ORDER with(nolock)
+
+
+
+
+
+--LEFT JOIN dbo.TB_PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+
+
+SELECT *
+FROM dbo.TB_ORDER O 
+LEFT JOIN dbo.TB_PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+
+
+SELECT *
+FROM dbo.TB_ORDER O 
+INNER JOIN dbo.TB_PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
+
+ 
+
+-- AND C.CUST_NAME = 'MIKE'
+
+ 
+
+SELECT * FROM dbo.TB_CUST
+
+SELECT * FROM dbo.TB_PRODUCT
+
+SELECT * FROM dbo.TB_ORDER
+
