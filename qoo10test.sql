@@ -1321,13 +1321,217 @@ INNER JOIN dbo.TB_PRODUCT P ON O.PRODUCT_NO = P.PRODUCT_NO
 
  
 
+
+SELECT
+	c.cust_name
+,	c.cust_name
+,	p.product_name
+,	p.product_no
+,	o.order_no
+,	o.cust_no
+,	o.product_no
+ FROM dbo.TB_CUST c WITH(NOLOCK)
+ INNER JOIN dbo.TB_ORDER o ON c.cust_no = o.cust_no
+ INNER JOIN dbo.TB_PRODUCT p ON p.product_no = o.product_no
+
+ SELECT
+	c.cust_name
+,	c.cust_name
+,	p.product_name
+,	p.product_no
+,	o.order_no
+,	o.cust_no
+,	o.product_no
+ FROM dbo.TB_CUST c WITH(NOLOCK)
+ CROSS JOIN dbo.TB_ORDER o WITH(NOLOCK)
+ CROSS JOIN dbo.TB_PRODUCT p WITH(NOLOCK)
+ 
+
+
 -- AND C.CUST_NAME = 'MIKE'
+
+drop table  dbo.TB_CUST
+drop table  dbo.TB_PRODUCT
+drop table  dbo.TB_ORDER
+
+
+--
+SELECT * FROM dbo.TB_CUST with(nolock)
+--
+SELECT * FROM dbo.TB_PRODUCT with(nolock)
+--
+SELECT * FROM dbo.TB_ORDER with(nolock)
+
+
+
+SELECT 
+	t1.cust_no
+,	t1.cust_name
+,	t2.cust_no
+,	t2.cust_name
+FROM dbo.TB_CUST t1 WITH(NOLOCK)
+INNER JOIN dbo.TB_CUST t2 WITH(NOLOCK) ON t1.cust_no < t2.cust_no
+ORDER BY t1.cust_no
+
+SELECT 
+	t1.cust_no
+,	t1.cust_name
+,	t2.cust_no
+,	t2.cust_name
+FROM dbo.TB_CUST t1 WITH(NOLOCK)
+CROSS JOIN dbo.TB_CUST t2 WITH(NOLOCK)
+ORDER BY t1.cust_no
+
+
+
+
+CREATE TABLE dbo.TB_CUST(
+
+	cust_no INT NOT NULL, -- 고객번호
+
+	cust_name NVARCHAR(100) NOT NULL -- 고객이름
+
+	CONSTRAINT PK__TB_CUST__CUST_NO PRIMARY KEY(cust_no)
+
+);
+
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(1, 'MIKE');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(2, 'OBAMA');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(3, 'TRUMP');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(4, 'MESSI');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(5, 'RONALDO');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(6, 'MALDINI');
+
+INSERT INTO TB_CUST(cust_no, cust_name) VALUES(7, 'SANCHEZ');
 
  
 
-SELECT * FROM dbo.TB_CUST
 
-SELECT * FROM dbo.TB_PRODUCT
+CREATE TABLE dbo.TB_PRODUCT(
 
-SELECT * FROM dbo.TB_ORDER
+	product_no INT NOT NULL, -- 제품 번호
+	 
+	product_name NCHAR(100) NOT NULL -- 제품 이름
+
+	CONSTRAINT PK__TB_PRODUCT__PRODUCT_NO PRIMARY KEY(product_no)
+
+);
+
+
+INSERT INTO TB_PRODUCT(product_no, product_name) VALUES(701, 'MacBook');
+
+INSERT INTO TB_PRODUCT(product_no, product_name) VALUES(702, 'MagicMouse');
+
+INSERT INTO TB_PRODUCT(product_no, product_name) VALUES(703, 'IPad');
+
+INSERT INTO TB_PRODUCT(product_no, product_name) VALUES(704, 'IPhone');
+
+ 
+
+CREATE TABLE dbo.TB_ORDER(
+
+	order_no INT NOT NULL, --주문 번호
+
+	cust_no INT NOT NULL, -- 주문을 한 고객 번호
+
+	product_no INT NOT NULL -- 주문한 고객이 산 제품 번호
+
+	CONSTRAINT PK__TB_ORDER__ORDER_NO PRIMARY KEY(order_no)
+
+);
+
+
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201901, 1, 701);
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201902, 1, 702);
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201904, 2, 704);
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201905, 3, 701);
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201906, 4, 703);
+
+INSERT INTO TB_ORDER(order_no, cust_no, product_no) VALUES(201907, 5, 701);
+
+
+
+
+--SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
+--DROP TABLE dbo.QOOSTAFF
+--DROP TABLE dbo.QOO_ATTENDANCE
+
+CREATE TABLE dbo.QOOSTAFF
+(
+	staff_name NVARCHAR(5) NOT NULL, -- 직원 이름
+	team VARCHAR(20) NOT NULL, --소속 팀
+	enter_date DATE NOT NULL, -- 입사일
+	out_date DATETIME NULL, -- 퇴사일
+	staff_address NVARCHAR(50) NULL -- 집주소 
+)
+
+ALTER TABLE dbo.QOOSTAFF ADD CONSTRAINT PK__QOOSTAFF__STAFF_NAME__TEAM PRIMARY KEY (staff_name,team)
+
+INSERT INTO dbo.QOOSTAFF VALUES ('이도윤','HR','2009-08-09',NULL,N'사랑시 고백구 행복동')
+INSERT INTO dbo.QOOSTAFF VALUES ('방성필','DEV','2012-04-05',NULL,N'사랑시 고백구 희망동')
+INSERT INTO dbo.QOOSTAFF VALUES ('백지현','FM','2015-01-13',NULL,N'사랑시 고백구 기대동')
+INSERT INTO dbo.QOOSTAFF VALUES ('홍준표','PR','2018-04-09',NULL,N'사랑시 정열구 용기동')
+INSERT INTO dbo.QOOSTAFF VALUES ('홍준표','DEV','2020-10-13',NULL,N'사랑시 우정구 성실동')
+
+
+CREATE TABLE dbo.QOO_ATTENDANCE
+(
+	att_seq BIGINT IDENTITY(1,1) NOT NULL,
+	staff_name NVARCHAR(5) NOT NULL, -- 직원이름
+	team VARCHAR(20) NOT NULL, -- 소속 팀
+	enter_time SMALLDATETIME NULL, -- 출근시간
+	exit_time SMALLDATETIME NULL -- 퇴근시간
+)
+
+ALTER TABLE dbo.QOO_ATTENDANCE ADD CONSTRAINT PK__QOO_ATTENDANCE__ATT_SEQ PRIMARY KEY (att_seq)
+
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('이도윤','HR','2020-04-29 09:12:13','2020-04-29 18:33:13')
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('이도윤','HR','2020-04-30 09:34:22','2020-04-30 18:30:43')
+
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('방성필','DEV','2020-04-29 09:32:12','2020-04-29 18:30:02')
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('방성필','DEV','2020-04-30 09:10:03','2020-04-30 18:30:43')
+
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('백지현','FM','2020-04-29 09:08:00','2020-04-29 18:30:15')
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('백지현','FM','2020-04-30 09:18:44','2020-04-30 18:31:43')
+
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('홍준표','PR','2020-04-29 10:00:04','2020-04-29 19:00:15')
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('홍준표','PR','2020-04-30 09:14:54','2020-04-30 21:02:13')
+
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('홍준표','DEV','2020-04-29 09:01:40','2020-04-29 18:30:15')
+INSERT INTO dbo.QOO_ATTENDANCE VALUES ('홍준표','DEV','2020-04-30 09:14:55','2020-04-30 19:30:44')
+
+
+SELECT
+	q.staff_name
+,	q.team
+,	q.enter_date
+,	q.out_date
+,	q.staff_address
+,	a.att_seq
+,	a.staff_name
+,	a.team
+,	a.enter_time,
+	a.exit_time
+FROM dbo.QOOSTAFF q WITH(NOLOCK)
+INNER JOIN QOO_ATTENDANCE a WITH(NOLOCK) ON q.staff_name = a.staff_name AND q.team = a.team
+ 
+
+ 
+ SELECT * FROM dbo.TBLINSA t1
+ INNER JOIN dbo.TBLINSA t2 ON t1.num < t2.num
+
+
+
+
 
