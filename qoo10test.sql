@@ -12,6 +12,24 @@ create table dbo.APPLEBUYTBL
 ALTER TABLE dbo.APPLEBUYTBL ADD CONSTRAINT PK__APPLEBUYTBL__BUYSEQ PRIMARY KEY CLUSTERED (buyseq)
 
 
+
+select * from dbo.APPLEINC with(nolock)
+
+CREATE TABLE dbo.ELECTRONIC_PRODUCTS
+(
+	elect_prodserial bigint identity(1,1) not null,--가전 제품 고유번호
+	elect_prod_name nvarchar(100) not null,--가전 제품 이름
+	elect_prod_price int not null,--가전 제품 가격
+	product_manufacturer_comp_seq int not null,--제조사 고유번호
+	product_available_stock int not null,--재고 수량
+
+)
+
+
+
+select * from dbo.APPLEBUYTBL with(nolock)
+
+
 select * from APPLEINC with(nolock)
 
 select count(*) from dbo.QOO10USER with(nolock)
@@ -196,18 +214,23 @@ select * from dbo.QOO10_USER_REAL
 					2021-04-14 Seunghwan Shin   #qoouser_birthday 컬럼추가
 			
 */
+
+exec dbo.qoo10_dummy_init '123','234','1990-08-21','ssh9308@naver.com','M','KR','123.123.123',1234,'010-5139-3792',1,'Y','Y','Y','1993-08-11','2013-10-11','123.4567.789'
+
+select * from dbo.QOO10_USER_REAL
+
 create proc [dbo].[qoo10_dummy_init]
-	@qoouser_id varchar(100),
-	@qoouser_pw varchar(800),
-	@qoouser_birthday datetime,
-	@qoouser_email varchar(200),
-	@qoouser_gender char(1),
-	@qoouser_nation char(2),
-	@qoouser_ipaddress varchar(200),
-	@qoouser_hascoin int,
-	@qoouser_phone_num varchar(20),
-	@qoouser_grade int,
-	@qoouser_receive_email char(1),
+	@qoouser_id varchar(100),--
+	@qoouser_pw varchar(800),--
+	@qoouser_birthday datetime,--
+	@qoouser_email varchar(200),--
+	@qoouser_gender char(1),--
+	@qoouser_nation char(2),--
+	@qoouser_ipaddress varchar(200),--
+	@qoouser_hascoin int,--
+	@qoouser_phone_num varchar(20),--
+	@qoouser_grade int,--
+	@qoouser_receive_email char(1),--
 	@qoouser_receive_sms char(1),
 	@qoouser_denide char(1),
 	@qoouser_register_datetime datetime,
@@ -635,7 +658,7 @@ end
 select * from dbo.APPLEBUYTBL with(nolock) where buyseq = (select count(*) from dbo.APPLEBUYTBL with(nolock))
 
 
-
+--select * from dbo.APPLEBUYTBL with(nolock)
 
 create proc [dbo].[qoo10_buy_product_test] 
 	@user_code int,--유저 고유 코드 
@@ -1011,8 +1034,11 @@ select top(100) * from dbo.QOO10_USER_REAL with(nolock)
 
 -- 애가 진짜 qoouser라고 할 수 있지 : 생년월일이 없네
 
-create table dbo.QOO10_USER_REAL 
+--drop table dbo.QOO10_USER_REAL 
+
+create table dbo.QOO10_USER_REAL
 (  
+	qoouser_seq bigint identity(1,1) not null,--회원 고유 번호
 	qoouser_id varchar(100) not null,--회원 아이디
 	qoouser_pw varchar(800) not null, -- 회원 비밀번호 encryption
 	qoouser_birthday datetime,--회원 생년월일
@@ -1031,7 +1057,7 @@ create table dbo.QOO10_USER_REAL
 	qoouser_lastlogin_ipaddress varchar(200) null--회원의 최종 로그인 아이피
 )
 
-ALTER TABLE dbo.QOO10_USER_REAL ADD CONSTRAINT PK__QOO10_USER_REAL__QOOUSER_ID PRIMARY KEY (qoouser_id)
+ALTER TABLE dbo.QOO10_USER_REAL ADD CONSTRAINT PK__QOO10_USER_REAL__QOOUSER_SEQ PRIMARY KEY (qoouser_seq)
 
 
 --drop table dbo.QOOUSERXML 
@@ -1526,6 +1552,9 @@ SELECT
 FROM dbo.QOOSTAFF q WITH(NOLOCK)
 INNER JOIN QOO_ATTENDANCE a WITH(NOLOCK) ON q.staff_name = a.staff_name AND q.team = a.team
  
+
+
+ select * from dbo.QOO10_USER_REAL with(nolock)
 
  
  SELECT * FROM dbo.TBLINSA t1

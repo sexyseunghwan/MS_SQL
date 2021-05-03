@@ -92,7 +92,7 @@ ORDER BY city DESC
 
 
 
-
+select top(100) * from dbo.QOO10_USER_REAL with(nolock)
 
 
 
