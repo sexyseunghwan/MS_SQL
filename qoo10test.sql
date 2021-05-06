@@ -27,6 +27,8 @@ CREATE TABLE dbo.ELECTRONIC_PRODUCTS
 
 
 
+
+
 select * from dbo.APPLEBUYTBL with(nolock)
 
 
