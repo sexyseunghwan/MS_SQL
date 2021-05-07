@@ -490,7 +490,9 @@ CREATE TABLE dbo.[BUYTBL_INFO] (
 	[buy_confirm_date] [DATETIME] /* 구매 확정 일자 - buy_confirm_date */
 )
 
-ALTER TABLE dbo.BUYTBL_INFO ADD CONSTRAINT PK__BUYTBL_INFO__BUY_SEQ PRIMARY KEY (buy_seq)
+ALTER TABLE dbo.BUYTBL_INFO ADD CONSTRAINT PK__BUYTBL_INFO__BUY_SEQ PRIMARY KEY (buy_seq,buy_qoouser_seq)
+--ALTER TABLE dbo.BUYTBL_INFO DROP PK__BUYTBL_INFO__BUY_SEQ
+
 
 
 select count(*) from dbo.BUYTBL_INFO with(nolock)
