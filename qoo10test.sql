@@ -206,6 +206,7 @@ select * from dbo.QOO10_USER_REAL
 
 --drop proc dbo.qoo10_dummy_init
 
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-02-20 
@@ -216,12 +217,7 @@ select * from dbo.QOO10_USER_REAL
 					2021-04-14 Seunghwan Shin   #qoouser_birthday 컬럼추가
 			
 */
-
-exec dbo.qoo10_dummy_init '123','234','1990-08-21','ssh9308@naver.com','M','KR','123.123.123',1234,'010-5139-3792',1,'Y','Y','Y','1993-08-11','2013-10-11','123.4567.789'
-
-select * from dbo.QOO10_USER_REAL
-
-create proc [dbo].[qoo10_dummy_init]
+ALTER proc [dbo].[qoo10_dummy_init]
 	@qoouser_id varchar(100),--
 	@qoouser_pw varchar(800),--
 	@qoouser_birthday datetime,--
@@ -243,7 +239,7 @@ set nocount on
 set transaction isolation level read uncommitted
 begin
 
-	insert into dbo.QOO10_USER_REAL values 
+	insert into dbo.QOO10_USER_REAL_TEST values 
 	(
 		@qoouser_id
 	,	@qoouser_pw

@@ -461,7 +461,7 @@ select * from dbo.MANUFACTURER_INC with(nolock)
 	History		: 2021-05-05 Seunghwan Shin	#최초 생성
 
 */
-create proc [dbo].[qoo10_buy_dummy]
+ALTER proc [dbo].[qoo10_buy_dummy]
 	@buy_qoouser_seq int
 ,	@product_serial int
 ,	@product_quantity int
@@ -472,7 +472,7 @@ set nocount on
 set transaction isolation level read uncommitted
 begin
 		
-	insert into dbo.BUYTBL_INFO values (@buy_qoouser_seq,@product_serial,@product_quantity,@buy_date,@buy_confirm_date)
+	insert into dbo.BUYTBL_INFO_TEST values (@buy_qoouser_seq,@product_serial,@product_quantity,@buy_date,@buy_confirm_date)
 
 
 end
@@ -492,6 +492,19 @@ CREATE TABLE dbo.[BUYTBL_INFO] (
 
 ALTER TABLE dbo.BUYTBL_INFO ADD CONSTRAINT PK__BUYTBL_INFO__BUY_SEQ PRIMARY KEY (buy_seq,buy_qoouser_seq)
 --ALTER TABLE dbo.BUYTBL_INFO DROP PK__BUYTBL_INFO__BUY_SEQ
+
+
+/* BUYTBL_INFO - 구매 테이블 */
+CREATE TABLE dbo.[BUYTBL_INFO_TEST] (
+	[buy_seq] [BIGINT] IDENTITY(1,1) NOT NULL,  /* 구매 고유번호 - buy_seq */
+	[buy_qoouser_seq] [BIGINT] NOT NULL,  /* 구매한 회원 번호 - buy_qoouser_seq */
+	[product_serial] [BIGINT] NOT NULL,  /* 제품 고유 번호 - product_serial */
+	[product_quantity] [INT] NOT NULL,  /* 구매 수량 - product_quantity */
+	[buy_date] [DATETIME] NOT NULL,  /* 구매 일자 - buy_date */
+	[buy_confirm_date] [DATETIME] /* 구매 확정 일자 - buy_confirm_date */
+)
+
+ALTER TABLE dbo.BUYTBL_INFO_TEST ADD CONSTRAINT PK__BUYTBL_INFO_TEST__BUY_SEQ PRIMARY KEY (buy_seq,buy_qoouser_seq)
 
 
 
@@ -551,3 +564,33 @@ begin
 
 
 end
+
+
+create table dbo.QOO10_USER_REAL_TEST
+(  
+	qoouser_seq bigint identity(1,1) not null,--회원 고유 번호
+	qoouser_id varchar(100) not null,--회원 아이디
+	qoouser_pw varchar(800) not null, -- 회원 비밀번호 encryption
+	qoouser_birthday datetime,--회원 생년월일
+	qoouser_email varchar(200) null,--회원 이메일 
+	qoouser_gender char(1) null,--회원 성별 
+	qoouser_nation char(2) null,-- 회원 국가 
+	qoouser_ipaddress varchar(200) null,-- 회원 아이피주소
+	qoouser_hascoin int not null,-- 회원이 소유한 코인
+	qoouser_phone_num varchar(20) not null,-- 회원의 전화번호
+	qoouser_grade int not null, -- 회원의 등급
+	qoouser_receive_email char(1) not null, -- 회원의 이메일 수신 여부
+	qoouser_receive_sms char(1) not null, -- 회원의 문자 수신 여부
+	qoouser_denide char(1) not null, -- 차단된 회원인지 여부
+	qoouser_register_datetime datetime not null, -- 회원 등록일
+	qoouser_lastlogin_datetime datetime null, -- 회원이 최종 로그인 시간
+	qoouser_lastlogin_ipaddress varchar(200) null--회원의 최종 로그인 아이피
+)
+
+ALTER TABLE dbo.QOO10_USER_REAL_TEST ADD CONSTRAINT PK__QOO10_USER_REAL_TEST__QOOUSER_SEQ PRIMARY KEY (qoouser_seq)
+
+
+select count(*) from dbo.QOO10_USER_REAL_TEST with(nolock)
+
+
+select count(*) from dbo.BUYTBL_INFO_TEST with(nolock)

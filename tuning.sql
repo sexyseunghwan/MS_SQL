@@ -1,20 +1,10 @@
+
 set arithabort off 
 set STATISTICS IO on
 set STATISTICS TIME on
 	
 	
 	
-	
-	--select 
-	--	m.comp_name
-	--,	sum(convert(bigint,e.elect_prod_price)*convert(bigint,b.product_quantity)) as totalsum
-	--from dbo.QOO10_USER_REAL q with(nolock)
-	--inner join dbo.BUYTBL_INFO b with(nolock) on q.qoouser_seq = b.buy_qoouser_seq
-	--inner join dbo.ELECTRONIC_PRODUCTS e with(nolock) on e.elect_prodserial = b.product_serial
-	--inner join dbo.MANUFACTURER_INC m on m.comp_seq = e.product_manufacturer_comp_seq
-	--where b.buy_date between '2000-01-01' and '2001-01-01'
-	--group by m.comp_name
-	--order by totalsum desc
 
 
 	select
@@ -25,51 +15,33 @@ set STATISTICS TIME on
 	inner join dbo.BUYTBL_INFO b with(nolock) on q.qoouser_seq = b.buy_qoouser_seq
 	inner join dbo.ELECTRONIC_PRODUCTS e with(nolock) on e.elect_prodserial = b.product_serial
 	inner join dbo.MANUFACTURER_INC m on m.comp_seq = e.product_manufacturer_comp_seq
-	where q.qoouser_nation = 'KR' 
+	where q.qoouser_nation = 'KR' and b.buy_date between '2009-01-01' and '2009-03-01' and m.comp_name = 'APPLE'
 	group by m.comp_name
 	order by sum(convert(bigint,e.elect_prod_price)*convert(bigint,b.product_quantity))-sum(convert(bigint,e.first_cost)*convert(bigint,b.product_quantity)) desc
-	
-
-
-
-	--and (b.buy_date between convert(datetime,'2000-01-01') and convert(datetime,'2000-03-01')) 
-	--exec dbo.qoo10_test_sp '2020-01-01','2020-12-31','SG'
-
-	--SELECT COUNT(*) FROM dbo.BUYTBL_INFO WITH(NOLOCK) WHERE buy_date between '2000-01-01' and '2002-03-01'
-
-
-	 --SELECT FORMAT(99999999, '#,#')
-
-
-	-- select
-	--	*
-	--from dbo.QOO10_USER_REAL q with(nolock)
-	--inner join dbo.BUYTBL_INFO b with(nolock,forceseek) on q.qoouser_seq = b.buy_qoouser_seq
-	--where q.qoouser_nation = 'KR'
-	--inner join dbo.ELECTRONIC_PRODUCTS e with(nolock) on e.elect_prodserial = b.product_serial
 
 
 
 set STATISTICS IO off
 set STATISTICS TIME off
+--T SHOWPLAN_TEXT off
+--CREATE INDEX IDX__QOO10_USER_REAL_TEST__TEST1 ON dbo.QOO10_USER_REAL_TEST (qoouser_nation)
+
+--SELECT product_serial,COUNT(*) FROM dbo.BUYTBL_INFO_TEST WITH(NOLOCK) GROUP BY product_serial
+
+--SELECT product_quantity,COUNT(*) FROM dbo.BUYTBL_INFO_TEST WITH(NOLOCK) GROUP BY product_quantity
+
+--SELECT buy_qoouser_seq,COUNT(*) FROM dbo.BUYTBL_INFO_TEST WITH(NOLOCK) GROUP BY buy_qoouser_seq
+
+--CREATE INDEX IDX__BUYTBL_INFO_TEST__TEST ON dbo.BUYTBL_INFO_TEST (buy_qoouser_seq,product_serial,product_quantity)
+
+--CREATE INDEX IDX__BUYTBL_INFO_TEST__TEST2 ON dbo.BUYTBL_INFO_TEST (product_serial) include (product_quantity)
+
+--CREATE INDEX IDX__BUYTBL_INFO_TEST__TEST_new ON dbo.BUYTBL_INFO (buy_date) include (product_serial,product_quantity)
+--DROP INDEX IDX__BUYTBL_INFO_TEST__TEST_new ON dbo.BUYTBL_INFO
 
 
---CREATE INDEX IDX__QOO10_USER_REAL__QOOUSER_NATION ON dbo.QOO10_USER_REAL (qoouser_nation)
+--CREATE INDEX IDX__BUYTBL_INFO_TEST__TEST4 ON dbo.BUYTBL_INFO_TEST (product_serial,buy_date) include (product_quantity)
 
+--DROP INDEX IDX__BUYTBL_INFO_TEST__TEST ON dbo.BUYTBL_INFO_TEST
 
---DROP INDEX IDX__BUYTBL_INFO__BUY_DATE ON dbo.BUYTBL_INFO
-
---CREATE INDEX IDX__BUYTBL_INFO__BUY_QOOUSER_SEQ__PRODUCT_SERIAL__BUY_DATE ON dbo.BUYTBL_INFO (buy_qoouser_seq,product_serial,buy_date) include (product_quantity)
-
---DROP INDEX IDX__BUYTBL_INFO__BUY_QOOUSER_SEQ__PRODUCT_SERIAL__BUY_DATE ON dbo.BUYTBL_INFO
-
---DROP INDEX IDX__BUYTBL_INFO__BUY_QOOUSER_SEQ__PRODUCT_SERIAL ON dbo.BUYTBL_INFO
-
-
-
-
---CREATE INDEX IDX__BUYTBL_INFO__BUY_DATE ON dbo.BUYTBL_INFO (buy_date)
-
-
-
---CREATE INDEX IDX__ELECTRONIC_PRODUCTS__ELECT_PRODSERIAL__PRODUCT_MANUFACTURER_COMP_SEQ ON dbo.ELECTRONIC_PRODUCTS (elect_prodserial,product_manufacturer_comp_seq)
+--SELECT elect_prodserial,COUNT(*) FROM dbo.ELECTRONIC_PRODUCTS WITH(NOLOCK) GROUP BY elect_prodserial
