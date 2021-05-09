@@ -333,7 +333,9 @@ INSERT INTO dbo.BUYTBL VALUES ('KBS',N'아이스크림',N'식료품',1000,3)
 select max(qoouser_seq) from dbo.QOO10_USER_REAL with(nolock)
 
 
-create table dbo.QOO10_USER_REAL
+--DROP TABLE dbo.QOO10_USER_REAL_TEST
+
+create table dbo.QOO10_USER_REAL_TEST
 (  
 	qoouser_seq bigint identity(1,1) not null,--회원 고유 번호
 	qoouser_id varchar(100) not null,--회원 아이디
@@ -478,10 +480,10 @@ begin
 end
 
 
---drop table BUYTBL_INFO
+--drop table BUYTBL_INFO_TEST
 
 /* BUYTBL_INFO - 구매 테이블 */
-CREATE TABLE dbo.[BUYTBL_INFO] (
+CREATE TABLE dbo.[BUYTBL_INFO_TEST] (
 	[buy_seq] [BIGINT] IDENTITY(1,1) NOT NULL,  /* 구매 고유번호 - buy_seq */
 	[buy_qoouser_seq] [BIGINT] NOT NULL,  /* 구매한 회원 번호 - buy_qoouser_seq */
 	[product_serial] [BIGINT] NOT NULL,  /* 제품 고유 번호 - product_serial */
@@ -490,12 +492,17 @@ CREATE TABLE dbo.[BUYTBL_INFO] (
 	[buy_confirm_date] [DATETIME] /* 구매 확정 일자 - buy_confirm_date */
 )
 
-ALTER TABLE dbo.BUYTBL_INFO ADD CONSTRAINT PK__BUYTBL_INFO__BUY_SEQ PRIMARY KEY (buy_seq,buy_qoouser_seq)
+ALTER TABLE dbo.BUYTBL_INFO_TEST ADD CONSTRAINT PK__BUYTBL_INFO_TEST__BUY_SEQ PRIMARY KEY (buy_seq)
+
+
 --ALTER TABLE dbo.BUYTBL_INFO DROP PK__BUYTBL_INFO__BUY_SEQ
 
 
+
+--DROP TABLE dbo.BUYTBL_INFO_TEST
+
 /* BUYTBL_INFO - 구매 테이블 */
-CREATE TABLE dbo.[BUYTBL_INFO_TEST] (
+CREATE TABLE dbo.BUYTBL_INFO_TEST (
 	[buy_seq] [BIGINT] IDENTITY(1,1) NOT NULL,  /* 구매 고유번호 - buy_seq */
 	[buy_qoouser_seq] [BIGINT] NOT NULL,  /* 구매한 회원 번호 - buy_qoouser_seq */
 	[product_serial] [BIGINT] NOT NULL,  /* 제품 고유 번호 - product_serial */
@@ -565,6 +572,8 @@ begin
 
 end
 
+
+--DROP TABLE dbo.QOO10_USER_REAL_TEST
 
 create table dbo.QOO10_USER_REAL_TEST
 (  
