@@ -603,3 +603,53 @@ select count(*) from dbo.QOO10_USER_REAL_TEST with(nolock)
 
 
 select count(*) from dbo.BUYTBL_INFO_TEST with(nolock)
+
+
+
+
+SELECT 
+	c.cust_no
+,	c.cust_name
+,	o.order_no
+,	o.cust_no
+,	o.product_no
+FROM dbo.TB_CUST c WITH(NOLOCK)
+LEFT OUTER JOIN dbo.TB_ORDER o WITH(NOLOCK) ON c.cust_no = o.cust_no and c.cust_no = 1
+
+
+c.cust_name = 'MIKE'
+
+
+
+
+SELECT 
+	c.cust_no
+,	c.cust_name
+,	o.order_no
+,	o.cust_no
+,	o.product_no
+FROM dbo.TB_CUST c WITH(NOLOCK)
+LEFT OUTER JOIN dbo.TB_ORDER o WITH(NOLOCK) ON c.cust_no = o.cust_no 
+WHERE c.cust_name = 'MIKE'
+
+
+
+
+
+
+
+
+
+and o.order_no IS NULL
+
+
+
+--WHERE o.order_no IS NULL
+
+
+SELECT 
+	c.cust_name 
+,	COUNT(*) AS buy_count 
+FROM dbo.TB_CUST c 
+LEFT JOIN TB_ORDER o ON c.cust_no = o.cust_no  
+GROUP BY c.cust_name

@@ -8,11 +8,14 @@ set STATISTICS TIME on
 		q.qoouser_email
 	,	b.product_quantity
 	FROM dbo.QOO10_USER_REAL_TEST q WITH(NOLOCK)
-	INNER hash JOIN dbo.BUYTBL_INFO_TEST b WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
+	INNER LOOP JOIN dbo.BUYTBL_INFO_TEST b WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
 	WHERE q.qoouser_seq = 8574
 	AND q.qoouser_email LIKE 'asi%'
 	AND b.product_quantity = 35
 	
+
+	--CREATE INDEX IDX__BUYTBL_INFO_TEST__BUY_QOOUSER_SEQ ON dbo.BUYTBL_INFO_TEST (buy_qoouser_seq) INCLUDE (product_quantity)
+
 	--select TOP(20)
 	--	m.comp_name
 	----,	sum(convert(bigint,e.elect_prod_price)*convert(bigint,b.product_quantity))-sum(convert(bigint,e.first_cost)*convert(bigint,b.product_quantity)) as totalsum
