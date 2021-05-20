@@ -15,6 +15,10 @@ ALTER TABLE dbo.APPLEBUYTBL ADD CONSTRAINT PK__APPLEBUYTBL__BUYSEQ PRIMARY KEY C
 
 select * from dbo.APPLEINC with(nolock)
 
+select count(*) from dbo.QOO10_USER_REAL with(nolock)
+
+
+
 CREATE TABLE dbo.ELECTRONIC_PRODUCTS
 (
 	elect_prodserial bigint identity(1,1) not null,--가전 제품 고유번호
@@ -24,6 +28,8 @@ CREATE TABLE dbo.ELECTRONIC_PRODUCTS
 	product_available_stock int not null,--재고 수량
 
 )
+
+select * from dbo.ELECTRONIC_PRODUCTS with(nolock)
 
 
 
@@ -362,6 +368,7 @@ DROP TABLE dbo.QOO10USERLOG
 create table dbo.QOO10USERLOG 
 (
 	log_seq bigint identity(1,1) not null, -- 로그인 번호
+	log_user_seq bigint not null, -- 로그인한 유저 고유번호
 	log_user_id varchar(100) not null, -- 로그인한 아이디
 	log_dt datetime not null, -- 로그인한 날짜 시간
 	ip_address varchar(100) not null -- 로그인 한 ip주소
@@ -369,6 +376,12 @@ create table dbo.QOO10USERLOG
 
 ALTER TABLE dbo.QOO10USERLOG add constraint PK__QOO10USERLOG__LOG_SEQ PRIMARY KEY (log_seq)
 ALTER TABLE dbo.QOO10USERLOG add constraint DF__QOO10USERLOG__LOG_DT DEFAULT getdate() FOR log_dt 
+
+select top(10) * from dbo.QOO10_USER_REAL with(nolock)
+
+select * from dbo.QOO10USERLOG with(nolock)
+
+
 
 SELECT * FROM dbo.QOO10USERLOG WITH(NOLOCK)
 
@@ -773,10 +786,13 @@ insert into dbo.QOO10_USER_REAL values
 )
 
 
-select * from dbo.QOO10_USER_REAL with(nolock)
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = 1
+
+update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '0:0:0:0:0:0:0:1' where qoouser_seq = 1
 
 
 --drop proc qoo10_total_login
+
 /*
 	Author      : Seunghwan Shin
 	Create date : 2021-03-16 
@@ -785,9 +801,10 @@ select * from dbo.QOO10_USER_REAL with(nolock)
 	History		: 2021-03-16 Seunghwan Shin	#최초 생성
 				  2021-03-31 Seunghwan Shin	#마지막 회원접속시간,접속ip 추가
 				  2021-04-03 Seunghwan Shin #자동로그인 방지 추가
+				  2021-05-16 Seunghwan Shin #전반적으로 모두 수정
 
 */
-create proc [dbo].[qoo10_total_login]
+alter proc [dbo].[qoo10_total_login]
 	@user_ip_address varchar(100),-- 접속한 ip주소
 	@qoouser_id varchar(100), -- 유저 id
 	@qoouser_pw varchar(800), -- 유저 pw
@@ -829,71 +846,61 @@ begin try
 	end
 
 	-- 밴 당한 아이피인지 확인해준다.
-	if ((select count(*) from dbo.TBLBANNEDIPLIST where banned_ip_address = @user_ip_address) <> 0)
+	if exists (select * from dbo.TBLBANNEDIPLIST where banned_ip_address = @user_ip_address)
 	begin
 		set @pass_fail = 'N'
 	end
 
-	
-	if (@pass_fail = 'Y')
+
+
+	if exists (select * from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw) -- 로그인 정보가 존재하는 경우
 	begin
-		-- 해당 아이피에 대한 접속은 승인
-		-- 로그인 정보 비교대조
-		declare @log_on int = 0
-		select @log_on = count(*) from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw
+		
+		declare @last_ip_address varchar(100)
+		,		@qoouser_seq bigint
 
-		if(@log_on <> 1)-- 로그인에 실패하는 경우
+		select @qoouser_seq = qoouser_seq from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw
+		select @last_ip_address = qoouser_lastlogin_ipaddress from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = @qoouser_seq
+		
+		if(@last_ip_address = @user_ip_address)-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같은경우
 		begin
-			set @login_code = 1
+			set @login_code = 0
+
+			begin tran
+			-- 로그인 성공시간 기록 남기기
+			insert into dbo.QOO10USERLOG
+			(
+				log_user_seq
+			,	log_user_id
+			,	log_dt
+			,	ip_address
+			)
+			values
+			(
+				@qoouser_seq
+			,	@qoouser_id
+			,	default
+			,	@user_ip_address
+			)
+
+			--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
+			update dbo.QOO10_USER_REAL set 
+				qoouser_lastlogin_datetime = getdate()
+			,	qoouser_lastlogin_ipaddress = @user_ip_address
+			where qoouser_id = @qoouser_id 
+
+			commit tran
 		end
-		else -- 로그인에 성공하는 경우
-		begin
-			--마지막으로 접속한 ip와 현재접속시도하고 있는 ip가 같은지 비교하고 다르다면 자동로그인 방지 절차를 거쳐야 한다.
-			declare @last_ip_address varchar(100)
-			select @last_ip_address = qoouser_lastlogin_ipaddress from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = @qoouser_id
-			
-			-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같은경우
-			if(@last_ip_address = @user_ip_address)
-			begin
-				set @login_code = 0
-
-				begin tran
-				-- 로그인 성공시간 기록 남기기
-				insert into dbo.QOO10USERLOG
-				(
-					log_user_id
-				,	log_dt
-				,	ip_address
-				)
-				values
-				(
-					@qoouser_id
-				,	default
-				,	@user_ip_address
-				)
-
-				--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
-				update dbo.QOO10_USER_REAL set 
-					qoouser_lastlogin_datetime = getdate()
-				,	qoouser_lastlogin_ipaddress = @user_ip_address
-				where qoouser_id = @qoouser_id 
-
-				commit tran
-			end
-
-			-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같지 않은 경우
-			else
+		else-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같지 않은경우
 			begin
 				set @login_code = 2
-			end
-
 		end
 	end
-	else
+	else--로그인 정보가 존재하지 않는 경우
 	begin
-		--해당 아이피건은 접속불가
-		set @login_code = -1
+		set @login_code = 1
 	end
+	
 
 
 end try
@@ -901,6 +908,9 @@ begin catch
 	rollback tran
 end catch
 end
+
+
+
 
 
 select * from dbo.QOO10USERLOG with(nolock)
@@ -1056,6 +1066,11 @@ create table dbo.QOO10_USER_REAL
 )
 
 ALTER TABLE dbo.QOO10_USER_REAL ADD CONSTRAINT PK__QOO10_USER_REAL__QOOUSER_SEQ PRIMARY KEY (qoouser_seq)
+
+select qoouser_nation from dbo.QOO10_USER_REAL with(nolock) group by qoouser_nation
+
+
+alter table dbo.QOO10_USER_REAL add qoouser_name nvarchar(15) null
 
 
 --drop table dbo.QOOUSERXML 
@@ -1559,6 +1574,57 @@ INNER JOIN QOO_ATTENDANCE a WITH(NOLOCK) ON q.staff_name = a.staff_name AND q.te
  INNER JOIN dbo.TBLINSA t2 ON t1.num < t2.num
 
 
+-- drop table dbo.ADVERTISE_INFO
+
+ /*광고관련*/
+ CREATE TABLE dbo.ADVERTISE_INFO (
+	ad_seq bigint identity(1,1) not null,--광고번호
+	ad_name nvarchar(30) not null,--광고 이름
+	ad_pic_url nvarchar(30) not null,--광고 사진 경로
+	ad_url nvarchar(300) not null,--광고 url
+	ad_price_monthly int null--광고가 한달에 지불하는 비용
+ )
+
+ alter table dbo.ADVERTISE_INFO add constraint PK__ADVERTISE_INFO__AD_SEQ PRIMARY KEY (ad_seq)
+
+
+insert into dbo.ADVERTISE_INFO values (N'아이폰12','apple_01.jpg','https://www.apple.com/kr/iphone-12-pro/',150000000);
+insert into dbo.ADVERTISE_INFO values (N'배민','baemin_01.jpg','https://www.baemin.com/',80000000);
+insert into dbo.ADVERTISE_INFO values (N'버거킹','burgerking_01.png','https://www.burgerking.co.kr/#/home',20000000);
+insert into dbo.ADVERTISE_INFO values (N'쿠팡잇츠','coupeat_01.jpg','https://www.coupangeats.com/',75000000);
+insert into dbo.ADVERTISE_INFO values (N'동원참치','dongwon_01.jpg','https://www.dongwonmall.com/index.do?gt_network=g&gt_keyword=%EB%8F%99%EC%9B%90&gt_target_id=kwd-333513636938&gt_campaign_id=11483096606&gt_adgroup_id=115774212681&gclid=Cj0KCQjw7pKFBhDUARIsAFUoMDa5KcCS4BkuWOFKhKozuXGwW0l4WE-I7sv4CDemQl-h6Xc3iuWpcosaArt6EALw_wcB',62000000);
+insert into dbo.ADVERTISE_INFO values (N'구찌','gucci_01.jpg','https://www.gucci.com/kr/ko/?&utm_source=naverbs_kr_pc&utm_medium=brandzone_main&utm_campaign=ouverture_A&utm_content=%ED%99%88%EB%A7%81%ED%81%AC&utm_term=&NaPm=ct%3Dkovewxwo%7Cci%3D0zS0002nZofu%2DJqnPf3X%7Ctr%3Dbrnd%7Chk%3D88d51d8fea640d57e84591e1e4c96288dc077312',210000000);
+insert into dbo.ADVERTISE_INFO values (N'루이비통','lv_01.jpg','https://kr.louisvuitton.com/kor-kr/homepage?gclid=Cj0KCQjw7pKFBhDUARIsAFUoMDZo45YP0oOJURy5pOY2W166MpjnyyVOa6NF0h5LeOYY_8nv8h4-U3YaAnt6EALw_wcB',320000000);
+insert into dbo.ADVERTISE_INFO values (N'네이트','nate_01.jpg','https://www.nate.com/',22000000);
+insert into dbo.ADVERTISE_INFO values (N'갤럭시폴드 톰브라운','samsung_01.jpg','https://www.samsung.com/sec/smartphones/galaxy-z-flip/thom-browne-edition/',368000000);
+
+
+select * from dbo.ADVERTISE_INFO with(nolock)
 
 
 
+--exec dbo.advertise_show
+
+ /* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-19   
+	Description : 테스트  
+	     
+	History	: 2021-05-19 Seunghwan Shin	#최초 생성  
+*/ 
+create proc dbo.advertise_show
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+	select
+		ad_seq as adSeq
+	,	ad_name as adName
+	,	ad_pic_url as adpPcUrl
+	,	ad_url as adUrl
+	,	ad_price_monthly as adPriceMonthly
+	from dbo.ADVERTISE_INFO with(nolock)
+	
+
+end

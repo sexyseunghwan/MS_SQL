@@ -474,16 +474,18 @@ set nocount on
 set transaction isolation level read uncommitted
 begin
 		
-	insert into dbo.BUYTBL_INFO_TEST values (@buy_qoouser_seq,@product_serial,@product_quantity,@buy_date,@buy_confirm_date)
+	insert into dbo.BUYTBL_INFO values (@buy_qoouser_seq,@product_serial,@product_quantity,@buy_date,@buy_confirm_date)
 
 
 end
 
 
---drop table BUYTBL_INFO_TEST
+select * from dbo.
+
+--drop table BUYTBL_INFO
 
 /* BUYTBL_INFO - 구매 테이블 */
-CREATE TABLE dbo.[BUYTBL_INFO_TEST] (
+CREATE TABLE dbo.[BUYTBL_INFO] (
 	[buy_seq] [BIGINT] IDENTITY(1,1) NOT NULL,  /* 구매 고유번호 - buy_seq */
 	[buy_qoouser_seq] [BIGINT] NOT NULL,  /* 구매한 회원 번호 - buy_qoouser_seq */
 	[product_serial] [BIGINT] NOT NULL,  /* 제품 고유 번호 - product_serial */
@@ -492,7 +494,7 @@ CREATE TABLE dbo.[BUYTBL_INFO_TEST] (
 	[buy_confirm_date] [DATETIME] /* 구매 확정 일자 - buy_confirm_date */
 )
 
-ALTER TABLE dbo.BUYTBL_INFO_TEST ADD CONSTRAINT PK__BUYTBL_INFO_TEST__BUY_SEQ PRIMARY KEY (buy_seq)
+ALTER TABLE dbo.BUYTBL_INFO ADD CONSTRAINT PK__BUYTBL_INFO__BUY_SEQ PRIMARY KEY (buy_seq)
 
 
 --ALTER TABLE dbo.BUYTBL_INFO DROP PK__BUYTBL_INFO__BUY_SEQ
@@ -653,3 +655,89 @@ SELECT
 FROM dbo.TB_CUST c 
 LEFT JOIN TB_ORDER o ON c.cust_no = o.cust_no  
 GROUP BY c.cust_name
+
+
+
+SELECT
+	s1.order_year AS last_year
+,	ISNULL(s2.order_year,2021) AS present_year
+,	FORMAT(s1.total_sum,'#,#') AS S1_SUM
+,	FORMAT(ISNULL(s2.total_sum,0),'#,#') AS S2_SUM
+,	FORMAT(ISNULL(s2.total_sum - s1.total_sum,0),'#,#') AS profit
+,	CONVERT(VARCHAR,CONVERT(NUMERIC(20,3),((CONVERT(NUMERIC,s2.total_sum) - s1.total_sum) / s1.total_sum) * 100)) + ' %'
+FROM
+	(SELECT 
+		YEAR(a.buydate) AS order_year
+	,	COUNT(a.userseq) AS user_count
+	,	SUM(CONVERT(BIGINT,ac.price * a.quantity)) AS total_sum
+	FROM dbo.QOO10USER q WITH(NOLOCK)
+	INNER JOIN dbo.APPLEBUYTBL a WITH(NOLOCK) ON q.idseq = a.userseq
+	INNER JOIN dbo.APPLEINC ac WITH(NOLOCK) on ac.prodserial = a.prodserial
+	GROUP BY YEAR(a.buydate)) AS s1
+LEFT JOIN
+	(SELECT 
+		YEAR(a.buydate) AS order_year
+	,	COUNT(a.userseq) AS user_count
+	,	SUM(CONVERT(BIGINT,ac.price * a.quantity)) AS total_sum
+	FROM dbo.QOO10USER q WITH(NOLOCK)
+	INNER JOIN dbo.APPLEBUYTBL a WITH(NOLOCK) ON q.idseq = a.userseq
+	INNER JOIN dbo.APPLEINC ac WITH(NOLOCK) on ac.prodserial = a.prodserial
+	GROUP BY YEAR(a.buydate)) AS s2 
+ON s1.order_year = s2.order_year-1
+ORDER BY s1.order_year
+
+
+
+SELECT COUNT(*) FROM dbo.QOO10_USER_REAL WITH(NOLOCK) -- 200만건의 회원이 존재
+
+SELECT COUNT(*) FROM dbo.BUYTBL_INFO WITH(NOLOCK)
+
+SELECT * FROM dbo.MANUFACTURER_INC WITH(NOLOCK)
+
+SELECT * FROM dbo.ELECTRONIC_PRODUCTS WITH(NOLOCK)
+
+
+
+SELECT top(100) * FROM dbo.BUYTBL_INFO WITH(NOLOCK)
+
+
+
+
+SELECT
+	t1.buy_year AS last_year
+,	t2.buy_year AS present_year
+,	FORMAT(t1.total_sum,'#,#') AS S1_SUM
+,	FORMAT(ISNULL(t2.total_sum,0),'#,#') AS S2_SUM
+,	FORMAT(ISNULL(t2.total_sum - t1.total_sum,0),'#,#') AS profit
+,	CONVERT(VARCHAR,CONVERT(NUMERIC(20,3),((CONVERT(NUMERIC,t2.total_sum) - t1.total_sum) / t1.total_sum) * 100)) + ' %'
+,	FORMAT(t1.total_sum - t1.cost,'#,#')
+,	FORMAT(t2.total_sum - t2.cost,'#,#')
+FROM
+(SELECT 
+	YEAR(b.buy_date) AS buy_year
+,	COUNT(q.qoouser_seq) AS user_count
+,	SUM(CONVERT(BIGINT,e.elect_prod_price * b.product_quantity)) AS total_sum
+,	SUM(CONVERT(BIGINT,e.first_cost * b.product_quantity)) AS cost
+FROM dbo.MANUFACTURER_INC m WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON m.comp_seq = e.product_manufacturer_comp_seq
+INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON b.product_serial = e.elect_prodserial
+INNER JOIN dbo.QOO10_USER_REAL q WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
+WHERE m.comp_seq = 5
+GROUP BY YEAR(b.buy_date)) AS t1
+LEFT JOIN
+(SELECT 
+	YEAR(b.buy_date) AS buy_year
+,	COUNT(q.qoouser_seq) AS user_count
+,	SUM(CONVERT(BIGINT,e.elect_prod_price * b.product_quantity)) AS total_sum
+,	SUM(CONVERT(BIGINT,e.first_cost * b.product_quantity)) AS cost
+FROM dbo.MANUFACTURER_INC m WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON m.comp_seq = e.product_manufacturer_comp_seq
+INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON b.product_serial = e.elect_prodserial
+INNER JOIN dbo.QOO10_USER_REAL q WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
+WHERE m.comp_seq = 5
+GROUP BY YEAR(b.buy_date)) AS t2
+ON t1.buy_year = t2.buy_year - 1
+ORDER BY t1.buy_year
+
+
+
