@@ -463,6 +463,10 @@ CREATE TABLE dbo.TBLBANNEDIPLIST
 
 )
 
+
+
+select * from dbo.TBLBANNEDIPLIST with(nolock)
+
 ALTER TABLE dbo.TBLBANNEDIPLIST ADD CONSTRAINT PK__TBLBANNEDIPLIST__BANNED_IP_ADDRESS PRIMARY KEY CLUSTERED (banned_ip_address)
 
 select * from dbo.TBLBANNEDIPLIST witth(nolock)
@@ -802,6 +806,7 @@ update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '0:0:0:0:0:0:0:1' w
 				  2021-03-31 Seunghwan Shin	#마지막 회원접속시간,접속ip 추가
 				  2021-04-03 Seunghwan Shin #자동로그인 방지 추가
 				  2021-05-16 Seunghwan Shin #전반적으로 모두 수정
+				  2021-05-26 Seunghwan Shin #비정상 로그인 로직 수정
 
 */
 alter proc [dbo].[qoo10_total_login]
@@ -814,104 +819,106 @@ set nocount on
 set transaction isolation level read uncommitted
 begin
 	
-	declare @try_count int -- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
-	declare @pass_fail char(1) = 'Y' -- 접속승인 할것인지 안할것인지 판단.
-
-begin try
-	begin tran
-		-- 아이피 로그기록 남기기
-		insert into dbo.LOGINTRYIP 
-		(
-			ip_address
-		,	try_time
-		)
-		values 
-		(
-			@user_ip_address
-		,	default
-		)
-	commit tran
-
-	-- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
-	select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
-	where ip_address = @user_ip_address 
-	and  DATEDIFF(ss,try_time,getdate()) <= 15
-	
-
-	if (@try_count >= 4)
-	begin
-		begin tran
-			insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
-		commit tran
-	end
-
-	-- 밴 당한 아이피인지 확인해준다.
-	if exists (select * from dbo.TBLBANNEDIPLIST where banned_ip_address = @user_ip_address)
-	begin
-		set @pass_fail = 'N'
-	end
-
-
-
-	if exists (select * from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw) -- 로그인 정보가 존재하는 경우
-	begin
-		
-		declare @last_ip_address varchar(100)
-		,		@qoouser_seq bigint
-
-		select @qoouser_seq = qoouser_seq from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw
-		select @last_ip_address = qoouser_lastlogin_ipaddress from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = @qoouser_seq
-		
-		if(@last_ip_address = @user_ip_address)-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같은경우
+	begin try
+		-- 밴 당한 아이피인지 확인해준다.
+		if exists (select * from dbo.TBLBANNEDIPLIST where banned_ip_address = @user_ip_address) -- 벤당한 아이피의 경우
 		begin
-			set @login_code = 0
-
-			begin tran
-			-- 로그인 성공시간 기록 남기기
-			insert into dbo.QOO10USERLOG
-			(
-				log_user_seq
-			,	log_user_id
-			,	log_dt
-			,	ip_address
-			)
-			values
-			(
-				@qoouser_seq
-			,	@qoouser_id
-			,	default
-			,	@user_ip_address
-			)
-
-			--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
-			update dbo.QOO10_USER_REAL set 
-				qoouser_lastlogin_datetime = getdate()
-			,	qoouser_lastlogin_ipaddress = @user_ip_address
-			where qoouser_id = @qoouser_id 
-
-			commit tran
+			set @login_code = -1
 		end
-		else-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같지 않은경우
+		else -- 벤당하지 않은 아이피의 경우**
+		begin
+			if exists (select * from dbo.QOO10_USER_REAL  where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw) -- 로그인 정보가 존재하는 경우
 			begin
-				set @login_code = 2
+		
+				declare @last_ip_address	varchar(100) -- 마지막으로 접속한 아이피 주소
+				,		@qoouser_seq		bigint		 -- 유저의 고유번호
+
+				select @qoouser_seq = qoouser_seq from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = @qoouser_id  and qoouser_pw = @qoouser_pw
+				select @last_ip_address = qoouser_lastlogin_ipaddress from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = @qoouser_seq
+		
+				if(@last_ip_address = @user_ip_address)-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같은경우
+				begin
+					set @login_code = 0 --로그인 성공
+
+					begin tran
+					-- 로그인 성공시간 기록 남기기
+					insert into dbo.QOO10USERLOG
+					(
+						log_user_seq
+					,	log_user_id
+					,	log_dt
+					,	ip_address
+					)
+					values
+					(
+						@qoouser_seq
+					,	@qoouser_id
+					,	default
+					,	@user_ip_address
+					)
+
+					--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
+					update dbo.QOO10_USER_REAL set 
+						qoouser_lastlogin_datetime = getdate()
+					,	qoouser_lastlogin_ipaddress = @user_ip_address
+					where qoouser_id = @qoouser_id 
+
+					commit tran
+				end
+				else-- 마지막으로 접속한 ip와 현재 접속시도 하고 있는 ip가 같지 않은경우 --> 다시 기록을 남겨줘야한다.
+				begin
+					set @login_code = 2
+				end
+			end
+			else--로그인 정보가 존재하지 않는 경우 --> 여기서 오류처리를 해주는게 맞아보인다.
+			begin
+
+				declare @try_count int
+
+				begin tran
+					--아이피 로그기록 남기기
+					insert into dbo.LOGINTRYIP
+					(
+						ip_address
+					,	try_time
+					)
+					values
+					(
+						@user_ip_address
+					,	default
+					)
+				commit tran
+
+				-- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
+				select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
+				where ip_address = @user_ip_address 
+				and  DATEDIFF(ss,try_time,getdate()) <= 15
+
+				if (@try_count >= 4)
+				begin
+					begin tran
+						insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
+					commit tran
+				end
+
+				set @login_code = 1
+			end
 		end
-	end
-	else--로그인 정보가 존재하지 않는 경우
-	begin
-		set @login_code = 1
-	end
-	
 
-
-end try
-begin catch
-	rollback tran
-end catch
+	end try
+	begin catch
+		rollback tran
+	end catch
 end
 
 
+select * from dbo.TBLBANNEDIPLIST with(nolock)
+
+update TBLBANNEDIPLIST set banned_ip_address = '0:0:0:0:0:0:0:0' where banned_ip_address ='0:0:0:0:0:0:0:1'
 
 
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
 
 select * from dbo.QOO10USERLOG with(nolock)
 
@@ -1628,3 +1635,122 @@ begin
 	
 
 end
+
+
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*) from dbo.QOO10_USER_REAL with(nolock))
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-22   
+	Description : 회원가입
+	     
+	History	: 2021-05-22 Seunghwan Shin	#최초 생성  
+*/
+alter proc dbo.qoo_sign_up
+	@qoouser_id varchar(100) -- 아이디 o
+,	@qoouser_pw varchar(800) -- 비밀번호 o
+,	@qoouser_birthday datetime -- 생년월일 o
+,	@qoouser_email varchar(200) -- 이메일 o
+,	@qoouser_gender  char(1) -- 성별 o
+,	@qoouser_nation char(2) -- 국적 o
+,	@qoouser_ipaddress varchar(200) -- 아이피주소 o
+,	@qoouser_phone_num varchar(20) -- 전화번호 o
+,	@qoouser_receive_email char(1) -- 이메일 알람 o
+,	@qoouser_receive_sms char(1) -- sms 알람 o
+,	@qoouser_name nvarchar(30) -- 이름
+,	@check int output
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+  
+begin try
+	
+	begin tran
+	insert into dbo.QOO10_USER_REAL 
+	(
+		qoouser_id--
+	,	qoouser_pw--
+	,	qoouser_birthday--
+	,	qoouser_email--
+	,	qoouser_gender--
+	,	qoouser_nation--
+	,	qoouser_ipaddress--
+	,	qoouser_hascoin
+	,	qoouser_phone_num
+	,	qoouser_grade
+	,	qoouser_receive_email
+	,	qoouser_receive_sms
+	,	qoouser_denide
+	,	qoouser_register_datetime
+	,	qoouser_lastlogin_datetime
+	,	qoouser_lastlogin_ipaddress
+	,	qoouser_name
+	)
+	values
+	(
+		@qoouser_id
+	,	@qoouser_pw
+	,	@qoouser_birthday
+	,	@qoouser_email
+	,	@qoouser_gender
+	,	@qoouser_nation
+	,	@qoouser_ipaddress
+	,	0
+	,	@qoouser_phone_num
+	,	1
+	,	@qoouser_receive_email
+	,	@qoouser_receive_sms
+	,	'N'
+	,	getdate()
+	,	null
+	,	@qoouser_ipaddress
+	,	@qoouser_name
+	)
+	commit tran
+	set @check = 1
+
+end try
+begin catch
+	set @check = -1
+	rollback tran
+end catch
+
+end
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-30   
+	Description : 회원가입 : 아이디 검증과정
+	     
+	History	: 2021-05-30 Seunghwan Shin	#최초 생성  
+*/
+alter proc dbo.qoo_sign_up_id_check
+	@qoouser_id varchar(100) -- 아이디 o
+,	@result int output
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin
+
+	if exists (select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = @qoouser_id)
+	begin
+		set @result = -1;
+	end
+	else
+	begin
+		set @result = 1;
+	end
+end
+
+
+declare @result int
+exec qoo_sign_up_id_check '987asd',@result output
+select  @result

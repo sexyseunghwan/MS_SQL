@@ -741,3 +741,109 @@ ORDER BY t1.buy_year
 
 
 
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
+
+
+SELECT TOP(100) * FROM dbo.QOO10_USER_REAL WITH(NOLOCK)
+
+CREATE FUNCTION dbo.getQooTest
+(@gender AS CHAR(1), @nation AS CHAR(2)) RETURNS TABLE
+AS
+RETURN
+SELECT TOP(100)
+	qoouser_seq
+,	qoouser_id
+,	qoouser_gender
+,	qoouser_nation
+,	qoouser_hascoin
+FROM dbo.QOO10_USER_REAL WITH(NOLOCK)
+WHERE qoouser_gender = @gender
+AND   qoouser_nation = @nation
+ORDER BY qoouser_seq
+
+
+SELECT TOP(100)
+	qoouser_seq
+,	qoouser_id
+,	qoouser_gender
+,	qoouser_nation
+,	qoouser_hascoin
+FROM dbo.QOO10_USER_REAL WITH(NOLOCK)
+WHERE qoouser_gender = 'F'
+AND   qoouser_nation = 'SG'
+ORDER BY qoouser_seq
+
+
+SELECT TOP(10) 
+	g.qoouser_seq
+,	g.qoouser_id
+,	g.qoouser_gender
+,	g.qoouser_nation
+,	g.qoouser_hascoin
+,	e.elect_prod_name
+,	b.buy_date
+,	FORMAT(e.elect_prod_price,'#,#') AS prod_price
+,	b.product_quantity AS pq
+,	FORMAT(e.elect_prod_price * b.product_quantity,'#,#') AS total_payment
+FROM dbo.getQooTest('F','SG') g
+INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON g.qoouser_seq = b.buy_qoouser_seq
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+ORDER BY total_payment DESC, g.qoouser_seq 
+
+
+
+
+
+
+
+CREATE FUNCTION dbo.getTblinsaSeoulGender
+(@gender AS CHAR(1)) RETURNS TABLE
+AS
+RETURN
+SELECT
+	name
+,	ssn
+,	ibsaDate
+,	city
+,	tel
+,	buseo
+,	jikwi
+,	basicPay
+,	sudang
+FROM dbo.TBLINSA WITH(NOLOCK)
+WHERE city = N'서울'
+AND	  ssn LIKE '%-'+  CONVERT(CHAR(1),(CASE WHEN @gender = 'M' THEN 1 
+											WHEN @gender = 'F' THEN 2
+											ELSE 3 END)) + '%' 
+
+
+SELECT * FROM dbo.getTblinsaSeoulGender('F')
+
+SELECT * FROM dbo.getTblinsaSeoulGender('M')
+
+
+
+select CHARINDEX('a','cry and city',1)
+
+
+DECLARE @gender CHAR(1) = 'M'
+
+SELECT
+	name
+,	ssn
+,	ibsaDate
+,	city
+,	tel
+,	buseo
+,	jikwi
+,	basicPay
+,	sudang
+FROM dbo.TBLINSA WITH(NOLOCK)
+WHERE city = N'서울'
+AND	  ssn LIKE '%-'+  CONVERT(CHAR(1),(CASE WHEN @gender = 'M' THEN 1 ELSE 2 END)) + '%' 
+
+
+
+DECLARE 

@@ -44,5 +44,51 @@ ORDER BY t1.buy_year
 set STATISTICS IO off
 set STATISTICS TIME off
 
+
+
+--select top(20) * from dbo.QOO10_USER_REAL with(nolock)
+
+
+
+
+
+
+declare @num int = 0
+while (@num < 100)
+begin
+declare @login_code int
+exec dbo.qoo10_total_login '123.123.123', '1', '3', @login_code output
+select @login_code
+set @num += 1
+end
+
+select * from dbo.LOGINTRYIP with(nolock)
+
+
+		begin tran
+			-- 아이피 로그기록 남기기
+			insert into dbo.LOGINTRYIP 
+			(
+				ip_address
+			,	try_time
+			)
+			values 
+			(
+				@user_ip_address
+			,	default
+			)
+		commit tran
+
+
+		-- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
+		select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
+		where ip_address = @user_ip_address 
+		and  DATEDIFF(ss,try_time,getdate()) <= 15
 	
 
+		if (@try_count >= 4)
+		begin
+			begin tran
+				insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
+			commit tran
+		end
