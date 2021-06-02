@@ -1,3 +1,26 @@
+WITH YEARCOUNT AS
+(
+SELECT 
+	YEAR(b.buy_date) AS per_year
+,	SUM(product_quantity) AS sell_count
+,	SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total
+FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+GROUP BY YEAR(b.buy_date)
+)
+SELECT
+	cur.per_year AS standard_year
+,	cur.sell_count AS standard_sell_count
+,	FORMAT(cur.total,'#,#') AS standard_total
+,	prev.per_year AS comparison_year
+,	prev.sell_count AS comparison_sell_count
+,	FORMAT(prev.total,'#,#') AS comparison_total
+,	FORMAT(cur.total - prev.total,'#,#') AS benefit
+,	CONVERT(VARCHAR(10),CONVERT(NUMERIC(10,3),((cur.total - prev.total) / CONVERT(NUMERIC,cur.total)) * 100.0)) + ' %' AS benefit_percent
+FROM YEARCOUNT AS cur
+LEFT OUTER JOIN YEARCOUNT AS prev ON cur.per_year = prev.per_year + 1
+ORDER BY standard_year DESC
+
 
 
 create table dbo.APPLEBUYTBL 
@@ -10,6 +33,13 @@ create table dbo.APPLEBUYTBL
 )
 
 ALTER TABLE dbo.APPLEBUYTBL ADD CONSTRAINT PK__APPLEBUYTBL__BUYSEQ PRIMARY KEY CLUSTERED (buyseq)
+
+
+SELECT * FROM sys.tables WITH(NOLOCK)
+
+SELECT * FROM sys.schemas WITH(NOLOCK)
+
+SELECT * FROM sys.columns WITH(NOLOCK)
 
 
 
@@ -30,6 +60,110 @@ CREATE TABLE dbo.ELECTRONIC_PRODUCTS
 )
 
 select * from dbo.ELECTRONIC_PRODUCTS with(nolock)
+
+
+
+SELECT
+	cur.per_year AS standard_year
+,	cur.sell_count AS standard_sell_count
+,	FORMAT(cur.total,'#,#') AS standard_total
+,	prev.per_year AS comparison_year
+,	prev.sell_count AS comparison_sell_count
+,	FORMAT(prev.total,'#,#') AS comparison_total
+,	FORMAT(cur.total - prev.total,'#,#') AS benefit
+,	CONVERT(VARCHAR(10),CONVERT(NUMERIC(10,3),((cur.total - prev.total) / CONVERT(NUMERIC,cur.total)) * 100.0)) + ' %' AS benefit_percent
+FROM 
+(SELECT 
+	YEAR(b.buy_date) AS per_year
+,	SUM(product_quantity) AS sell_count
+,	SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total
+FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+GROUP BY YEAR(b.buy_date)) AS cur
+
+LEFT OUTER JOIN
+
+(SELECT 
+	YEAR(b.buy_date) AS per_year
+,	SUM(product_quantity) AS sell_count
+,	SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total
+FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+GROUP BY YEAR(b.buy_date)) AS prev
+
+ON cur.per_year = prev.per_year + 1
+ORDER BY standard_year DESC
+
+
+
+
+
+
+WITH YEARCOUNT AS
+(
+SELECT 
+	YEAR(b.buy_date) AS per_year
+,	SUM(product_quantity) AS sell_count
+,	SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total
+FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+GROUP BY YEAR(b.buy_date)) AS cur
+)
+SELECT
+	cur.per_year AS standard_year
+,	cur.sell_count AS standard_sell_count
+,	FORMAT(cur.total,'#,#') AS standard_total
+,	prev.per_year AS comparison_year
+,	prev.sell_count AS comparison_sell_count
+,	FORMAT(prev.total,'#,#') AS comparison_total
+,	FORMAT(cur.total - prev.total,'#,#') AS benefit
+,	CONVERT(VARCHAR(10),CONVERT(NUMERIC(10,3),((cur.total - prev.total) / CONVERT(NUMERIC,cur.total)) * 100.0)) + ' %' AS benefit_percent
+FROM YEARCOUNT AS cur
+LEFT OUTER JOIN YEARCOUNT AS prev ON cur.per_year = prev.per_year + 1
+ORDER BY standard_year DESC
+
+
+
+
+
+
+
+
+
+
+
+select
+SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total
+FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+WHERE YEAR(b.buy_date) = 2000
+
+23,078,762,735,000
+23,183,800,880,000
+2,318,380,088,000
+231,838,008,800
+105,038,145,000
+-105,038,145,000
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

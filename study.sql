@@ -776,7 +776,7 @@ AND   qoouser_nation = 'SG'
 ORDER BY qoouser_seq
 
 
-SELECT TOP(10) 
+SELECT TOP(20) 
 	g.qoouser_seq
 ,	g.qoouser_id
 ,	g.qoouser_gender
@@ -790,7 +790,22 @@ SELECT TOP(10)
 FROM dbo.getQooTest('F','SG') g
 INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON g.qoouser_seq = b.buy_qoouser_seq
 INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
-ORDER BY total_payment DESC, g.qoouser_seq 
+ORDER BY e.elect_prod_price * b.product_quantity DESC, g.qoouser_seq 
+
+
+
+
+
+
+SELECT TOP(20) 
+	g.qoouser_seq
+,	FORMAT(e.elect_prod_price,'#,#') AS prod_price
+,	FORMAT(e.elect_prod_price * b.product_quantity,'#,#') AS total_payment
+FROM dbo.getQooTest('F','SG') g
+INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON g.qoouser_seq = b.buy_qoouser_seq
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
+GROUP BY g.qoouser_seq
+ORDER BY e.elect_prod_price * b.product_quantity DESC, g.qoouser_seq 
 
 
 
@@ -847,3 +862,110 @@ AND	  ssn LIKE '%-'+  CONVERT(CHAR(1),(CASE WHEN @gender = 'M' THEN 1 ELSE 2 END
 
 
 DECLARE 
+
+SELECT *
+FROM dbo.TBLINSA t WITH(NOLOCK)
+CROSS APPLY
+(
+	SELECT
+		o.order_product_name
+	,	o.order_date
+	FROM dbo.TBLINSAORDER o WITH(NOLOCK)
+	WHERE o.insa_seq = t.num AND o.order_date BETWEEN '2021-05-01' AND '2021-05-03'
+	--ORDER BY o.order_date DESC, t.num DESC
+) AS result
+
+
+
+SELECT * FROM dbo.TBLINSA t WITH(NOLOCK)
+INNER JOIN dbo.TBLINSAORDER o WITH(NOLOCK) ON  o.insa_seq = t.num
+WHERE o.order_date BETWEEN '2021-05-01' AND '2021-05-03'
+ORDER BY o.order_date DESC, t.num DESC
+
+
+
+SELECT *
+FROM dbo.TBLINSA t WITH(NOLOCK)
+OUTER APPLY
+(
+	SELECT
+		o.order_product_name
+	,	o.order_date
+	FROM dbo.TBLINSAORDER o WITH(NOLOCK)
+	WHERE o.insa_seq = t.num AND o.order_date BETWEEN '2021-05-01' AND '2021-05-03'
+	ORDER BY o.order_date DESC
+	OFFSET 0 ROWS FETCH FIRST 2 ROWS ONLY
+) AS result
+
+
+
+CREATE FUNCTION dbo.TopOrders
+(@user_seq AS INT,@start_date AS DATETIME,@end_date AS DATETIME, @n AS INT) RETURNS TABLE
+AS
+RETURN
+SELECT
+	order_product_name
+,	order_date
+FROM dbo.TBLINSAORDER WITH(NOLOCK)
+WHERE insa_seq = @user_seq AND order_date BETWEEN @start_date AND @end_date
+ORDER BY order_date DESC
+OFFSET 0 ROWS FETCH FIRST @n ROWS ONLY; 
+
+
+
+
+SELECT * FROM dbo.TopOrders(1005,'2021-05-01','2021-05-03',3)
+
+
+
+SELECT * FROM dbo.TBLINSAORDER WITH(NOLOCK)
+
+
+--왜 안되는거지;
+SELECT *
+FROM dbo.TBLINSA t WITH(NOLOCK)
+CROSS APPLY dbo.TopOrders(t.num,'2021-05-01','2021-05-03',2)
+
+
+
+
+
+
+
+
+SELECT *
+FROM dbo.TBLINSA t WITH(NOLOCK)
+OUTER APPLY
+(
+	SELECT
+		o.order_product_name
+	,	o.order_date
+	FROM dbo.TBLINSAORDER o WITH(NOLOCK)
+	WHERE o.insa_seq = t.num AND o.order_date BETWEEN '2021-05-01' AND '2021-05-03'
+	--ORDER BY o.order_date DESC
+) AS result
+
+
+
+
+
+
+
+
+
+SELECT * FROM dbo.TBLINSA t WITH(NOLOCK)
+INNER JOIN dbo.TBLINSAORDER o WITH(NOLOCK) ON  o.insa_seq = t.num
+WHERE o.order_date BETWEEN '2021-05-01' AND '2021-05-03'
+
+
+
+
+
+--CROSS JOIN
+SELECT * FROM dbo.TBLINSA t WITH(NOLOCK) 
+CROSS JOIN dbo.TBLINSAORDER o WITH(NOLOCK)
+
+--CROSS APPLY
+SELECT * FROM dbo.TBLINSA t WITH(NOLOCK) 
+CROSS APPLY dbo.TBLINSAORDER o WITH(NOLOCK)
+

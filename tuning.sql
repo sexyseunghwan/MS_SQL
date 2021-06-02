@@ -4,91 +4,71 @@ set STATISTICS IO on
 set STATISTICS TIME on
 	
 
-	SELECT
-	t1.buy_year AS last_year
-,	t2.buy_year AS present_year
-,	FORMAT(t1.total_sum,'#,#') AS S1_SUM
-,	FORMAT(ISNULL(t2.total_sum,0),'#,#') AS S2_SUM
-,	FORMAT(ISNULL(t2.total_sum - t1.total_sum,0),'#,#') AS profit
-,	CONVERT(VARCHAR,CONVERT(NUMERIC(20,3),((CONVERT(NUMERIC,t2.total_sum) - t1.total_sum) / t1.total_sum) * 100)) + ' %'
-,	FORMAT(t1.total_sum - t1.cost,'#,#')
-,	FORMAT(t2.total_sum - t2.cost,'#,#')
+SELECT
+	YEAR(b.buy_date) AS per_year
+,	SUM(CONVERT(BIGINT,b.product_quantity) * e.elect_prod_price) AS total_money
+FROM dbo.QOO10_USER_REAL q WITH(NOLOCK)
+INNER JOIN BUYTBL_INFO b WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
+INNER JOIN ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON e.elect_prodserial = b.product_serial
+INNER JOIN MANUFACTURER_INC m WITH(NOLOCK) ON m.comp_seq = e.product_manufacturer_comp_seq
+WHERE q.qoouser_nation = 'KR' AND q.qoouser_gender = 'M' AND q.qoouser_grade = 5
+AND   m.comp_name = 'APPLE'
+GROUP BY YEAR(b.buy_date)
+ORDER BY per_year DESC
+
+
+SELECT
+	t4.buy_date AS per_year
+,	SUM(CONVERT(BIGINT,t4.product_quantity) * t4.elect_prod_price) AS total_money
 FROM
-(SELECT 
-	YEAR(b.buy_date) AS buy_year
-,	COUNT(q.qoouser_seq) AS user_count
-,	SUM(CONVERT(BIGINT,e.elect_prod_price * b.product_quantity)) AS total_sum
-,	SUM(CONVERT(BIGINT,e.first_cost * b.product_quantity)) AS cost
-FROM dbo.MANUFACTURER_INC m WITH(NOLOCK)
-INNER JOIN dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON m.comp_seq = e.product_manufacturer_comp_seq
-INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON b.product_serial = e.elect_prodserial
-INNER JOIN dbo.QOO10_USER_REAL q WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
-WHERE m.comp_seq = 5
-GROUP BY YEAR(b.buy_date)) AS t1
-LEFT JOIN
-(SELECT 
-	YEAR(b.buy_date) AS buy_year
-,	COUNT(q.qoouser_seq) AS user_count
-,	SUM(CONVERT(BIGINT,e.elect_prod_price * b.product_quantity)) AS total_sum
-,	SUM(CONVERT(BIGINT,e.first_cost * b.product_quantity)) AS cost
-FROM dbo.MANUFACTURER_INC m WITH(NOLOCK)
-INNER JOIN dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON m.comp_seq = e.product_manufacturer_comp_seq
-INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON b.product_serial = e.elect_prodserial
-INNER JOIN dbo.QOO10_USER_REAL q WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
-WHERE m.comp_seq = 5
-GROUP BY YEAR(b.buy_date)) AS t2
-ON t1.buy_year = t2.buy_year - 1
-ORDER BY t1.buy_year
+(SELECT
+	YEAR(t1.buy_date) AS buy_date
+,	t1.product_quantity
+,	t2.elect_prod_price
+FROM dbo.QOO10_USER_REAL q WITH(NOLOCK)
+CROSS APPLY
+(
+	SELECT 
+		b.product_quantity
+	,	b.buy_qoouser_seq
+	,	b.product_serial
+	,	b.buy_date
+	FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
+	WHERE q.qoouser_seq = b.buy_qoouser_seq AND q.qoouser_nation = 'KR' AND q.qoouser_gender = 'M' AND q.qoouser_grade = 5
+) AS t1
+CROSS APPLY
+(
+	SELECT
+		e.elect_prod_price
+	,	e.product_manufacturer_comp_seq
+	FROM dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK)
+	WHERE e.elect_prodserial = t1.product_serial
+
+) AS t2
+CROSS APPLY
+(
+	SELECT
+		comp_seq
+	,	comp_name
+	FROM dbo.MANUFACTURER_INC m WITH(NOLOCK)
+	WHERE m.comp_seq = t2.product_manufacturer_comp_seq AND m.comp_name = 'APPLE'
+) AS t3 ) AS T4
+GROUP BY t4.buy_date
+ORDER BY per_year DESC
+
+
+
 
 
 set STATISTICS IO off
 set STATISTICS TIME off
 
-
-
---select top(20) * from dbo.QOO10_USER_REAL with(nolock)
-
+--CREATE INDEX IDX__TEST2 ON dbo.BUYTBL_INFO (buy_qoouser_seq,buy_date)
 
 
 
+--CREATE INDEX IDX__TEST ON dbo.BUYTBL_INFO (buy_date)
 
+--QOO10_USER_REAL
 
-declare @num int = 0
-while (@num < 100)
-begin
-declare @login_code int
-exec dbo.qoo10_total_login '123.123.123', '1', '3', @login_code output
-select @login_code
-set @num += 1
-end
-
-select * from dbo.LOGINTRYIP with(nolock)
-
-
-		begin tran
-			-- 아이피 로그기록 남기기
-			insert into dbo.LOGINTRYIP 
-			(
-				ip_address
-			,	try_time
-			)
-			values 
-			(
-				@user_ip_address
-			,	default
-			)
-		commit tran
-
-
-		-- 시도한 횟수 : 15초안에 4번이상 시도하면, 밴을 시킨다.
-		select @try_count = count(*) from dbo.LOGINTRYIP with(nolock) 
-		where ip_address = @user_ip_address 
-		and  DATEDIFF(ss,try_time,getdate()) <= 15
-	
-
-		if (@try_count >= 4)
-		begin
-			begin tran
-				insert into dbo.TBLBANNEDIPLIST values (@user_ip_address)
-			commit tran
-		end
+--CREATE INDEX IDX__QOO10_USER_REAL__QOOUSER_GENDER__QOOUSER_NATION ON dbo.QOO10_USER_REAL (qoouser_gender,qoouser_nation)
