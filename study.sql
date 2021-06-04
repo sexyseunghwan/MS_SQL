@@ -2,8 +2,6 @@
 
 
 
-SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
-
 
 
 
