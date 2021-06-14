@@ -1,6 +1,6 @@
 
 
-
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = '2000001'
 
 
 
@@ -967,3 +967,448 @@ CROSS JOIN dbo.TBLINSAORDER o WITH(NOLOCK)
 SELECT * FROM dbo.TBLINSA t WITH(NOLOCK) 
 CROSS APPLY dbo.TBLINSAORDER o WITH(NOLOCK)
 
+
+
+
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
+
+SELECT
+	num
+,	name
+,	city
+,	basicPay
+,	ROW_NUMBER() OVER(ORDER BY basicPay DESC) AS rownum
+,	RANK() OVER(ORDER BY basicPay DESC) AS rank
+,	DENSE_RANK() OVER(ORDER BY basicPay DESC) AS dense_rank
+,	NTILE(10) OVER(ORDER BY basicPay DESC) AS ntile
+FROM dbo.TBLINSA WITH(NOLOCK)
+
+
+SELECT DISTINCT 
+	basicPay
+,	ROW_NUMBER() OVER(ORDER BY basicPay) AS rn
+FROM dbo.TBLINSA WITH(NOLOCK)
+GROUP BY basicPay
+
+SELECT DISTINCT 
+	basicPay
+FROM dbo.TBLINSA WITH(NOLOCK)
+
+
+SELECT
+	num
+,	name
+,	city
+,	basicPay
+,	LAG(basicPay,3,-100) OVER(PARTITION BY city ORDER BY basicPay) AS lag
+,	LEAD(basicPay,3,-100) OVER(PARTITION BY city ORDER BY basicPay) AS lead
+FROM dbo.TBLINSA WITH(NOLOCK)
+ORDER BY city, basicPay
+
+
+
+SELECT
+	num
+,	name
+,	city
+,	basicPay
+,	LAG(basicPay) OVER(ORDER BY basicPay) AS lag
+,	LEAD(basicPay) OVER(ORDER BY basicPay) AS lead
+FROM dbo.TBLINSA WITH(NOLOCK)
+ORDER BY city, basicPay
+
+
+
+
+
+SELECT
+	num
+,	name
+,	city
+,	basicPay
+FROM dbo.TBLINSA WITH(NOLOCK)
+ORDER BY city,basicPay
+
+
+
+
+
+
+
+--GROUP BY city 
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+,	FIRST_VALUE(basicPay + sudang) OVER (PARTITION BY buseo ORDER BY num ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS first_value
+,	LAST_VALUE(basicPay + sudang) OVER (PARTITION BY buseo ORDER BY num ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_value
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, num
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+,	SUM(basicPay + sudang) OVER (PARTITION BY buseo ORDER BY basicPay + sudang ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS accumulate
+,	MIN(basicPay + sudang) OVER (PARTITION BY buseo ORDER BY basicPay + sudang ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS min_value_per_buseo
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, salary
+
+
+
+
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary
+,	
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, salary
+
+
+
+
+
+
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, num
+
+
+SELECT
+	t1.name
+,	t1.buseo
+,	t2.salary
+,	t2.avg_salary
+,	t2.salary - t2.avg_salary AS my_sal_diff
+FROM dbo.TBLINSA t1 WITH(NOLOCK)
+INNER JOIN 
+(SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+,	AVG(basicPay + sudang) OVER (PARTITION BY buseo) AS avg_salary
+FROM dbo.TBLINSA WITH(NOLOCK)) t2 ON t1.num = t2.num
+ORDER BY t1.buseo, t2.salary
+
+
+
+
+
+
+SELECT
+	num
+,	name
+,	buseo
+,	basicPay + sudang AS salary
+FROM dbo.TBLINSA WITH(NOLOCK)
+ORDER BY buseo,salary
+
+
+
+
+
+
+SELECT 
+	qoouser_seq
+,	qoouser_id
+,	e.elect_prod_name
+,	e.elect_prod_price
+,	b.product_quantity
+,	b.buy_date
+,	AVG(CONVERT(BIGINT,e.elect_prod_price) * b.product_quantity) OVER(PARTITION BY q.qoouser_nation ORDER BY e.elect_prod_price * b.product_quantity) AS avg_buy
+FROM dbo.QOO10_USER_REAL q WITH(NOLOCK)
+INNER JOIN dbo.BUYTBL_INFO b WITH(NOLOCK) ON q.qoouser_seq = b.buy_qoouser_seq
+INNER JOIN dbo.ELECTRONIC_PRODUCTS e WITH(NOLOCK) ON b.product_serial = e.elect_prodserial
+WHERE buy_date BETWEEN '2020-10-10' AND '2021-10-11'
+
+
+SELECT number FROM RANGE(1,10);
+
+
+
+
+SELECT * FROM dbo.BUYTBL_INFO WITH(NOLOCK)
+
+
+
+
+CREATE TABLE dbo.SH_TEST_ORDERS
+(
+	orderid INT NOT NULL,
+	orderdate DATE NOT NULL,
+	empid INT NOT NULL,
+	custid VARCHAR(5) NOT NULL,
+	qty INT NOT NULL,
+);
+ALTER TABLE dbo.SH_TEST_ORDERS ADD CONSTRAINT PK__SH_TEST_ORDERS__ORDERID PRIMARY KEY(orderid)
+
+INSERT INTO dbo.SH_TEST_ORDERS(orderid,orderdate,empid,custid,qty)
+VALUES 
+(30001,'20070802',3,'A',10),
+(10001,'20071224',2,'A',12),
+(10005,'20071224',1,'B',20),
+(40001,'20080109',2,'A',40),
+(10006,'20080118',1,'C',14),
+(20001,'20080212',2,'B',12),
+(40005,'20090212',3,'A',10),
+(20002,'20090216',1,'C',20),
+(30003,'20090418',2,'B',15),
+(30004,'20070418',3,'C',22),
+(30007,'20090907',3,'D',30)
+
+SELECT * FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+
+
+SELECT
+	empid
+,	SUM(CASE WHEN custid = 'A' THEN qty END) AS A
+,	SUM(CASE WHEN custid = 'B' THEN qty END) AS B
+,	SUM(CASE WHEN custid = 'C' THEN qty END) AS C
+,	SUM(CASE WHEN custid = 'D' THEN qty END) AS D
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+GROUP BY empid
+
+
+SELECT 
+	empid,	A,	B,	C,	D
+FROM (SELECT	empid,	custid,	qty
+		FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)) AS D
+PIVOT(SUM(qty) FOR custid IN(A,B,C,D)) AS P
+
+
+
+SELECT
+	empid,	A,	B,	C,	D
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+PIVOT(SUM(qty) FOR custid IN(A,B,C,D)) AS P
+
+
+
+advertise_show
+ from dbo.ADVERTISE_INFO with(nolock)  
+
+
+SELECT
+	empid
+,	custid
+,	SUM(qty) AS sumqty
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+GROUP BY empid,custid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+SELECT
+	empid
+,	SUM(CASE WHEN custid = 'A' THEN qty END) AS A
+,	SUM(CASE WHEN custid = 'B' THEN qty END) AS B
+,	SUM(CASE WHEN custid = 'C' THEN qty END) AS C
+,	SUM(CASE WHEN custid = 'D' THEN qty END) AS D
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+GROUP BY empid
+
+
+
+
+
+
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+,	COUNT(*) OVER (ORDER BY basicPay + sudang ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING) AS cnt
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, salary
+
+
+SELECT 
+	num 
+,	name 
+,	buseo 
+,	basicPay + sudang AS salary 
+,	COUNT(*) OVER (ORDER BY basicPay + sudang RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cnt
+FROM dbo.TBLINSA WITH(NOLOCK) 
+ORDER BY buseo, salary
+
+
+
+SELECT 
+	d.dept
+,	d.id
+,	d.salary
+,	SUM(d.salary) OVER (PARTITION BY d.dept ORDER BY d.id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) col
+FROM (
+          SELECT 20 dept, 100 id, 20000 salary UNION ALL
+          SELECT 20 dept, 101 id, 30000 salary UNION ALL
+          SELECT 20 dept, 101 id, 10000 salary UNION ALL
+          SELECT 20 dept, 102 id,  9000 salary UNION ALL
+          SELECT 20 dept, 103 id, 17000 salary
+       ) d
+
+SELECT 
+	d.dept
+,	d.id
+,	d.salary
+,	SUM(d.salary) OVER (PARTITION BY d.dept ORDER BY d.id RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) col
+FROM (
+          SELECT 20 dept, 100 id, 20000 salary UNION ALL
+          SELECT 20 dept, 101 id, 30000 salary UNION ALL
+          SELECT 20 dept, 101 id, 10000 salary UNION ALL
+          SELECT 20 dept, 102 id,  9000 salary UNION ALL
+          SELECT 20 dept, 103 id, 17000 salary
+       ) d
+
+
+CREATE TABLE dbo.SH_TEST_ORDERS_PIVOT 
+( 
+	empid INT NOT NULL, 
+	A VARCHAR(5) NULL, 
+	B VARCHAR(5) NULL, 
+	C VARCHAR(5) NULL, 
+	D VARCHAR(5) NULL 
+) 
+ALTER TABLE dbo.SH_TEST_ORDERS_PIVOT ADD CONSTRAINT PK__SH_TEST_ORDERS_PIVOT__EMPID PRIMARY KEY(empid)  
+
+
+--피벗팅한 값을 새로운 테이블에 INSERT 해준다.
+INSERT INTO dbo.SH_TEST_ORDERS_PIVOT (empid,A,B,C,D) 
+SELECT empid,A,B,C,D 
+FROM (SELECT empid,custid,qty FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)) AS D 
+PIVOT (SUM(qty) FOR custid IN(A,B,C,D)) AS P 
+
+SELECT * FROM dbo.SH_TEST_ORDERS_PIVOT WITH(NOLOCK)
+
+
+SELECT * FROM (VALUES ('A'),('B'),('C'),('D')) AS custs(custid)
+
+
+
+SELECT *
+FROM dbo.SH_TEST_ORDERS_PIVOT
+CROSS JOIN (VALUES ('A'),('B'),('C'),('D')) AS custs(custid)
+
+
+SELECT *
+FROM (VALUES ('A',13),('B',20),('C',30),('D',54)) AS O(id,pw)
+
+SELECT *
+FROM dbo.SH_TEST_ORDERS_PIVOT
+CROSS JOIN (VALUES ('A'),('B'),('C'),('D')) AS custs(custid)
+
+
+
+SELECT *
+FROM
+(SELECT
+		empid
+	,	custid
+	,	CASE custid 
+			WHEN 'A' THEN A 
+			WHEN 'B' THEN B
+			WHEN 'C' THEN C
+			WHEN 'D' THEN D
+		END AS qty
+	FROM dbo.SH_TEST_ORDERS_PIVOT
+	CROSS JOIN (VALUES ('A'),('B'),('C'),('D')) AS custs(custid)) AS D
+WHERE D.qty IS NOT NULL
+
+
+SELECT * FROM dbo.SH_TEST_ORDERS_PIVOT WITH(NOLOCK)
+
+
+SELECT
+	empid
+,	custid
+,	qty
+FROM dbo.SH_TEST_ORDERS_PIVOT
+UNPIVOT(qty FOR custid IN (A,B,C,D)) AS A
+
+
+
+SELECT
+	empid,	A,	B,	C,	D
+FROM
+(
+	SELECT
+		empid
+	,	custid
+	,	CONVERT(INT,qty) AS qty -- 형변환필요
+	FROM dbo.SH_TEST_ORDERS_PIVOT
+	UNPIVOT(qty FOR custid IN (A,B,C,D)) AS U
+) AS D
+PIVOT(SUM(qty) FOR custid IN (A,B,C,D)) AS P
+
+
+
+
+
+SELECT * FROM dbo.SH_TEST_ORDERS_PIVOT WITH(NOLOCK)
+
+
+
+SELECT
+	name
+,	buseo
+,	SUM(basicPay) AS sum_pay
+FROM dbo.TBLINSA WITH(NOLOCK)
+GROUP BY name,buseo
+
+UNION ALL
+
+SELECT
+	NULL
+,	buseo
+,	SUM(basicPay) AS sum_pay
+FROM dbo.TBLINSA WITH(NOLOCK)
+GROUP BY buseo
+
+UNION ALL
+
+SELECT
+	name
+,	NULL
+,	SUM(basicPay) AS sum_pay
+FROM dbo.TBLINSA WITH(NOLOCK)
+GROUP BY name
+
+UNION ALL
+
+SELECT
+	NULL
+,	NULL
+,	SUM(basicPay) AS sum_pay
+FROM dbo.TBLINSA WITH(NOLOCK)

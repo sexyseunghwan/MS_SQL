@@ -126,7 +126,7 @@ ORDER BY standard_year DESC
 
 
 
-
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
 
 
 
@@ -138,12 +138,6 @@ FROM dbo.BUYTBL_INFO b WITH(NOLOCK)
 INNER JOIN dbo.ELECTRONIC_PRODUCTS e ON e.elect_prodserial = b.product_serial
 WHERE YEAR(b.buy_date) = 2000
 
-23,078,762,735,000
-23,183,800,880,000
-2,318,380,088,000
-231,838,008,800
-105,038,145,000
--105,038,145,000
 
 
 
@@ -163,7 +157,7 @@ WHERE YEAR(b.buy_date) = 2000
 
 
 
-
+update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '111.111' where qoouser_id = 'admin'
 
 
 
@@ -1888,3 +1882,247 @@ end
 declare @result int
 exec qoo_sign_up_id_check '987asd',@result output
 select  @result
+
+
+
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
+
+update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '111.111.111.111' where qoouser_id = 'admin'
+
+
+Text
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ /* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-19   
+	Description : 테스트  
+	     
+	History	: 2021-05-19 Seunghwan Shin	#최초 생성  
+*/ 
+create proc dbo.advertise_show
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+	select
+		ad_seq as adSeq
+	,	ad_name as adName
+	,	ad_pic_url as adpPcUrl
+	,	ad_url as adUrl
+	,	ad_price_monthly as adPriceMonthly
+	from dbo.ADVERTISE_INFO with(nolock)
+	
+
+end
+
+qoo10_total_login
+
+select top(10) * from dbo.QOO10_USER_REAL with(nolock)
+
+
+		declare @user_seq int
+		declare @login_code int
+		exec dbo.qoo10_total_login '111.111.111.111', 'admin', '24b0015e0d850b1c796d7586d21072b5f8ebdc180805edc074cdf034b245478b', @login_code output, @user_seq output
+		select @login_code, @user_seq
+		--select @user_seq
+
+
+		select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
+
+		update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '0:0:0:0:0:0:0:1' where qoouser_id = 'admin'
+
+qoo_sign_up
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = 2000001
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-06-10
+	Description : 자동로그인방지 인증 후 회원의 로그인정보 기록
+	    
+	History		: 2021-06-10 Seunghwan Shin	#최초 생성
+
+*/
+alter proc [dbo].[qoo10_login_after_auto_check]
+	@user_ip_address varchar(100)-- 접속한 ip주소
+,	@user_seq int-- 유저고유번호
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+	
+
+	--마지막 로그인에 대한 시간, 마지막 접속 아이피 주소 남기기
+	update dbo.QOO10_USER_REAL set 
+			qoouser_lastlogin_datetime = getdate()
+		,	qoouser_lastlogin_ipaddress = @user_ip_address
+	where qoouser_seq = @user_seq 
+
+	if @@ERROR <> 0
+	begin
+		rollback tran
+	end
+					
+end
+
+--exec dbo.qoo10_login_after_auto_check '123','20000000'
+
+
+
+
+
+
+
+/*
+	Author      : Seunghwan Shin
+	Create date : 2021-06-08
+	Description : 유저 정보 반환
+	    
+	History		: 2021-06-08 Seunghwan Shin #유저객체를 넘겨주기 위한 로직 수정
+
+*/
+create proc [dbo].[qoo10_user_info]
+	@qoouser_seq int
+as
+set nocount on
+set transaction isolation level read uncommitted
+begin
+	
+	select
+		qoouser_seq as userSeq
+	,	qoouser_id as userId
+	,	qoouser_gender as userGender
+	,	qoouser_nation as userNation
+	,	qoouser_hascoin as userHasCoin
+	,	qoouser_grade as userGrade
+	,	qoouser_name as userName
+	from dbo.QOO10_USER_REAL with(nolock)
+	where qoouser_seq = @qoouser_seq
+
+
+end
+
+
+
+select count(*) from dbo.QOO10_USER_REAL with(nolock) 
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*) from dbo.QOO10_USER_REAL with(nolock) )-1
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-22   
+	Description : 회원가입
+	     
+	History	: 2021-05-22 Seunghwan Shin	#최초 생성  
+*/
+CREATE proc dbo.qoo_sign_up
+	@qoouser_id varchar(100) -- 아이디
+,	@qoouser_pw varchar(800) -- 비밀번호
+,	@qoouser_birthday datetime -- 생년월일
+,	@qoouser_email varchar(200) -- 이메일
+,	@qoouser_gender  char(1) -- 성별
+,	@qoouser_nation char(2) -- 국적
+,	@qoouser_ipaddress varchar(200) -- 아이피주소
+,	@qoouser_phone_num varchar(20) -- 전화번호
+,	@qoouser_receive_email char(1) -- 이메일 알람
+,	@qoouser_receive_sms char(1) -- sms 알람
+,	@qoouser_name nvarchar(30) -- 이름
+,	@check int output
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+  
+begin try
+	
+	begin tran
+	insert into dbo.QOO10_USER_REAL 
+	(
+		qoouser_id
+	,	qoouser_pw
+	,	qoouser_birthday
+	,	qoouser_email
+	,	qoouser_gender
+	,	qoouser_nation
+	,	qoouser_ipaddress
+	,	qoouser_hascoin
+	,	qoouser_phone_num
+	,	qoouser_grade
+	,	qoouser_receive_email
+	,	qoouser_receive_sms
+	,	qoouser_denide
+	,	qoouser_register_datetime
+	,	qoouser_lastlogin_datetime
+	,	qoouser_lastlogin_ipaddress
+	,	qoouser_name
+	)
+	values
+	(
+		@qoouser_id
+	,	@qoouser_pw
+	,	@qoouser_birthday
+	,	@qoouser_email
+	,	@qoouser_gender
+	,	@qoouser_nation
+	,	@qoouser_ipaddress
+	,	0
+	,	@qoouser_phone_num
+	,	1
+	,	@qoouser_receive_email
+	,	@qoouser_receive_sms
+	,	'N'
+	,	getdate()
+	,	null
+	,	@qoouser_ipaddress
+	,	@qoouser_name
+	)
+	commit tran
+	set @check = 1
+
+end try
+begin catch
+	set @check = -1
+	rollback tran
+end catch
+
+end
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-30   
+	Description : 회원가입 : 아이디 검증과정
+	     
+	History	: 2021-05-30 Seunghwan Shin	#최초 생성  
+*/
+create proc dbo.qoo_sign_up_id_check
+	@qoouser_id varchar(100) -- 아이디 o
+,	@result int output
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin
+
+	if exists (select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = @qoouser_id)
+	begin
+		set @result = -1;
+	end
+	else
+	begin
+		set @result = 1;
+	end
+end
+
+
+declare @result int
+exec qoo_sign_up_id_check 'ssh9308' , @result output
+select @result
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*) from dbo.QOO10_USER_REAL with(nolock))
