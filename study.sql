@@ -1412,3 +1412,93 @@ SELECT
 ,	NULL
 ,	SUM(basicPay) AS sum_pay
 FROM dbo.TBLINSA WITH(NOLOCK)
+
+
+
+
+SELECT 
+	empid 
+,	custid 
+,	qty 
+FROM dbo.SH_TEST_ORDERS_PIVOT 
+UNPIVOT(qty FOR custid IN (A,B,C,D)) AS U
+
+
+SELECT * FROM dbo.SH_TEST_ORDERS WITH(NOLOCK)
+
+
+
+SELECT 
+	empid 
+,	custid 
+,	SUM(qty) AS sum_qty 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY CUBE(empid,custid)
+
+
+
+SELECT 
+	empid 
+,	custid 
+,	SUM(qty) AS sum_qty 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY empid,custid
+
+UNION ALL
+
+SELECT 
+	empid 
+,	NULL 
+,	SUM(qty) AS sum_qty 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY empid
+
+UNION ALL
+
+SELECT 
+	NULL
+,	custid 
+,	SUM(qty) AS sum_qty 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY custid
+
+
+SELECT  
+	YEAR(orderdate) AS order_year 
+,	MONTH(orderdate) AS order_month 
+,	DAY(orderdate) AS order_day 
+,	SUM(qty) AS qty_sum 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY ROLLUP (YEAR(orderdate),MONTH(orderdate),DAY(orderdate))
+
+
+SELECT  
+	YEAR(orderdate) AS order_year 
+,	MONTH(orderdate) AS order_month 
+,	DAY(orderdate) AS order_day 
+,	SUM(qty) AS qty_sum 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY ROLLUP (YEAR(orderdate),MONTH(orderdate),DAY(orderdate))
+
+
+
+SELECT  
+	YEAR(orderdate) AS order_year 
+,	MONTH(orderdate) AS order_month 
+,	DAY(orderdate) AS order_day 
+,	SUM(qty) AS qty_sum 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY ROLLUP (YEAR(orderdate),MONTH(orderdate),DAY(orderdate))
+HAVING GROUPING_ID(YEAR(orderdate),MONTH(orderdate),DAY(orderdate)) = 1
+
+
+SELECT  
+	YEAR(orderdate) AS order_year 
+,	MONTH(orderdate) AS order_month 
+,	DAY(orderdate) AS order_day 
+,	SUM(qty) AS qty_sum 
+FROM dbo.SH_TEST_ORDERS WITH(NOLOCK) 
+GROUP BY ROLLUP (YEAR(orderdate),MONTH(orderdate),DAY(orderdate))
+HAVING GROUPING_ID(YEAR(orderdate),MONTH(orderdate),DAY(orderdate)) = 1
+OR GROUPING_ID(YEAR(orderdate),MONTH(orderdate),DAY(orderdate)) = 3
+OR GROUPING_ID(YEAR(orderdate),MONTH(orderdate),DAY(orderdate)) = 8
