@@ -21,6 +21,9 @@ FROM YEARCOUNT AS cur
 LEFT OUTER JOIN YEARCOUNT AS prev ON cur.per_year = prev.per_year + 1
 ORDER BY standard_year DESC
 
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = 20001 
+
+
 
 
 create table dbo.APPLEBUYTBL 
@@ -1892,6 +1895,9 @@ select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_id = 'admin'
 update dbo.QOO10_USER_REAL set qoouser_lastlogin_ipaddress = '111.111.111.111' where qoouser_id = 'admin'
 
 
+exec dbo.advertise_show
+
+
 Text
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  /* 
@@ -2126,3 +2132,223 @@ select @result
 
 
 select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*) from dbo.QOO10_USER_REAL with(nolock))
+
+
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-05-19   
+	Description : 테스트  
+	     
+	History	: 2021-05-19 Seunghwan Shin	#최초 생성 
+			  2021-05-19 Seunghwan Shin #top(),order by 절 추가
+*/ 
+ALTER proc dbo.advertise_show
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin 
+    
+	select top(9)
+		ad_seq as adSeq
+	,	ad_name as adName
+	,	ad_pic_url as adpPcUrl
+	,	ad_url as adUrl
+	,	ad_price_monthly as adPriceMonthly
+	from dbo.ADVERTISE_INFO with(nolock)
+	order by adPriceMonthly
+	
+
+end
+
+
+--userSignUpIdCheck
+
+
+
+--qoo_sign_up_id_check
+
+grant execute to junpyo
+
+
+
+select * from(
+         select 
+			row_number() over (order by A.reg_dt desc) as rn
+		 ,	A.seq
+		 ,	A.title
+		 ,	A.content
+		 ,	A.reg_id
+		 ,	A.reg_dt
+		 from
+            (
+				SELECT
+					seq
+				,	title
+				,	content
+				,	reg_id
+				,	CONVERT(CHAR(23),reg_dt,23) as reg_dt
+				FROM dbo.NOTICE with(nolock)
+            ) A
+         ) where rnum between #{start} and # {end}
+
+
+				
+				
+				SELECT
+					seq
+				,	title
+				,	content
+				,	reg_id
+				,	CONVERT(CHAR(23),reg_dt,23) as reg_dt
+				FROM dbo.NOTICE with(nolock)
+
+
+         select 
+			row_number() over (order by A.reg_dt desc) as rn
+		 ,	A.seq
+		 ,	A.title
+		 ,	A.content
+		 ,	A.reg_id
+		 ,	A.reg_dt
+		 from
+            (
+				SELECT
+					seq
+				,	title
+				,	content
+				,	reg_id
+				,	CONVERT(CHAR(23),reg_dt,23) as reg_dt
+				FROM dbo.NOTICE with(nolock)
+            ) A
+
+select * from (
+            SELECT ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rownum,
+            seq, title,
+            content, reg_id, CONVERT(CHAR(23),reg_dt,23) as reg_dt
+            FROM dbo.NOTICE with(nolock)    
+            ) A where rownum between 1 and 2
+
+
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*) from dbo.QOO10_USER_REAL with(nolock))
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-06-20   
+	Description : 회원가입 : 아이디 검증과정
+	     
+	History	: 2021-06-20 Seunghwan Shin	#최초 생성  
+*/
+create proc dbo.kakao_sign_up_email_check
+	@email varchar(200) -- 이메일 아이디
+,	@result int output
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin
+
+	if exists (select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_email = @email)
+	begin
+		set @result = -1;
+	end
+	else
+	begin
+		set @result = 1;
+	end
+end
+
+		declare @result int
+		exec dbo.kakao_sign_up_email_check 'ssh9308@daum.net',@result output
+		select @result
+
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_email = 'ssh9308@daum.net'
+
+
+CREATE INDEX IDX__QOO10_USER_REAL__QOOUSER_EMAIL ON dbo.QOO10_USER_REAL (qoouser_email)
+
+CREATE INDEX IDX__QOO10_USER_REAL__QOOUSER_ID ON dbo.QOO10_USER_REAL (qoouser_id)
+
+
+select * from dbo.KAKAO_ERR_LOG_TBL with(nolock)
+
+
+select * from dbo.QOO10_USER_REAL with(nolock) where qoouser_seq = (select count(*)-1 from dbo.QOO10_USER_REAL with(nolock))
+
+
+CREATE TABLE dbo.KAKAO_ERR_LOG_TBL
+(
+	err_seq bigint identity(1,1) not null,
+	user_ip_address varchar(200) not null,
+	err_msg nvarchar(max) null
+	
+)
+
+ALTER TABLE dbo.KAKAO_ERR_LOG_TBL ADD CONSTRAINT PK__KAKAO_ERR_LOG_TBL__ERR_SEQ__USER_IP_ADDRESS PRIMARY KEY (err_seq,user_ip_address)
+
+
+alter table dbo.KAKAO_ERR_LOG_TBL add error_time datetime null
+
+
+
+/* 
+	Author      : Seunghwan Shin 
+	Create date : 2021-06-23   
+	Description : 에러요인 입력
+	     
+	History	: 2021-06-23 Seunghwan Shin	#최초 생성  
+			  2021-06-24 Seunghwan Shin	#error_time 추가
+*/
+alter proc dbo.kakao_error_log
+	@user_ip_address varchar(200) -- 유저 아이피
+,	@err_msg nvarchar(max)
+as 
+set nocount on 
+set transaction isolation level read uncommitted 
+begin
+
+	insert into dbo.KAKAO_ERR_LOG_TBL 
+	(
+		user_ip_address
+	,	err_msg
+	,	error_time
+	)
+	values 
+	(
+		@user_ip_address
+	,	@err_msg
+	,	getdate()
+	);
+
+end
+
+
+SELECT * FROM dbo.TBLINSA
+qoo10_total_login
+
+SET TRANSACTION ISOLATION LEVEL SNAPSHOT
+ALTER DATABASE ADMIN SET ALLOW_SNAPSHOT_ISOLATION ON;
+
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+
+
+BEGIN TRAN
+SELECT * FROM dbo.TBLINSA WHERE num = 1002
+
+
+SELECT @@TRANCOUNT
+
+ROLLBACK TRAN
+
+UPDATE dbo.TBLINSA SET name = N'이순신' WHERE num = 1002
+
+
+
+
+BEGIN TRAN
+UPDATE dbo.TBLINSA SET name = N'리순자' WHERE num = 1002
