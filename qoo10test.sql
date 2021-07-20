@@ -3538,3 +3538,57 @@ FROM dbo.TREEPATH t WITH(NOLOCK)
 WHERE t.descendant = 5
 UNION ALL
 SELECT 8,8
+
+
+SELECT  
+	comment_id 
+,	comment 
+,	author  
+,	(SELECT COUNT(*) FROM dbo.COMMENT_TEST c2 WITH(NOLOCK) WHERE c1.comment_id = c2.parent_id) as comment_cnt 
+FROM dbo.COMMENT_TEST c1 WITH(NOLOCK)
+
+
+
+SELECT * FROM dbo.COMMENT_TEST WITH(NOLOCK)
+
+
+BEGIN TRAN
+
+DELETE dbo.COMMENT_TEST WHERE comment_id = 4
+
+
+SELECT * FROM dbo.COMMENT_TEST c1 WITH(NOLOCK)
+LEFT JOIN dbo.COMMENT_TEST c2 WITH(NOLOCK) ON c1.comment_id = c2.parent_id
+WHERE c1.parent_id = 1
+
+
+
+SELECT 
+    c1.comment,c2.comment,c3.comment,c4.comment 
+FROM dbo.COMMENT_TEST c1 WITH(NOLOCK) 
+LEFT OUTER JOIN dbo.COMMENT_TEST c2 WITH(NOLOCK) ON c1.comment_id = c2.parent_id 
+LEFT OUTER JOIN dbo.COMMENT_TEST c3 WITH(NOLOCK) ON c2.comment_id = c3.parent_id 
+LEFT OUTER JOIN dbo.COMMENT_TEST c4 WITH(NOLOCK) ON c3.comment_id = c4.parent_id
+
+
+
+WHERE c1.parent_id = 1
+
+SELECT @@TRANCOUNT
+
+ROLLBACK TRAN
+
+
+SELECT 
+	t.ancester 
+,	8 
+,	t.path_length + 1 
+FROM dbo.TREEPATH t WITH(NOLOCK) 
+WHERE t.descendant= 5 
+
+
+SELECT 
+	T.* 
+FROM dbo.COMMENT_TEST_CLOSER c WITH(NOLOCK) 
+INNER JOIN dbo.TREEPATH t WITH(NOLOCK) ON c.comment_id = t.descendant 
+WHERE t.descendant = 7 AND t.ancester != 7
