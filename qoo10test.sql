@@ -595,6 +595,14 @@ CREATE TABLE dbo.TBLBANNEDIPLIST
 )
 
 
+select * from dbo.TBLBANNEDIPLIST with(nolock)
+
+begin tran
+
+update dbo.TBLBANNEDIPLIST set banned_ip_address = '123123' where banned_ip_address = '0:0:0:0:0:0:0:1'
+
+commit tran
+
 
 select * from dbo.TBLBANNEDIPLIST with(nolock)
 
@@ -3592,3 +3600,7 @@ SELECT
 FROM dbo.COMMENT_TEST_CLOSER c WITH(NOLOCK) 
 INNER JOIN dbo.TREEPATH t WITH(NOLOCK) ON c.comment_id = t.descendant 
 WHERE t.descendant = 7 AND t.ancester != 7
+
+
+
+

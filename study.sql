@@ -1720,3 +1720,209 @@ SELECT * FROM dbO.TBLINSA  WHERE num = 1002
 
 
 ROLLBACK TRAN
+
+
+
+alter table dbo.PRODUCT_TABLE add constraint PK__PRODUCT_TABLE__PRODUCT_ID PRIMARY KEY (product_id)
+
+select * into dbo.PRODUCT_TABLE from dbo.KAKAO_PRODUCT_TABLE
+
+select * into dbo.NOTICE_TBL from dbo.NOTICE
+
+ALTER TABLE dbo.NOTICE_TBL ADD CONSTRAINT PK__NOTICE_TBL__SEQ PRIMARY KEY (seq)
+
+
+select * from dbo.NOTICE_TBL with(nolock)
+
+insert into dbo.NOTICE_TBL values (N'춘식이 상품관련 공지드립니다~',N'더나은 서비스 제공을 위해서 ~','SHIN',getdate())
+
+
+
+/* COMMENT - 댓글 */
+CREATE TABLE [dbo].[COMMENT] (
+	[comment_seq] [BIGINT] IDENTITY(1,1) NOT NULL,  /* 댓글번호 - comment_seq */
+	[comment_content] [NVARCHAR](300) NOT NULL,  /* 댓글내용 - comment_content */
+	[reg_dt] [DATETIME] NOT NULL,  /* 등록날짜 - reg_dt */
+	[chg_dt] [DATETIME],  /* 수정 날짜 - chg_dt */
+	[comment_gubun] [VARCHAR](25) NOT NULL,  /* 댓글구분 - comment_gubun */
+	[issue_seq] [BIGINT] NOT NULL /* 이슈번호 - issue_seq */
+)
+GO
+
+
+
+ALTER TABLE dbo.COMMENT ADD CONSTRAINT PK__COMMENT__COMMENT_SEQ PRIMARY KEY (comment_seq)
+
+INSERT INTO dbo.COMMENT VALUES (N'마린 에어팟키링_무지&콘 관련문의 입니다~',getdate(),null,'product',1)
+INSERT INTO dbo.COMMENT VALUES (N'개인정보 이전에 대해 상세하게 알고싶습니다~',getdate(),null,'notice',4)
+
+INSERT INTO dbo.COMMENT VALUES (N'춘식이 상품 공지,판매 관련사항에 대해 질문이 있는데요...',getdate(),null,'product',49)
+INSERT INTO dbo.COMMENT VALUES (N'춘식이 상품 공지,판매 관련사항에 대해 질문이 있는데요...',getdate(),null,'notice',10)
+
+
+
+SELECT
+	c.comment_content
+,	c.comment_gubun
+,	n.title
+FROM dbo.COMMENT c WITH(NOLOCK)
+INNER JOIN dbo.NOTICE_TBL n WITH(NOLOCK) ON c.issue_seq = n.seq AND c.comment_gubun = 'notice'
+WHERE c.comment_seq = 3
+
+
+
+
+select * from dbo.COMMENT_NEW with(nolock)
+
+UPDATE dbo.COMMENT_NEW SET issue_id = 1 WHERE comment_seq = 1
+UPDATE dbo.COMMENT_NEW SET issue_id = 2 WHERE comment_seq = 2
+UPDATE dbo.COMMENT_NEW SET issue_id = 3 WHERE comment_seq = 3
+
+
+INSERT INTO dbo.ISSUE_TBL VALUES (1) 
+INSERT INTO dbo.ISSUE_TBL VALUES (2) 
+INSERT INTO dbo.ISSUE_TBL VALUES (3) 
+
+
+
+SELECT * FROM dbo.NOTICE_TBL WITH(NOLOCK)
+
+UPDATE dbo.NOTICE_TBL SET issue_id = 2 where seq = 10
+
+
+select * from dbo.PRODUCT_TABLE  with(nolock)
+
+update dbo.PRODUCT_TABLE set issue_id = 1 where product_id = 1
+
+update dbo.PRODUCT_TABLE set issue_id = 2 where product_id = 49
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+alter table dbo.PRODUCT_TABLE add issue_id bigint 
+
+
+CREATE TABLE dbo.ISSUE_TBL
+(
+	issue_id bigint not null
+)
+
+ALTER TABLE dbo.ISSUE_TBL ADD CONSTRAINT PK__ISSUE_TBL__ISSUE_ID PRIMARY KEY (issue_id)
+
+
+alter table dbo.COMMENT add issue_id bigint
+alter table dbo.COMMENT_NEW add issue_id bigint
+alter table dbo.NOTICE_TBL add issue_id bigint
+
+
+SELECT
+	c.comment_content
+,	c.comment_gubun
+,	n.seq
+FROM dbo.COMMENT c WITH(NOLOCK)
+LEFT JOIN dbo.NOTICE_TBL n WITH(NOLOCK) ON c.issue_seq = n.seq AND c.comment_gubun = 'notice'
+LEFT JOIN dbo.PRODUCT_TABLE p WITH(NOLOCK) ON c.issue_seq = p.product_id AND c.comment_gubun = 'product'
+
+
+
+
+
+SELECT
+	c.comment_content
+,	pc.product_id
+,	nc.seq
+FROM dbo.COMMENT_NEW c WITH(NOLOCK)
+LEFT JOIN dbo.PRODUCT_COMMENT pc WITH(NOLOCK) ON pc.comment_seq = c.comment_seq
+LEFT JOIN dbo.NOTICE_COMMENT nc WITH(NOLOCK) ON nc.comment_seq = c.comment_seq
+
+
+
+SELECT
+	cn.comment_content
+,	pt.product_id
+,	nt.seq
+FROM dbo.ISSUE_TBL it WITH(NOLOCK)
+INNER JOIN dbo.COMMENT_NEW cn WITH(NOLOCK) ON it.issue_id = cn.issue_id
+LEFT JOIN dbo.PRODUCT_TABLE pt WITH(NOLOCK) ON pt.issue_id = it.issue_id
+LEFT JOIN dbo.NOTICE_TBL nt WITH(NOLOCK) ON nt.issue_id = it.issue_id
+
+
+
+
+WHERE c.comment_seq = 4
+
+
+
+
+WHERE c.comment_gubun = 'notice'
+
+
+select * from dbo.COMMENT with(nolock)
+
+
+select * from dbo.NOTICE_TBL with(nolock)
+
+
+select * from dbo.COMMENT with(nolock)
+
+
+/* COMMENT_NEW - 댓글 */
+CREATE TABLE [dbo].[COMMENT_NEW] (
+	[comment_seq] [BIGINT] NOT NULL,  /* 댓글번호 - comment_seq */
+	[comment_content] [NVARCHAR](300) NOT NULL,  /* 댓글내용 - comment_content */
+	[reg_dt] [DATETIME] NOT NULL,  /* 등록날짜 - reg_dt */
+	[chg_dt] [DATETIME] /* 수정 날짜 - chg_dt */
+)
+GO
+
+ALTER TABLE dbo.COMMENT_NEW ADD CONSTRAINT PK__COMMENT_NEW__COMMENT_SEQ PRIMARY KEY (comment_seq)
+
+
+
+INSERT INTO dbo.COMMENT_NEW VALUES (1,N'마린 에어팟키링_무지&콘 관련문의 입니다~',getdate(),null)
+INSERT INTO dbo.COMMENT_NEW VALUES (2,N'춘식이 상품 공지,판매 관련사항에 대해 질문이 있는데요...(라이언과 춘식이의 집콕놀이)',getdate(),null)
+INSERT INTO dbo.COMMENT_NEW VALUES (3,N'개인정보 이전에 대해 상세하게 알고싶습니다~',getdate(),null)
+
+SELECT * FROM dbo.PRODUCT_TABLE WITH(NOLOCK)
+
+
+INSERT INTO dbo.PRODUCT_COMMENT VALUES (1,1)
+INSERT INTO dbo.PRODUCT_COMMENT VALUES (49,2)
+
+
+INSERT INTO dbo.NOTICE_COMMENT VALUES (10,2)
+INSERT INTO dbo.NOTICE_COMMENT VALUES (3,3)
+
+/* PRODUCT_COMMENT - 상품정보 관련 댓글 */
+CREATE TABLE [dbo].[PRODUCT_COMMENT] (
+	[product_id] [BIGINT] NOT NULL,  /* 상품고유번호 - product_id */
+	[comment_seq] [BIGINT] NOT NULL /* 댓글번호 - comment_seq */
+)
+GO
+
+ALTER TABLE dbo.PRODUCT_COMMENT ADD CONSTRAINT PK__PRODUCT_COMMENT__PRODUCT_ID PRIMARY KEY (product_id)
+
+/* NOTTICE_COMMENT - 공지정보 관련 댓글 */
+CREATE TABLE [dbo].[NOTICE_COMMENT] (
+	[seq] [bigint] NOT NULL,  /* 공지 순번 - seq */
+	[comment_seq] [BIGINT] NOT NULL /* 댓글번호 - comment_seq */
+)
+GO
+
+
+SELECT * FROM dbo.NOTICE_TBL
+
+ALTER TABLE dbo.NOTICE_COMMENT ADD CONSTRAINT PK__NOTICE_COMMENT__SEQ PRIMARY KEY (seq)
+
