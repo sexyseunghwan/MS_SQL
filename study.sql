@@ -1926,3 +1926,72 @@ SELECT * FROM dbo.NOTICE_TBL
 
 ALTER TABLE dbo.NOTICE_COMMENT ADD CONSTRAINT PK__NOTICE_COMMENT__SEQ PRIMARY KEY (seq)
 
+
+
+
+SELECT 
+	cn.comment_content 
+,	pt.product_id 
+,	nt.seq 
+FROM dbo.ISSUE_TBL it WITH(NOLOCK) 
+INNER JOIN dbo.COMMENT_NEW cn WITH(NOLOCK) ON it.issue_id = cn.issue_id 
+LEFT JOIN dbo.PRODUCT_TABLE pt WITH(NOLOCK) ON pt.issue_id = it.issue_id 
+LEFT JOIN dbo.NOTICE_TBL nt WITH(NOLOCK) ON nt.issue_id = it.issue_id
+
+
+
+create table dbo.NULLTEST
+(
+	seq int not null primary key
+,	testcol int
+)
+
+
+insert into dbo.NULLTEST values (1,1)
+insert into dbo.NULLTEST values (2,null)
+
+select testcol + 10 from dbo.NULLTEST where seq = 2
+
+
+select 
+	qoouser_name 
+from dbo.QOO10_USER_REAL with(nolock) 
+where qoouser_seq = 1
+
+select 
+	len(qoouser_name) 
+from dbo.QOO10_USER_REAL with(nolock) 
+where qoouser_seq = 1
+
+
+SELECT tel FROM dbo.tblInsa WHERE num = 1048
+
+SELECT tel + 'asd' FROM tblInsa WHERE num = 1048
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel = NULL
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel != NULL
+
+
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel = '017-5214-5282'
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE NOT (tel = '017-5214-5282')
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE DISTINCT tel = '017-5214-5282'
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel IS DISTINCT FROM '017-5214-5282'
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK)
+
+
+SELECT tel FROM dbo.TBLINSA WITH(NOLOCK) ORDER BY tel DESC
+
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel IS NULL --NULL인 값을 찾는경우
+
+SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel IS NOT NULL --NULL이 아닌 값을 찾는경우
