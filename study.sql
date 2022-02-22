@@ -1995,3 +1995,39 @@ SELECT tel FROM dbo.TBLINSA WITH(NOLOCK) ORDER BY tel DESC
 SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel IS NULL --NULL인 값을 찾는경우
 
 SELECT * FROM dbo.TBLINSA WITH(NOLOCK) WHERE tel IS NOT NULL --NULL이 아닌 값을 찾는경우
+
+
+set arithabort off 
+set STATISTICS IO on
+set STATISTICS TIME on
+           
+DROP TABLE #SCORE_INDEX
+
+SELECT TOP 101
+	IDENTITY(SMALLINT,0,1) AS score
+INTO #SCORE_INDEX
+FROM master.dbo.SYSCOLUMNS
+
+
+
+UPDATE st
+SET st.grade_code = sb.grade 
+FROM
+(
+	SELECT s.score , g.grade_code AS grade
+	FROM dbo.GRADETBL g WITH(NOLOCK)
+	INNER JOIN #SCORE_INDEX s WITH(NOLOCK) ON s.score >= g.start_score AND s.score <= g.end_score
+	--GROUP BY s.score
+) sb
+INNER MERGE JOIN dbo.STUDENT st ON sb.score = st.studnet_score
+
+
+
+		  
+
+set STATISTICS IO off
+set STATISTICS TIME off
+
+
+
+
