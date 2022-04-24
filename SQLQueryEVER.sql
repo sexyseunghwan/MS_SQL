@@ -1,0 +1,79 @@
+
+
+
+select * from dbo.QOO10_USER_REAL_2015 with(nolock)
+
+drop table dbo.QOO10_USER_REAL_2009
+
+
+SELECT * INTO dbo.QOO10_USER_REAL_2008 FROM dbo.QOO10_USER_REAL WHERE qoouser_register_datetime BETWEEN '2008-01-01' AND '2009-01-01'
+
+ALTER TABLE dbo.QOO10_USER_REAL_2008 ADD CONSTRAINT PK__QOO10_USER_REAL_2008__QOOUSER_SEQ PRIMARY KEY (qoouser_seq)
+
+SELECT * INTO dbo.QOO10_USER_REAL_2009 FROM dbo.QOO10_USER_REAL WHERE QOOUSER_REGISTER_DATETIME between '2009-01-01' AND '2010-01-01'
+
+ALTER TABLE dbo.QOO10_USER_REAL_2009 ADD CONSTRAINT PK__QOO10_USER_REAL_2009__QOOUSER_SEQ PRIMARY KEY (qoouser_seq)
+
+
+SELECT * FROM SYS.PARTITION_FUNCTIONS
+
+
+SELECT * FROM SYS.PARTITION_RANGE_VALUES WHERE function_id = 65536
+
+
+CREATE PARTITION SCHEME ps_register_date_2
+AS PARTITION pf_register_date
+TO 
+(
+	[PRIMARY], [PRIMARY], [UFG01]
+)
+
+
+
+
+--asdasd
+
+CREATE PARTITION FUNCTION pf_register_date( char(8) )
+AS RANGE RIGHT
+FOR VALUES (
+	'2002'	/* 2002년 파티션 */
+,	'2003'	/* 2003년 파티션 */
+,	'2004'	/* 2004년 파티션*/
+)
+
+
+
+select year(qoouser_register_datetime) , count(*) from dbo.QOO10_USER_REAL with(nolock) group by year(qoouser_register_datetime)
+
+
+
+
+USE master GO -- FirstDB02에 UFG01 사용자 정의 파일 그룹 추가 
+
+ALTER DATABASE ADMIN ADD FILEGROUP UFG01 
+
+GO 
+
+-- UFG01 파일 그룹에 파일 추가 
+ALTER DATABASE ADMIN 
+ADD FILE ( 
+	NAME = 'FirstDB02_03', 
+	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\TESTDB_02.ndf',
+	SIZE = 512MB, 
+	FILEGROWTH = 128MB 
+) 
+TO FILEGROUP UFG01
+
+
+;
+
+GO 
+
+-- UFG01 파일 그룹을 기본 파일 그룹으로 변경 
+ALTER DATABASE FirstDB02 MODIFY FILEGROUP UFG01 DEFAULT GO
+
+
+ALTER DATABASE ADMIN MODIFY FILEGROUP UFG01 DEFAULT
+
+
+GO
