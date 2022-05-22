@@ -10,6 +10,80 @@ SELECT ROW_NUMBER() OVER (PARTITION BY occupation ORDER BY name) as rm,name,occu
 
 SELECT * FROM dbo.OCCUPATIONS WITH(NOLOCK)
 
+USE [ADMIN]
+GO
+
+/****** Object:  Table [dbo].[TBLINSA_SH]    Script Date: 2022-05-22 오후 8:44:29 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+GO
+
+
+ALTER DATABASE AdventureWorks ADD FILEGROUP MEMORY_OPTIMIZED CONTAINS MEMORY_OPTIMIZED_DATA;
+ 
+ALTER DATABASE AdventureWorks ADD FILE (
+  NAME = N'Memory_optimized_file',
+  FILENAME = N'C:\DBData\AdventureWorks_Memory.ndf'
+ , MAXSIZE = UNLIMITED
+)
+TO FILEGROUP MEMORY_OPTIMIZED;
+
+
+
+ALTER DATABASE ADMIN ADD FILEGROUP MEMORY_OPTIMIZED CONTAINS MEMORY_OPTIMIZED_DATA;
+
+
+ALTER DATABASE ADMIN  
+ADD FILE (  
+	NAME = 'Memory_optimized_file',  
+	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\AdventureWorks_Memory.ndf', 
+	MAXSIZE = UNLIMITED
+)  
+TO FILEGROUP MEMORY_OPTIMIZED -- 어떤 파일그룹에 해당 파일을 넣을 것인지 지정해준다.
+
+
+SELECT * FROM dbo.TBLINSA_SH WITH(NOLOCK)
+
+
+ALTER TABLE dbo.TBLINSA_SH ADD CONSTRAINT PK__INDEX PRIMARY KEY (seq_num)
+
+CREATE INDEX IDX__TEST ON dbo.TBLINSA_SH (name)
+
+CREATE TABLE [dbo].[TBLINSA_SH_MEM](
+	[name] [char](850) NOT NULL INDEX IDX__TBLINSA_SH_MEM_NAME,
+	[ssn] [varchar](14) NOT NULL,
+	[ibsaDate] [date] NOT NULL,
+	[city] [varchar](10) NULL,
+	[tel] [varchar](15) NULL,
+	[buseo] [varchar](15) NOT NULL,
+	[jikwi] [varchar](15) NOT NULL,
+	[basicPay] [int] NOT NULL,
+	[sudang] [int] NOT NULL,
+	[seq_num] [bigint] IDENTITY(1,1) NOT NULL PRIMARY KEY NONCLUSTERED HASH WITH (BUCKET_COUNT = 1000000)
+) 
+WITH (MEMORY_OPTIMIZED = ON, DURABILITY = SCHEMA_ONLY)
+
+
+
+
+INSERT INTO dbo.TBLINSA_SH_MEM
+SELECT
+name
+,ssn
+,ibsaDate
+,city
+,tel
+,buseo
+,jikwi
+,basicPay
+,sudang
+FROM dbo.TBLINSA_SH
+
 
 SELECT 
 	ROW_NUMBER() OVER (PARTITION BY buseo ORDER BY basicpay+sudang DESC) AS rn
