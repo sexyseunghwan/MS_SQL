@@ -2186,3 +2186,167 @@ DROP TABLE dbo.TBLINSATEST
 SELECT index_id,name FROM sys.indexes WITH(NOLOCK) WHERE object_id = object_id('TBLINSATEST')
 
 
+select top(10) * from wisfarm_project_invest_payment where invest_cust_no = 210431471 and project_no =4
+
+
+
+select
+top 100
+S.spid, S.loginame, text, qs.last_execution_time, qss.client_net_address
+from sys.dm_exec_query_stats qs with(nolock)
+cross apply sys.dm_exec_sql_text(qs.plan_handle) st
+join sys.dm_exec_cached_plans cp with(nolock) on qs.plan_handle = cp.plan_handle
+join sys.sysprocesses s with(nolock) on qs.sql_handle = s.sql_handle
+join sys.dm_exec_connections qss with(nolock) on qss.session_id = s.spid
+where text like '%dbo.sh_test_test%'
+order by creation_time asc
+
+select
+top 100
+* from sys.dm_exec_query_stats qs with(nolock)
+cross apply sys.dm_exec_sql_text(qs.plan_handle) st
+join sys.dm_exec_cached_plans cp with(nolock) on qs.plan_handle = cp.plan_handle
+order by last_execution_time desc
+
+select * from sys.sysprocesses with(nolock)
+
+select * from sys.sysprocesses s with(nolock)
+join sys.dm_exec_connections qss with(nolock) on qss.session_id = s.spid
+where loginame like N'%GMKT\seunghwanshin%'
+
+
+select * from sys.dm_exec_connections with(nolock)
+
+and text like '%dbo.wisfarm_project_invest_payment%'
+order by creation_time asc
+
+select * from sys.dm_exec_query_stats qs with(nolock)
+
+select *  from sys.sysprocesses
+
+
+create table dbo.sh_test_test
+(
+seq int primary key
+)
+
+create proc dbo.sh_test_test_sh_test
+as
+begin
+insert into dbo.sh_test_test values (2)
+end
+
+exec dbo.sh_test_test_sh_test
+
+insert into dbo.sh_test_test values (1)
+
+
+SELECT DB_NAME(dbid) as DB이름, COUNT(dbid) as 접속자수
+FROM sys.sysprocesses WHERE dbid > 0 GROUP BY dbid
+
+SELECT S.spid, S.loginame, S.login_time, S.last_batch, C.client_net_address
+FROM sys.sysprocesses S
+inner join sys.dm_exec_connections C on S.spid = C.session_id
+
+
+
+select * from sys.dm_exec_connections with(nolock)
+
+select * from sys.sysprocesses s with(nolock)
+join sys.dm_exec_connections qss with(nolock) on qss.session_id = s.spid
+
+select 
+	*
+from sys.dm_exec_query_stats qs with(nolock)
+cross apply sys.dm_exec_sql_text(qs.plan_handle) st
+inner join sys.dm_exec_connections qss with(nolock) on qs.sql_handle = qss.sid
+
+--503724897
+
+order by qs.last_execution_time desc
+
+
+
+0x010005000A54CB07307FD306C102000000000000000000000000000000000000000000000000000000000000
+0x02000000FC9FF909024C8ADD8FACB3ED8A3C986714375F550000000000000000000000000000000000000000
+0x010005002BD4162180718E02C102000000000000000000000000000000000000000000000000000000000000
+0x020000005CC84C1A68FD5BC2CA35269AC05098F0060D59BA0000000000000000000000000000000000000000
+
+
+0x03000500613B061EE6F8F50065AE000001000000000000000000000000000000000000000000000000000000
+
+0x010005000A54CB07307FD306C102000000000000
+0x01000500FC9FF9092077971DC102000000000000
+0x010005002BD4162180718E02C102000000000000
+0x010001005CC84C1A606F971DC102000000000000
+
+0x010005000A54CB07307FD306C102000000000000000000000000000000000000000000000000000000000000
+0x02000000EA7E112967A5901BC7F2950ED3754F321A189ED90000000000000000000000000000000000000000
+0x010005002BD4162180718E02C102000000000000000000000000000000000000000000000000000000000000
+
+0x010005000A54CB07307FD306C102000000000000000000000000000000000000000000000000000000000000
+0x02000000FC9FF909024C8ADD8FACB3ED8A3C986714375F550000000000000000000000000000000000000000
+0x010005002BD4162180718E02C102000000000000000000000000000000000000000000000000000000000000
+0x020000005CC84C1A68FD5BC2CA35269AC05098F0060D59BA0000000000000000000000000000000000000000
+
+
+0x0105000000000005150000006F3328FB9ADDD71B0046334BE903000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0x0105000000000005150000006F3328FB9ADDD71B0046334BE903000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0x0105000000000005150000006F3328FB9ADDD71B0046334BE903000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+0x05000500613B061E406A7C1CC102000001000000000000000000000000000000000000000000000000000000
+0x03000500613B061EE6F8F50065AE000001000000000000000000000000000000000000000000000000000000
+select 
+	st.text
+from sys.dm_exec_query_stats qs with(nolock)
+cross apply sys.dm_exec_sql_text(qs.plan_handle) st
+
+
+--CREATE TABLE TEST (ID INT )
+DECLARE @DB NVARCHAR(100) = N'ADMIN'
+DECLARE @TBL NVARCHAR(100) = N'sh_test_babo'
+;WITH TRACE_PATH 
+AS (SELECT REVERSE(STUFF(REVERSE(path), 1, CHARINDEX(N'\', REVERSE(path)), '')) + N'\Log.trc' AS path FROM sys.traces WHERE is_default = 1)
+SELECT  
+    *
+FROM TRACE_PATH T_PATH CROSS APPLY	fn_trace_gettable(T_PATH.path, DEFAULT) AS TRACE
+					   JOIN			sys.trace_events AS TRACE_E ON TRACE.EventClass=TRACE_E.trace_event_id
+					   LEFT JOIN	sys.trace_subclass_values AS TRACE_VALUE ON TRACE_VALUE.trace_event_id = EveNtClass AND TRACE_VALUE.subclass_value = trace.EventSubClass
+WHERE
+    --TRACE_E.name = 'Object:Created'
+    trace.DatabaseName = @DB
+    AND trace.ObjectName = @TBL
+    /*
+	AND TRACE_VALUE.subclass_name = 'Begin'
+	AND TRACE_VALUE.subclass_name = 'Commit'*/
+ORDER BY trace.StartTime;
+
+
+CREATE TABLE dbo.sh_test_babo
+(
+ seq bigint
+)
+
+
+insert into dbo.sh_test_babo values (12)
+
+
+
+
+trace.TextData
+    ,trace.DatabaseName
+    ,trace.ObjectName
+    ,TRACE_E.name AS EventName
+    ,TRACE_VALUE.subclass_name
+    ,trace.EventClass
+    ,trace.EventSubClass
+    ,trace.StartTime
+    ,trace.EndTime
+    ,trace.NTDomainName
+    ,trace.NTUserName
+    ,trace.LoginName
+    ,trace.HostName
+    ,trace.ApplicationName
+    ,trace.Spid
+
+
